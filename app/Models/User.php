@@ -253,6 +253,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return in_array($this->role, ['moderator', 'admin', 'super_admin'], true);
     }
 
+    /**
+     * Determine if the user has verified their email address.
+     * Administrative staff (super_admin, moderator) are exempt; candidates/walis must verify.
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        if ($this->isSuperAdmin() || $this->isModerator()) {
+            return true;
+        }
+
+        return ! is_null($this->email_verified_at);
+    }
+
     public function hasPermission(string $permission): bool
     {
         if ($this->isSuperAdmin()) {

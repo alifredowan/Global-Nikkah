@@ -33,13 +33,51 @@ class WaliEmailApprovalAndVerificationTest extends TestCase
             'role' => 'seeker',
         ]);
 
-        $response->assertRedirect(route('profile.edit'));
+        $response->assertRedirect(route('verification.notice'));
+        $this->assertGuest();
 
         $user = User::where('email', 'fatima@example.com')->first();
         $this->assertNotNull($user);
         $this->assertNull($user->email_verified_at);
+        $this->assertFalse((bool) $user->is_verified);
 
         Notification::assertSentTo($user, WelcomeVerificationNotification::class);
+    }
+
+    public function test_unverified_user_cannot_login_and_is_redirected_to_verification_notice(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'unverified.seeker@example.com',
+            'password' => bcrypt('SecurePassword123!'),
+            'role' => 'seeker',
+            'email_verified_at' => null,
+            'is_verified' => false,
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'unverified.seeker@example.com',
+            'password' => 'SecurePassword123!',
+        ]);
+
+        $response->assertRedirect(route('verification.notice'));
+        $this->assertGuest();
+        $response->assertSessionHasErrors('email');
+        $response->assertSessionHas('unverified_email', 'unverified.seeker@example.com');
+    }
+
+    public function test_unverified_user_cannot_access_protected_routes(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'seeker',
+            'email_verified_at' => null,
+            'is_verified' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('profile.edit'));
+        $response->assertRedirect(route('verification.notice'));
+
+        $discoverResponse = $this->actingAs($user)->get(route('discovery.index'));
+        $discoverResponse->assertRedirect(route('verification.notice'));
     }
 
     public function test_user_can_verify_email_via_signed_url(): void
@@ -60,10 +98,24 @@ class WaliEmailApprovalAndVerificationTest extends TestCase
 
         $response = $this->get($verificationUrl);
 
-        $response->assertRedirect(route('profile.show'));
+        $response->assertRedirect(route('profile.edit'));
+        $this->assertAuthenticatedAs($user);
         $user->refresh();
         $this->assertNotNull($user->email_verified_at);
         $this->assertTrue($user->is_verified);
+    }
+
+    public function test_login_and_register_pages_render_password_view_toggles(): void
+    {
+        $loginResponse = $this->get(route('login'));
+        $loginResponse->assertOk();
+        $loginResponse->assertSee('showPassword');
+        $loginResponse->assertSee('aria-label="Toggle password visibility"', false);
+
+        $registerResponse = $this->get(route('register'));
+        $registerResponse->assertOk();
+        $registerResponse->assertSee('showPass');
+        $registerResponse->assertSee('showConfirm');
     }
 
     public function test_seeker_linking_wali_dispatches_wali_connection_request_email(): void

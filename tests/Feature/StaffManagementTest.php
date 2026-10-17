@@ -27,7 +27,8 @@ class StaffManagementTest extends TestCase
             'terms' => '1',
         ]);
 
-        $response->assertRedirect(route('wali.link'));
+        $response->assertRedirect(route('verification.notice'));
+        $this->assertGuest();
         $this->assertDatabaseHas('users', [
             'email' => 'wali.guardian@test.com',
             'role' => 'wali',

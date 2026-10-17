@@ -20,6 +20,7 @@ class UnifiedSidebarTest extends TestCase
             'gender' => 'male',
             'is_active' => true,
             'is_verified' => true,
+            'email_verified_at' => now(),
             'permissions' => ['manage_verifications', 'manage_reports', 'view_audit_logs', 'manage_settings'],
         ]);
     }
@@ -36,6 +37,7 @@ class UnifiedSidebarTest extends TestCase
             'marital_status' => 'never_married',
             'is_active' => true,
             'is_verified' => true,
+            'email_verified_at' => now(),
         ]);
     }
 
@@ -50,6 +52,7 @@ class UnifiedSidebarTest extends TestCase
             'dob' => '1975-01-01',
             'is_active' => true,
             'is_verified' => true,
+            'email_verified_at' => now(),
         ]);
     }
 

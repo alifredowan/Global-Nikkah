@@ -23,8 +23,10 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscription.pricing');
 Route::get('/photos/{photo}/view', [PhotoController::class, 'show'])->name('photos.view');
 
-// Email Verification (Public Signed)
+// Email Verification (Public Signed & Notice)
+Route::get('/email/verify', [AuthController::class, 'showVerificationNotice'])->name('verification.notice');
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+Route::post('/email/resend', [AuthController::class, 'resendVerification'])->name('verification.send');
 
 // Wali (Guardian) Email Invitation Approval (Public Token)
 Route::get('/wali/invite/{token}', [WaliController::class, 'showInvitation'])->name('wali.invite.show');
@@ -49,11 +51,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
-// Authenticated routes
+// Authenticated routes (Logout accessible to all authenticated users)
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+// Authenticated & Email Verified Protected Routes (FR-4.1)
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/account/deactivate', [AuthController::class, 'deactivate'])->name('account.deactivate');
-    Route::post('/email/resend', [AuthController::class, 'resendVerification'])->name('verification.send');
 
     // Account & Security Settings (Super Admin, Moderator, and Normal Users)
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

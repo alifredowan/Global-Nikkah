@@ -59,7 +59,8 @@ class MatrimonialFeatureTest extends TestCase
             'terms' => '1',
         ]);
 
-        $response->assertRedirect(route('profile.edit'));
+        $response->assertRedirect(route('verification.notice'));
+        $this->assertGuest();
         $this->assertDatabaseHas('users', ['email' => 'adult@test.com']);
     }
 
@@ -202,6 +203,8 @@ class MatrimonialFeatureTest extends TestCase
             'dob' => $adultDob,
             'marital_status' => 'never_married',
             'is_active' => true,
+            'is_verified' => true,
+            'email_verified_at' => now(),
         ]);
 
         $response = $this->post('/login', [
@@ -227,6 +230,8 @@ class MatrimonialFeatureTest extends TestCase
             'dob' => $dob,
             'marital_status' => 'never_married',
             'is_active' => true,
+            'is_verified' => true,
+            'email_verified_at' => now(),
         ]);
         Profile::create(['user_id' => $maleSeeker->id, 'sect_madhhab' => 'Sunni Hanafi']);
 
@@ -240,6 +245,8 @@ class MatrimonialFeatureTest extends TestCase
             'dob' => $dob,
             'marital_status' => 'never_married',
             'is_active' => true,
+            'is_verified' => true,
+            'email_verified_at' => now(),
         ]);
         Profile::create(['user_id' => $femaleSeeker->id, 'sect_madhhab' => 'Sunni Hanafi']);
 

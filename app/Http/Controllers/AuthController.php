@@ -113,9 +113,10 @@ class AuthController extends Controller
 
             AuditLog::record($user->id, 'user_registered', 'User', $user->id, ['role' => 'seeker', 'email' => $user->email]);
 
-            Auth::login($user);
-
-            return redirect()->route('profile.edit')->with('success', 'Account registered successfully! A verification email has been sent to your address.');
+            // User must approve email verification first before accessing the platform
+            return redirect()->route('verification.notice')
+                ->with('registered_email', $user->email)
+                ->with('success', 'Assalamu Alaikum! Your candidate account has been registered. Please check your email inbox and click the verification link to activate your account.');
         }
 
         // Wali Registration
@@ -123,9 +124,10 @@ class AuthController extends Controller
 
         app(WaliWorkflowService::class)->autoLinkWaliUser($user);
 
-        Auth::login($user);
-
-        return redirect()->route('wali.link')->with('success', 'Guardian account created successfully! A verification email has been sent to your inbox.');
+        // Wali must approve email verification first before accessing the platform
+        return redirect()->route('verification.notice')
+            ->with('registered_email', $user->email)
+            ->with('success', 'Assalamu Alaikum! Your Guardian account has been registered. Please check your email inbox and click the verification link to activate your account.');
     }
 
     public function showLogin(): View
@@ -145,14 +147,25 @@ class AuthController extends Controller
         $credentials['email'] = $normalizedEmail;
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
             $user = Auth::user();
+
+            if (! $user->hasVerifiedEmail()) {
+                Auth::logout();
+
+                return redirect()->route('verification.notice')
+                    ->with('unverified_email', $user->email)
+                    ->withErrors([
+                        'email' => 'Your email address has not been approved yet. Please check your inbox and click the verification link to activate your account.',
+                    ]);
+            }
 
             if (! $user->is_active) {
                 Auth::logout();
 
                 return back()->withErrors(['email' => 'This account has been deactivated or suspended.']);
             }
+
+            $request->session()->regenerate();
 
             AuditLog::record($user->id, 'user_login');
 
@@ -285,23 +298,31 @@ class AuthController extends Controller
     }
 
     /**
+     * Show email verification notice page.
+     */
+    public function showVerificationNotice(): View
+    {
+        return view('auth.verify-email');
+    }
+
+    /**
      * Handle email verification link.
      */
     public function verifyEmail(Request $request, int $id, string $hash): RedirectResponse
     {
         if (! $request->hasValidSignature()) {
-            return redirect()->route('login')->with('error', 'This email verification link has expired or is invalid. Please request a new link.');
+            return redirect()->route('verification.notice')->with('error', 'This email verification link has expired or is invalid. Please request a new link below.');
         }
 
         $user = User::findOrFail($id);
 
         if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-            return redirect()->route('login')->with('error', 'Invalid verification link parameters.');
+            return redirect()->route('verification.notice')->with('error', 'Invalid verification link parameters.');
         }
 
         if (! $user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
-            $user->update(['is_verified' => true]);
+            $user->update(['is_verified' => true, 'is_active' => true]);
             AuditLog::record($user->id, 'email_verified', 'User', $user->id, ['email' => $user->email]);
         }
 
@@ -309,7 +330,11 @@ class AuthController extends Controller
             Auth::login($user);
         }
 
-        return redirect()->route('profile.show')->with('success', 'Alhamdulillah! Your email address has been verified successfully. Welcome to Global Nikkah!');
+        if ($user->isWali()) {
+            return redirect()->route('wali.link')->with('success', 'Alhamdulillah! Your email address has been approved and verified. Welcome to Global Nikkah!');
+        }
+
+        return redirect()->route('profile.edit')->with('success', 'Alhamdulillah! Your email address has been approved and verified. Welcome to Global Nikkah! You can now proceed to set up your profile.');
     }
 
     /**
@@ -317,14 +342,29 @@ class AuthController extends Controller
      */
     public function resendVerification(Request $request): RedirectResponse
     {
+        $email = $request->input('email') ?: session('registered_email') ?: session('unverified_email');
         $user = Auth::user();
 
-        if ($user->hasVerifiedEmail()) {
-            return back()->with('info', 'Your email address is already verified.');
+        if (! $user && $email) {
+            $user = User::where('email', strtolower(trim((string) $email)))->first();
         }
 
-        $user->sendEmailVerificationNotification();
+        if (! $user) {
+            return back()->withErrors(['email' => 'Please enter the email address you used during registration.']);
+        }
 
-        return back()->with('success', 'A new verification email has been sent to your email address.');
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->route('login')->with('info', 'Your email address is already verified. Please sign in to your account.');
+        }
+
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            Log::warning('Resend email verification failed: '.$e->getMessage());
+        }
+
+        return back()
+            ->with('registered_email', $user->email)
+            ->with('success', 'A fresh verification email has been dispatched to '.$user->email.'. Please check your inbox and spam folder.');
     }
 }
