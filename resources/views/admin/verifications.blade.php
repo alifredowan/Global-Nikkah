@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'KYC Verification Requests - Admin')
+@section('page_title', 'KYC Verifications')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
 
         <div class="flex items-center justify-between">
             <div>
-                <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400">&larr; Back to Admin Dashboard</a>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-1">Identity & KYC Verification Queue (FR-1.4, 7.1)</h1>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Identity & KYC Verification Queue</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Review national IDs, passports, and verify matrimonial candidates.</p>
             </div>
         </div>
 
@@ -71,7 +71,7 @@
         </div>
 
     </div>
-</div>
+
 
 <!-- Reject Modal -->
 <div id="rejectVerificationModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">

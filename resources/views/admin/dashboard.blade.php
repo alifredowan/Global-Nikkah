@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Back Office - Nikah Connect')
+@section('title', 'Admin Dashboard - Nikah Connect')
+@section('page_title', 'Dashboard Overview')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
 
         <!-- Header -->
         <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-colors">
@@ -12,38 +12,11 @@
                 <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Administrative & Moderation Console</h1>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Platform governance, KYC verification queue, reports, and immutable audit logs (FR-7.1 - 7.5).</p>
             </div>
-            <div class="flex items-center gap-2 flex-wrap">
-                @if(Auth::user()->isSuperAdmin())
-                    <a href="{{ route('admin.staff') }}" class="px-3.5 py-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/60 font-bold text-xs transition flex items-center gap-1">
-                        🛡️ Staff & Access
-                    </a>
-                @endif
-                @if(Auth::user()->hasPermission('manage_verifications'))
-                    <a href="{{ route('admin.verifications') }}" class="px-3.5 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 font-bold text-xs transition">
-                        🪪 KYC Queue ({{ $metrics['pending_verifications'] }})
-                    </a>
-                @endif
-                @if(Auth::user()->hasPermission('manage_reports'))
-                    <a href="{{ route('admin.reports') }}" class="px-3.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 font-bold text-xs transition">
-                        🚩 Reports ({{ $metrics['pending_reports'] }})
-                    </a>
-                @endif
-                @if(Auth::user()->hasPermission('manage_settings'))
-                    <a href="{{ route('admin.packages.index') }}" class="px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 font-bold text-xs transition flex items-center gap-1">
-                        💳 Packages
-                    </a>
-                    <a href="{{ route('admin.promo-codes.index') }}" class="px-3.5 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 font-bold text-xs transition flex items-center gap-1">
-                        🏷️ Promo Codes
-                    </a>
-                    <a href="{{ route('admin.settings') }}" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">
-                        ⚙️ Policy Settings
-                    </a>
-                @endif
-                @if(Auth::user()->hasPermission('view_audit_logs'))
-                    <a href="{{ route('admin.audit-logs') }}" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs transition">
-                        📋 Audit Logs
-                    </a>
-                @endif
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    System Operational
+                </span>
             </div>
         </div>
 
@@ -244,5 +217,4 @@
         </div>
 
     </div>
-</div>
 @endsection

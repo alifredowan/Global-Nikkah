@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
 @section('title', 'Manage Subscription Packages - Admin')
+@section('page_title', 'Dynamic Packages')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors" x-data="{
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8" x-data="{
     displayFilter: 'all',
     showCreateModal: false,
     showEditModal: false,
@@ -51,17 +52,13 @@
 }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        <!-- Top Breadcrumbs & Header -->
+        <!-- Header -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-                <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition">&larr; Back to Admin Dashboard</a>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-1">Dynamic Subscription Packages</h1>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Dynamic Subscription Packages</h1>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Setup, configure, and price subscription tiers with granular quotas and feature flags.</p>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('admin.promo-codes.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
-                    🏷️ Promo Codes
-                </a>
                 <button @click="showCreateModal = true" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/20 transition flex items-center gap-1.5 cursor-pointer">
                     <span>+</span> Create New Package
                 </button>

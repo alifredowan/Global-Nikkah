@@ -1,15 +1,14 @@
 @extends('layouts.app')
 
 @section('title', 'Platform Audit Logs - Admin')
+@section('page_title', 'Audit Logs')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
 
         <div>
-            <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400">&larr; Back to Admin Dashboard</a>
-            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-1">Platform Immutable Audit Logs (FR-7.5)</h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Tamper-evident logs of security events, administrative decisions, and moderation actions.</p>
+            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Platform Immutable Audit Logs</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tamper-evident logs of security events, administrative decisions, and moderation actions.</p>
         </div>
 
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
@@ -53,5 +52,4 @@
         </div>
 
     </div>
-</div>
 @endsection

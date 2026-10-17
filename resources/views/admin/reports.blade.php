@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('title', 'User Reports Moderation - Admin')
+@section('page_title', 'Safety & Reports')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
 
         <div>
-            <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400">&larr; Back to Admin Dashboard</a>
-            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-1">User Reports & Moderation Queue (FR-7.2)</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">User Reports & Moderation Queue</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Investigate reported conduct violations, modesty breaches, and apply account restrictions.</p>
         </div>
 
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
@@ -84,5 +84,4 @@
         </div>
 
     </div>
-</div>
 @endsection

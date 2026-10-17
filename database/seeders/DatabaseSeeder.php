@@ -11,13 +11,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Core Platform Governance & Verification Settings
-        $this->call(PlatformSettingSeeder::class);
-
-        // 2. Auto-create Master Super Administrator
-        $this->call(SuperAdminSeeder::class);
-
-        // 3. Dynamic Subscription Plans
+        // 1. Dynamic Subscription Plans
         $this->call(SubscriptionPlanSeeder::class);
+
+        // 2. Demo Users, Profiles & Super Administrator
+        $this->call(DemoDataSeeder::class);
     }
 }

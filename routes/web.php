@@ -13,6 +13,7 @@ use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileVisitorController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WaliController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,12 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/account/deactivate', [AuthController::class, 'deactivate'])->name('account.deactivate');
+
+    // Account & Security Settings (Super Admin, Moderator, and Normal Users)
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
+    Route::post('/settings/preferences', [SettingsController::class, 'updatePreferences'])->name('settings.preferences.update');
 
     // Profile Management & Pro Features
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

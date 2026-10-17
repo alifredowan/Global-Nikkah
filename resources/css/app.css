@@ -43,3 +43,123 @@
     background-size: 24px 24px;
     background-position: 0 0, 12px 12px;
 }
+
+/* ==========================================================================
+   4 MOODS (THEMES):
+   1. Daylight (Noor)         - Clean Slate & Emerald (Default Light)
+   2. Midnight (Layl)         - Deep Midnight Slate (.dark)
+   3. Royal Emerald (Zumarad) - Imperial Forest Green & Gold (.theme-emerald)
+   4. Desert Sand (Sahara)    - Warm Parchment, Coffee & Terracotta (.theme-sand)
+   ========================================================================== */
+
+/* 3. ROYAL EMERALD ISLAMIC MOOD (Zumarad) */
+html.theme-emerald {
+    color-scheme: dark;
+}
+html.theme-emerald body {
+    background-color: #022319 !important;
+    color: #ecfdf5 !important;
+}
+html.theme-emerald header.sticky {
+    background-color: rgba(3, 40, 29, 0.95) !important;
+    border-color: #09533c !important;
+}
+html.theme-emerald aside {
+    background-color: #011911 !important;
+    border-color: #09533c !important;
+}
+html.theme-emerald .bg-white,
+html.theme-emerald .dark\:bg-slate-900,
+html.theme-emerald .bg-slate-900 {
+    background-color: #053728 !important;
+    border-color: #0c5942 !important;
+}
+html.theme-emerald .bg-slate-50,
+html.theme-emerald .dark\:bg-slate-950,
+html.theme-emerald .bg-slate-950 {
+    background-color: #022319 !important;
+}
+html.theme-emerald .bg-slate-100,
+html.theme-emerald .dark\:bg-slate-800,
+html.theme-emerald .bg-slate-800 {
+    background-color: #074633 !important;
+    border-color: #0e6349 !important;
+}
+html.theme-emerald .border-slate-200,
+html.theme-emerald .border-slate-700,
+html.theme-emerald .border-slate-800,
+html.theme-emerald .dark\:border-slate-800,
+html.theme-emerald .dark\:border-slate-700 {
+    border-color: #0c5942 !important;
+}
+html.theme-emerald .text-slate-900,
+html.theme-emerald .dark\:text-white,
+html.theme-emerald .text-slate-800,
+html.theme-emerald .dark\:text-slate-100 {
+    color: #ffffff !important;
+}
+html.theme-emerald .text-slate-600,
+html.theme-emerald .text-slate-500,
+html.theme-emerald .text-slate-400,
+html.theme-emerald .dark\:text-slate-400,
+html.theme-emerald .dark\:text-slate-300 {
+    color: #a7f3d0 !important;
+}
+html.theme-emerald .shadow-md,
+html.theme-emerald .shadow-lg,
+html.theme-emerald .shadow-xl {
+    box-shadow: 0 10px 25px -5px rgba(1, 25, 17, 0.6) !important;
+}
+
+/* 4. DESERT SAND & WARM PARCHMENT MOOD (Sahara) */
+html.theme-sand {
+    color-scheme: light;
+}
+html.theme-sand body {
+    background-color: #faf6ee !important;
+    color: #2b2016 !important;
+}
+html.theme-sand header.sticky {
+    background-color: rgba(255, 255, 255, 0.96) !important;
+    border-color: #e5dac7 !important;
+}
+html.theme-sand aside {
+    background-color: #211913 !important;
+    border-color: #382c23 !important;
+}
+html.theme-sand aside .text-slate-300 {
+    color: #d6c5b4 !important;
+}
+html.theme-sand .bg-white {
+    background-color: #ffffff !important;
+    border-color: #e6dbcb !important;
+}
+html.theme-sand .bg-slate-50 {
+    background-color: #faf6ee !important;
+}
+html.theme-sand .bg-slate-100 {
+    background-color: #f3ece0 !important;
+    border-color: #e3d7c5 !important;
+}
+html.theme-sand .border-slate-200,
+html.theme-sand .border-slate-100 {
+    border-color: #e6dbcb !important;
+}
+html.theme-sand .text-slate-900,
+html.theme-sand .text-slate-800 {
+    color: #241b13 !important;
+}
+html.theme-sand .text-slate-600 {
+    color: #5c4a3b !important;
+}
+html.theme-sand .text-slate-500 {
+    color: #7d6753 !important;
+}
+html.theme-sand .text-slate-400 {
+    color: #9c846f !important;
+}
+html.theme-sand .shadow-md,
+html.theme-sand .shadow-lg,
+html.theme-sand .shadow-xl {
+    box-shadow: 0 10px 25px -5px rgba(84, 62, 42, 0.08) !important;
+}

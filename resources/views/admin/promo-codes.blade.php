@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
 @section('title', 'Manage Promo Codes & Special Discounts - Admin')
+@section('page_title', 'Promo & Discounts')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors" x-data="{
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8" x-data="{
     code: '',
     targetType: 'all',
     allowedEmails: '',
@@ -19,19 +20,12 @@
         }
     }
 }">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
         <!-- Header -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-                <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition">&larr; Back to Admin Dashboard</a>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-1">Promo Codes & Special Discounts</h1>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Promo Codes & Special Discounts</h1>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Generate promo codes, target specific subscription packages (e.g. Pro), and assign extra discounts to special VIP users.</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('admin.packages.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
-                    💳 Subscription Packages
-                </a>
             </div>
         </div>
 
@@ -294,5 +288,4 @@
         </div>
 
     </div>
-</div>
 @endsection

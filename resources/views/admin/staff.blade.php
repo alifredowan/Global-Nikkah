@@ -1,23 +1,20 @@
 @extends('layouts.app')
 
 @section('title', 'Staff & Access Control - Nikah Connect Admin')
+@section('page_title', 'Staff & Permissions')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen" x-data="{
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8" x-data="{
     showCreateModal: false,
     showEditModal: false,
     editUser: { id: null, name: '', role: 'moderator', permissions: [] }
 }">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
         <!-- Top Header & Breadcrumb -->
         <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition">← Back to Dashboard</a>
-                </div>
                 <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading flex items-center gap-2">
-                    <span>🛡️</span> Staff & Access Control
+                    <span>👥</span> Staff & Access Control
                 </h1>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Create Super Admins, assign Moderators, and configure granular permission access.</p>
             </div>
@@ -325,5 +322,4 @@
             </form>
         </div>
     </div>
-</div>
 @endsection
