@@ -161,7 +161,7 @@ class AdminController extends Controller
             'slug' => ['nullable', 'string', 'max:50', 'alpha_dash', 'unique:subscription_plans,slug'],
             'description' => ['nullable', 'string', 'max:500'],
             'monthly_price' => ['required', 'numeric', 'min:0'],
-            'annual_price' => ['required', 'numeric', 'min:0'],
+            'annual_price' => ['nullable', 'numeric', 'min:0'],
             'daily_profile_views' => ['required', 'integer'],
             'daily_interests' => ['required', 'integer'],
             'advanced_filters' => ['nullable', 'boolean'],
@@ -188,12 +188,15 @@ class AdminController extends Controller
             $features = array_values(array_filter(array_map('trim', preg_split('/[\r\n]+/', $validated['features']))));
         }
 
+        $price = $validated['monthly_price'];
+        $annualPrice = isset($validated['annual_price']) && $validated['annual_price'] !== '' ? $validated['annual_price'] : $price;
+
         $package = SubscriptionPlan::create([
             'name' => $validated['name'],
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
-            'monthly_price' => $validated['monthly_price'],
-            'annual_price' => $validated['annual_price'],
+            'monthly_price' => $price,
+            'annual_price' => $annualPrice,
             'daily_profile_views' => $validated['daily_profile_views'],
             'daily_interests' => $validated['daily_interests'],
             'advanced_filters' => $request->boolean('advanced_filters'),
@@ -225,7 +228,7 @@ class AdminController extends Controller
             'slug' => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('subscription_plans', 'slug')->ignore($package->id)],
             'description' => ['nullable', 'string', 'max:500'],
             'monthly_price' => ['required', 'numeric', 'min:0'],
-            'annual_price' => ['required', 'numeric', 'min:0'],
+            'annual_price' => ['nullable', 'numeric', 'min:0'],
             'daily_profile_views' => ['required', 'integer'],
             'daily_interests' => ['required', 'integer'],
             'advanced_filters' => ['nullable', 'boolean'],
@@ -244,12 +247,15 @@ class AdminController extends Controller
             $features = array_values(array_filter(array_map('trim', preg_split('/[\r\n]+/', $validated['features']))));
         }
 
+        $price = $validated['monthly_price'];
+        $annualPrice = isset($validated['annual_price']) && $validated['annual_price'] !== '' ? $validated['annual_price'] : $price;
+
         $package->update([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['slug']),
             'description' => $validated['description'] ?? null,
-            'monthly_price' => $validated['monthly_price'],
-            'annual_price' => $validated['annual_price'],
+            'monthly_price' => $price,
+            'annual_price' => $annualPrice,
             'daily_profile_views' => $validated['daily_profile_views'],
             'daily_interests' => $validated['daily_interests'],
             'advanced_filters' => $request->boolean('advanced_filters'),

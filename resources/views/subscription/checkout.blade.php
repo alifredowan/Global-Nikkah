@@ -7,9 +7,8 @@
     <div class="max-w-xl mx-auto px-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-8"
              x-data="{
-                cycle: 'monthly',
-                monthlyPrice: {{ (float) $planDetails['monthly_price'] }},
-                annualPrice: {{ (float) $planDetails['annual_price'] }},
+                cycle: 'one_time_marriage',
+                basePrice: {{ (float) ($planDetails['one_time_price'] ?? $planDetails['monthly_price']) }},
                 paymentMethod: '{{ old('payment_method', 'stripe') }}',
                 promoCode: '{{ old('promo_code', '') }}',
                 promoApplied: false,
@@ -18,7 +17,7 @@
                 promoMessage: '',
                 promoError: '{{ $errors->first('promo_code') }}',
                 currentBasePrice() {
-                    return this.cycle === 'annual' ? this.annualPrice : this.monthlyPrice;
+                    return this.basePrice;
                 },
                 currentDiscount() {
                     if (!this.promoApplied) return 0;
@@ -66,11 +65,11 @@
                 }
              }">
             <div class="text-center mb-6">
-                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
-                    Upgrade to {{ $planDetails['name'] }}
+                <span class="px-3.5 py-1 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 uppercase tracking-wider inline-flex items-center gap-1.5 shadow-xs">
+                    <span>💍</span> Single Marriage Pass
                 </span>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-2">Complete Membership Upgrade</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Unlock unlimited discovery and enhanced matching features.</p>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-2">Acquire {{ $planDetails['name'] }}</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">One-time payment. Valid until your confirmed Nikah milestone.</p>
             </div>
 
             @if(request()->query('status') === 'cancelled')
@@ -91,31 +90,21 @@
             <form action="{{ route('subscription.process') }}" method="POST" class="space-y-6">
                 @csrf
                 <input type="hidden" name="plan" value="{{ $plan }}">
+                <input type="hidden" name="billing_cycle" value="one_time_marriage">
 
-                <!-- Billing Cycle Selector -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Select Billing Cycle</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label @click="cycle = 'monthly'" :class="cycle === 'monthly' ? 'border-2 border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/40' : 'border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800'" class="p-4 rounded-2xl cursor-pointer transition block text-left">
-                            <input type="radio" name="billing_cycle" value="monthly" x-model="cycle" class="sr-only">
-                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">Monthly Billing</span>
-                            <span class="block text-lg font-extrabold text-slate-900 dark:text-white mt-1">${{ number_format($planDetails['monthly_price'], 2) }} <span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal">/ mo</span></span>
-                        </label>
-
-                        <label @click="cycle = 'annual'" :class="cycle === 'annual' ? 'border-2 border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/40' : 'border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800'" class="p-4 rounded-2xl cursor-pointer transition block text-left relative">
-                            @if($planDetails['annual_price'] > 0 && $planDetails['monthly_price'] > 0)
-                                @php
-                                    $annualSavings = max(0, round((1 - ($planDetails['annual_price'] / ($planDetails['monthly_price'] * 12))) * 100));
-                                @endphp
-                                @if($annualSavings > 0)
-                                    <span class="absolute -top-2.5 right-3 bg-amber-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase">Save {{ $annualSavings }}%</span>
-                                @endif
-                            @endif
-                            <input type="radio" name="billing_cycle" value="annual" x-model="cycle" class="sr-only">
-                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">Annual Billing</span>
-                            <span class="block text-lg font-extrabold text-slate-900 dark:text-white mt-1">${{ number_format($planDetails['annual_price'], 2) }} <span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal">/ yr</span></span>
-                        </label>
+                <!-- One-Time Single Marriage Guarantee Information Card -->
+                <div class="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
+                            <span>🛡️</span> Pass Validity & Term
+                        </span>
+                        <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white uppercase tracking-wider">
+                            Active Until Nikah
+                        </span>
                     </div>
+                    <p class="text-xs text-emerald-800/90 dark:text-emerald-300 leading-relaxed">
+                        This is a single one-time charge of <strong class="font-extrabold">${{ number_format($planDetails['monthly_price'], 2) }}</strong>. You will <strong>never be auto-billed</strong> monthly or annually. Your pass remains active until you register and confirm your marriage on Nikah Connect.
+                    </p>
                 </div>
 
                 <!-- Promo Code Box (FR-3.5 with Special User Extra Discount Support) -->
@@ -149,7 +138,7 @@
                 <!-- Live Order Summary -->
                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
                     <div class="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                        <span>Base Subscription (<span x-text="cycle === 'annual' ? 'Annual' : 'Monthly'"></span>):</span>
+                        <span>One-Time Marriage Pass ({{ $planDetails['name'] }}):</span>
                         <span class="font-bold text-slate-900 dark:text-white" :class="promoApplied ? 'line-through text-slate-400 dark:text-slate-500' : ''">
                             $<span x-text="currentBasePrice().toFixed(2)"></span>
                         </span>
@@ -161,7 +150,7 @@
                     </div>
 
                     <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-sm font-extrabold text-slate-900 dark:text-white">
-                        <span>Total Due Today:</span>
+                        <span>Total Due Today (1-Time):</span>
                         <span class="text-base text-emerald-700 dark:text-emerald-400">$<span x-text="currentFinalPrice().toFixed(2)"></span></span>
                     </div>
                 </div>
@@ -252,7 +241,7 @@
                                     <span class="text-lg">🧪</span>
                                     <div>
                                         <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Developer / Demo Mode</span>
-                                        <p class="text-[11px] text-slate-400">Simulate successful card payment instantly without external gateway</p>
+                                        <p class="text-[11px] text-slate-400">Instantly activate pass without external payment gateway</p>
                                     </div>
                                 </div>
                                 <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center transition"
@@ -286,7 +275,7 @@
                     </template>
                     <template x-if="paymentMethod === 'simulated'">
                         <span class="flex items-center gap-2">
-                            <span>Confirm & Activate Membership (Demo)</span>
+                            <span>Activate Marriage Pass (Demo Mode)</span>
                             <span class="text-base">✓</span>
                         </span>
                     </template>
@@ -299,8 +288,8 @@
                         <span class="font-medium">Instant Activation</span>
                     </div>
                     <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-1.5">
-                        <span>🔄</span>
-                        <span class="font-medium">1-Click Cancel Anytime</span>
+                        <span>💍</span>
+                        <span class="font-medium">Valid Until Confirmed Nikah</span>
                     </div>
                 </div>
             </form>

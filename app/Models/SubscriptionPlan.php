@@ -80,6 +80,16 @@ class SubscriptionPlan extends Model
         return $query->where('monthly_price', '>', 0);
     }
 
+    public function getOneTimePriceAttribute(): float
+    {
+        return (float) $this->monthly_price;
+    }
+
+    public function getPriceAttribute(): float
+    {
+        return (float) $this->monthly_price;
+    }
+
     /**
      * Convert to array compatible with legacy getPlanDetails() format.
      */
@@ -99,8 +109,11 @@ class SubscriptionPlan extends Model
             'badge_text' => $this->badge_text,
             'is_popular' => (bool) $this->is_popular,
             'features' => $this->features ?? [],
+            'price' => (float) $this->monthly_price,
+            'one_time_price' => (float) $this->monthly_price,
             'monthly_price' => (float) $this->monthly_price,
             'annual_price' => (float) $this->annual_price,
+            'validity' => 'Active Until Confirmed Nikah',
         ];
     }
 }

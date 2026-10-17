@@ -1,17 +1,37 @@
 @extends('layouts.app')
 
-@section('title', 'Membership Plans & Pricing - Nikah Connect')
+@section('title', 'Single Marriage Pass • One-Time Payment Until Nikah - Nikah Connect')
 
 @section('content')
 <div class="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
-        <div class="text-center max-w-2xl mx-auto">
-            <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Ethical & Transparent</span>
-            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white font-heading mt-1">Membership Plans & Tiers</h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-                Core Islamic matching features, guardian supervision, and halal messaging are always accessible on the Free tier. Premium plans unlock unlimited discovery and profile visibility boosts (FR-5.1).
+        <!-- Header / Ethical Philosophy -->
+        <div class="text-center max-w-3xl mx-auto space-y-3">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-black uppercase tracking-wider shadow-xs">
+                <span>💍</span>
+                <span>Membership Plans & Tiers • Single Marriage Pass</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-heading tracking-tight">
+                Single Marriage Pass: Pay Once Until Nikah
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
+                Conventional dating apps profit from keeping users single and paying monthly subscriptions indefinitely.
+                <strong class="text-slate-900 dark:text-slate-200">Nikah Connect aligns directly with your success</strong>: pay a single one-time pass fee and enjoy all premium matrimonial privileges until your marriage is confirmed.
             </p>
+
+            <!-- Three Core Pillars -->
+            <div class="pt-2 flex flex-wrap items-center justify-center gap-3 text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                <span class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span class="text-emerald-600">✓</span> No Monthly Renewals
+                </span>
+                <span class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span class="text-emerald-600">✓</span> Valid Until Confirmed Marriage
+                </span>
+                <span class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span class="text-emerald-600">✓</span> Shariah Wali Supervision & Privacy
+                </span>
+            </div>
         </div>
 
         @if(session('success'))
@@ -32,6 +52,7 @@
             </div>
         @endif
 
+        <!-- Pricing Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ min(4, max(3, count($plans))) }} gap-8 items-stretch">
             @foreach($plans as $plan)
                 @php
@@ -51,37 +72,46 @@
                         <!-- Header badge -->
                         <div class="mb-2">
                             @if($isCurrent)
-                                <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Your Current Plan</span>
+                                <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Your Active Pass</span>
                             @elseif($isFree)
-                                <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase tracking-wider">Free Tier</span>
+                                <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase tracking-wider">Free Forever</span>
                             @else
-                                <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase tracking-wider">Upgrade Tier</span>
+                                <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">One-Time Marriage Pass</span>
                             @endif
                         </div>
 
                         <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-2 font-heading">{{ $plan->name }}</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 min-h-[32px]">{{ $plan->description }}</p>
 
-                        <!-- Price -->
-                        <div class="my-5">
+                        <!-- Price Section -->
+                        <div class="my-5 pb-5 border-b border-slate-100 dark:border-slate-800">
                             @if($isFree)
-                                <span class="text-4xl font-extrabold text-slate-900 dark:text-white font-heading">$0</span>
-                                <span class="text-xs text-slate-500 dark:text-slate-400">/ forever</span>
-                            @else
-                                <div class="flex items-baseline gap-1">
-                                    <span class="text-4xl font-extrabold text-slate-900 dark:text-white font-heading">${{ number_format($plan->monthly_price, 2) }}</span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+                                <div class="flex items-baseline gap-1.5">
+                                    <span class="text-4xl font-extrabold text-slate-900 dark:text-white font-heading">$0</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">/ forever free</span>
                                 </div>
-                                @if($plan->annual_price > 0)
-                                    <span class="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold block mt-1">
-                                        or ${{ number_format($plan->annual_price, 2) }} billed annually
-                                    </span>
-                                @endif
+                                <span class="text-[11px] text-slate-400 dark:text-slate-500 block mt-1">Always available for seekers on basic matching.</span>
+                            @else
+                                <div class="space-y-1">
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-4xl font-extrabold text-slate-900 dark:text-white font-heading">${{ number_format($plan->monthly_price, 2) }}</span>
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                                            Pay 1-Time
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                                        <span>🛡️</span>
+                                        <span>Active Until Confirmed Nikah</span>
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 dark:text-slate-500">
+                                        No recurring monthly deductions. Automatically completes upon successful marriage.
+                                    </p>
+                                </div>
                             @endif
                         </div>
 
                         <!-- Feature list -->
-                        <ul class="space-y-3 text-xs text-slate-700 dark:text-slate-300 border-t border-slate-100 dark:border-slate-800 pt-5">
+                        <ul class="space-y-3 text-xs text-slate-700 dark:text-slate-300 pt-1">
                             @if(!empty($plan->features) && count($plan->features) > 0)
                                 @foreach($plan->features as $featureItem)
                                     <li class="flex items-start gap-2">
@@ -101,7 +131,7 @@
                                 @if($plan->advanced_filters)
                                     <li class="flex items-center gap-2">
                                         <span class="text-emerald-600 font-bold">✓</span>
-                                        <span>Advanced filters (sect, madhhab, diet)</span>
+                                        <span>Advanced religious filters (sect, madhhab, diet)</span>
                                     </li>
                                 @endif
                                 @if($plan->profile_boost)
@@ -130,7 +160,7 @@
                     <div class="mt-8">
                         @if($isCurrent)
                             <button disabled class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 text-xs font-bold cursor-not-allowed">
-                                Current Active Plan
+                                Current Active Pass
                             </button>
                         @elseif($isFree)
                             @if(Auth::guest())
@@ -141,13 +171,13 @@
                                 <form action="{{ route('subscription.cancel') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="w-full py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition cursor-pointer">
-                                        Downgrade to Free
+                                        Switch to Free Explorer
                                     </button>
                                 </form>
                             @endif
                         @else
-                            <a href="{{ route('subscription.checkout', $plan->slug) }}" class="block text-center w-full py-3 rounded-xl {{ $isPopular ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-900/20' : 'bg-slate-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white' }} text-xs font-bold transition">
-                                Upgrade to {{ $plan->name }}
+                            <a href="{{ route('subscription.checkout', $plan->slug) }}" class="block text-center w-full py-3.5 rounded-xl {{ $isPopular ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-900/20' : 'bg-slate-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white' }} text-xs font-bold transition">
+                                Get {{ $plan->name }} (One-Time)
                             </a>
                         @endif
                     </div>
@@ -155,22 +185,33 @@
             @endforeach
         </div>
 
-        <!-- Payment Methods & Security Guarantee Banner -->
-        <div class="max-w-4xl mx-auto mt-12 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-3">
-            <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-slate-700 dark:text-slate-300">
-                <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-700 dark:text-indigo-400">
-                    <span>💳</span> Stripe Checkout
-                </span>
-                <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-400">
-                    <span>🅿️</span> PayPal Express
-                </span>
-                <span class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
-                    Visa • Mastercard • Amex • Apple Pay • Google Pay
-                </span>
+        <!-- Ethical Single-Payment Security Guarantee -->
+        <div class="max-w-4xl mx-auto mt-12 p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold shrink-0">
+                    🤝
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Our Single Marriage Guarantee (১ বার সাবস্ক্রিপশন গ্যারান্টি)</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        When you purchase a pass, you will never be subjected to unexpected monthly charges. Your account maintains all tier privileges until you and your chosen partner register and confirm your successful Nikah milestone on Nikah Connect.
+                    </p>
+                </div>
             </div>
-            <p class="text-[11px] text-slate-400 dark:text-slate-500">
-                🔒 All transactions are protected with bank-grade 256-bit SSL encryption. We never store raw credit card numbers. Cancel your subscription anytime with one click.
-            </p>
+
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-slate-700 dark:text-slate-300">
+                <div class="flex items-center gap-2">
+                    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-700 dark:text-indigo-400">
+                        <span>💳</span> Stripe Checkout
+                    </span>
+                    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-400">
+                        <span>🅿️</span> PayPal Express
+                    </span>
+                </div>
+                <div class="text-[11px] text-slate-400 dark:text-slate-500">
+                    🔒 Protected with 256-bit SSL encryption. Zero automatic card renewals.
+                </div>
+            </div>
         </div>
 
     </div>

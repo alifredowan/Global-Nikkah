@@ -70,17 +70,19 @@ class SubscriptionController extends Controller
         $request->validate([
             'promo_code' => ['required', 'string'],
             'plan' => ['required', 'string'],
-            'billing_cycle' => ['nullable', 'in:monthly,annual'],
+            'billing_cycle' => ['nullable', 'string'],
         ]);
 
         $user = Auth::user();
         $plan = $request->input('plan');
-        $cycle = $request->input('billing_cycle', 'monthly');
+        $cycle = $request->input('billing_cycle', 'one_time_marriage') ?: 'one_time_marriage';
 
         $planModel = SubscriptionPlan::where('slug', $plan)->where('is_active', true)->first();
         $planDetails = $planModel ? $planModel->toLegacyPlanDetails() : Subscription::getPlanDetails($plan);
 
-        $basePrice = $cycle === 'annual' ? (float) $planDetails['annual_price'] : (float) $planDetails['monthly_price'];
+        $basePrice = $cycle === 'annual' && isset($planDetails['annual_price']) && $planDetails['annual_price'] > 0
+            ? (float) $planDetails['annual_price']
+            : (float) ($planDetails['one_time_price'] ?? $planDetails['monthly_price'] ?? 0.0);
 
         $discount = DiscountCode::where('code', strtoupper(trim($request->promo_code)))->first();
 
@@ -123,11 +125,12 @@ class SubscriptionController extends Controller
     ): RedirectResponse {
         $request->validate([
             'plan' => ['required', 'string'],
-            'billing_cycle' => ['required', 'in:monthly,annual'],
+            'billing_cycle' => ['nullable', 'string'],
             'promo_code' => ['nullable', 'string'],
             'payment_method' => ['nullable', 'string', 'in:stripe,paypal,simulated'],
         ]);
 
+        $billingCycle = $request->input('billing_cycle', 'one_time_marriage') ?: 'one_time_marriage';
         $user = Auth::user();
 
         $planModel = SubscriptionPlan::where('slug', $request->plan)
@@ -140,7 +143,7 @@ class SubscriptionController extends Controller
 
         $pricing = $subscriptionService->calculatePricing(
             $request->plan,
-            $request->billing_cycle,
+            $billingCycle,
             $request->promo_code,
             $user
         );
@@ -158,7 +161,7 @@ class SubscriptionController extends Controller
             $subscriptionService->activateSubscription(
                 $user,
                 $request->plan,
-                $request->billing_cycle,
+                $billingCycle,
                 0.00,
                 'free_promo',
                 'promo_'.uniqid(),
@@ -176,7 +179,7 @@ class SubscriptionController extends Controller
                     $request->plan,
                     $planName,
                     $finalPrice,
-                    $request->billing_cycle,
+                    $billingCycle,
                     $pricing['applied_promo']?->code
                 );
 
@@ -192,7 +195,7 @@ class SubscriptionController extends Controller
                 $subscriptionService->activateSubscription(
                     $user,
                     $request->plan,
-                    $request->billing_cycle,
+                    $billingCycle,
                     $finalPrice,
                     'stripe_simulated',
                     'stripe_sim_'.uniqid(),
@@ -216,7 +219,7 @@ class SubscriptionController extends Controller
                     $request->plan,
                     $planName,
                     $finalPrice,
-                    $request->billing_cycle,
+                    $billingCycle,
                     $pricing['applied_promo']?->code
                 );
 
@@ -232,7 +235,7 @@ class SubscriptionController extends Controller
                 $subscriptionService->activateSubscription(
                     $user,
                     $request->plan,
-                    $request->billing_cycle,
+                    $billingCycle,
                     $finalPrice,
                     'paypal_simulated',
                     'paypal_sim_'.uniqid(),
@@ -252,7 +255,7 @@ class SubscriptionController extends Controller
         $newSub = $subscriptionService->activateSubscription(
             $user,
             $request->plan,
-            $request->billing_cycle,
+            $billingCycle,
             $finalPrice,
             'card_simulated',
             'sim_'.uniqid(),
@@ -288,7 +291,7 @@ class SubscriptionController extends Controller
         $metadata = $session['metadata'] ?? [];
         $userId = $metadata['user_id'] ?? Auth::id();
         $plan = $metadata['plan'] ?? 'premium';
-        $cycle = $metadata['billing_cycle'] ?? 'monthly';
+        $cycle = $metadata['billing_cycle'] ?? 'one_time_marriage';
         $promo = $metadata['promo_code'] ?: null;
         $amount = isset($session['amount_total']) ? ((float) $session['amount_total']) / 100 : 0.0;
 
@@ -357,7 +360,7 @@ class SubscriptionController extends Controller
             }
 
             $plan = $meta['plan'] ?? 'premium';
-            $cycle = $meta['billing_cycle'] ?? 'monthly';
+            $cycle = $meta['billing_cycle'] ?? 'one_time_marriage';
             $promo = $meta['promo_code'] ?? null;
             $amount = (float) ($purchaseUnit['amount']['value'] ?? 0.0);
 

@@ -52,7 +52,7 @@ class PaymentWebhookController extends Controller
                 $metadata = $session['metadata'] ?? [];
                 $userId = $metadata['user_id'] ?? null;
                 $plan = $metadata['plan'] ?? null;
-                $cycle = $metadata['billing_cycle'] ?? 'monthly';
+                $cycle = $metadata['billing_cycle'] ?? 'one_time_marriage';
                 $promo = $metadata['promo_code'] ?: null;
                 $amountTotal = isset($session['amount_total']) ? ((float) $session['amount_total']) / 100 : 0.0;
 
@@ -106,7 +106,7 @@ class PaymentWebhookController extends Controller
 
                 $userId = $meta['user_id'] ?? null;
                 $plan = $meta['plan'] ?? null;
-                $cycle = $meta['billing_cycle'] ?? 'monthly';
+                $cycle = $meta['billing_cycle'] ?? 'one_time_marriage';
                 $promo = $meta['promo_code'] ?? null;
                 $amount = (float) ($resource['amount']['value'] ?? 0.0);
 

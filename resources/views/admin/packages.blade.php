@@ -160,10 +160,10 @@
                             @else
                                 <div class="flex items-baseline gap-2">
                                     <span class="text-3xl font-extrabold text-slate-900 dark:text-white font-heading">${{ number_format($pkg->monthly_price, 2) }}</span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400">/ 1-time pass</span>
                                 </div>
                                 <div class="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold mt-0.5">
-                                    Annual: ${{ number_format($pkg->annual_price, 2) }} / yr
+                                    🛡️ Active until confirmed Nikah
                                 </div>
                             @endif
                         </div>
@@ -284,12 +284,13 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Monthly Price ($) *</label>
-                        <input type="number" step="0.01" min="0" name="monthly_price" required value="24.99" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">One-Time Pass Price ($) *</label>
+                        <input type="number" step="0.01" min="0" name="monthly_price" required value="49.00" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
+                        <span class="text-[10px] text-slate-400 block mt-0.5">Single charge until confirmed marriage</span>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Annual Price ($) *</label>
-                        <input type="number" step="0.01" min="0" name="annual_price" required value="199.99" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Reference / Annual Price ($)</label>
+                        <input type="number" step="0.01" min="0" name="annual_price" placeholder="Same as pass price" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                 </div>
 
@@ -401,12 +402,13 @@ Halal Chaperoned Chat Support" class="w-full px-3 py-2 rounded-xl border border-
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Monthly Price ($) *</label>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">One-Time Pass Price ($) *</label>
                         <input type="number" step="0.01" min="0" name="monthly_price" x-model="editPackage.monthly_price" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
+                        <span class="text-[10px] text-slate-400 block mt-0.5">Single charge until confirmed marriage</span>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Annual Price ($) *</label>
-                        <input type="number" step="0.01" min="0" name="annual_price" x-model="editPackage.annual_price" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Reference / Annual Price ($)</label>
+                        <input type="number" step="0.01" min="0" name="annual_price" x-model="editPackage.annual_price" placeholder="Same as pass price" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                 </div>
 

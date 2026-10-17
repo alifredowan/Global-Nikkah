@@ -26,7 +26,7 @@ class SubscriptionService
      */
     public function calculatePricing(
         string $planSlug,
-        string $billingCycle,
+        string $billingCycle = 'one_time_marriage',
         ?string $promoCode = null,
         ?User $user = null
     ): array {
@@ -36,9 +36,10 @@ class SubscriptionService
 
         $planDetails = $planModel ? $planModel->toLegacyPlanDetails() : Subscription::getPlanDetails($planSlug);
 
-        $basePrice = $billingCycle === 'annual'
-            ? (float) ($planDetails['annual_price'] ?? 0.0)
-            : (float) ($planDetails['monthly_price'] ?? 0.0);
+        // Standard 1-Time Marriage Pass uses the plan's price (stored in monthly_price column)
+        $basePrice = $billingCycle === 'annual' && isset($planDetails['annual_price']) && $planDetails['annual_price'] > 0
+            ? (float) $planDetails['annual_price']
+            : (float) ($planDetails['one_time_price'] ?? $planDetails['monthly_price'] ?? 0.0);
 
         $finalPrice = $basePrice;
         $discountAmount = 0.0;
@@ -76,9 +77,9 @@ class SubscriptionService
     public function activateSubscription(
         User $user,
         string $planSlug,
-        string $billingCycle,
-        float $amountPaid,
-        string $paymentMethod,
+        string $billingCycle = 'one_time_marriage',
+        float $amountPaid = 0.0,
+        string $paymentMethod = 'simulated',
         ?string $paymentId = null,
         ?string $promoCode = null,
         ?array $paymentDetails = null
@@ -101,7 +102,11 @@ class SubscriptionService
                     'ends_at' => now(),
                 ]);
 
-            $periodMonths = $billingCycle === 'annual' ? 12 : 1;
+            // Single Marriage Pass has no calendar expiry: ends_at = null, renews_at = null.
+            // It remains active until marriage milestone confirmation completes the Nikah.
+            $isOneTime = in_array($billingCycle, ['one_time_marriage', 'one_time', 'lifetime_marriage', 'until_nikah'], true) || empty($billingCycle);
+            $endsAt = $isOneTime ? null : ($billingCycle === 'annual' ? now()->addMonths(12) : now()->addMonths(1));
+            $renewsAt = $isOneTime ? null : $endsAt;
 
             $subscription = Subscription::create([
                 'user_id' => $user->id,
@@ -114,8 +119,8 @@ class SubscriptionService
                 'currency' => 'USD',
                 'payment_details' => $paymentDetails,
                 'starts_at' => now(),
-                'ends_at' => now()->addMonths($periodMonths),
-                'renews_at' => now()->addMonths($periodMonths),
+                'ends_at' => $endsAt,
+                'renews_at' => $renewsAt,
             ]);
 
             // Increment promo code usage if applied
