@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NikahMilestoneNotification extends Notification implements ShouldBroadcastNow
@@ -25,7 +26,36 @@ class NikahMilestoneNotification extends Notification implements ShouldBroadcast
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return ['database', 'broadcast', 'mail'];
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        $initiator = $this->marriage->initiator;
+        $url = route('marriages.celebration');
+
+        if ($this->event === 'confirmed') {
+            return (new MailMessage)
+                ->subject('Nikah Mubarak! Your Marriage Milestone is Confirmed - Global Nikkah')
+                ->greeting("Assalamu Alaikum, {$notifiable->name}!")
+                ->line('Alhamdulillah wa Shukrulillah! Your Nikah milestone has been officially confirmed on Global Nikkah.')
+                ->line('May Allah (SWT) bless your marriage, shower His barakah upon you both, and unite you in goodness and piety.')
+                ->action('View Celebration & Marriage Certificate', $url)
+                ->line('Your Single Marriage Pass has successfully concluded. Jazakum Allahu Khairan for honoring us to be a part of your journey.')
+                ->salutation('With warmest duas, The Global Nikkah Team');
+        }
+
+        return (new MailMessage)
+            ->subject('Nikah Milestone Declared - Action Required on Global Nikkah')
+            ->greeting("Assalamu Alaikum, {$notifiable->name}!")
+            ->line("**{$initiator->name}** has declared that your Nikah (marriage) has been completed!")
+            ->line('Please review and confirm this blessed milestone to finalize your matrimonial journey.')
+            ->action('Review & Confirm Nikah', $url)
+            ->line('Upon mutual confirmation, all third-party suitors and ongoing discovery requests will be gracefully concluded.')
+            ->salutation('Warm regards, The Global Nikkah Team');
     }
 
     /**

@@ -262,7 +262,7 @@ class ChatController extends Controller
                 ]);
             }
 
-            return back()->with('warning', 'Notice: Nikah Connect privacy filters detected potential contact information or prohibited keywords ('.$scanResult['flag_reason'].'). Sharing external contacts before platform verification is restricted (FR-4.4).');
+            return back()->with('warning', 'Notice: Global Nikkah privacy filters detected potential contact information or prohibited keywords ('.$scanResult['flag_reason'].'). Sharing external contacts before platform verification is restricted (FR-4.4).');
         }
 
         if ($request->wantsJson() || $request->ajax()) {

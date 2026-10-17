@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Nikah Connect - Blessed Halal Muslim Matrimonial Platform')
+@section('title', 'Global Nikkah - Blessed Halal Muslim Matrimonial Platform')
 
 @section('content')
     <!-- Hero Section -->
@@ -16,7 +16,7 @@
                         Find Your Righteous Partner with <span class="text-amber-400">Dignity</span> and <span class="text-emerald-300">Family Barakah</span>.
                     </h1>
                     <p class="text-lg sm:text-xl text-emerald-100/90 leading-relaxed font-light max-w-2xl">
-                        Nikah Connect is an ethical matchmaking platform built strictly for marriage (Nikah), not casual dating. Featuring verified identities, guardian (Wali) participation, default photo blurring, and deen-weighted compatibility.
+                        Global Nikkah is an ethical matchmaking platform built strictly for marriage (Nikah), not casual dating. Featuring verified identities, guardian (Wali) participation, default photo blurring, and deen-weighted compatibility.
                     </p>
                     <div class="flex flex-wrap items-center gap-4 pt-4">
                         <a href="{{ route('register') }}" class="px-7 py-4 rounded-xl font-bold text-base text-emerald-950 bg-amber-400 hover:bg-amber-300 shadow-xl shadow-amber-900/30 transition transform hover:-translate-y-0.5">
@@ -95,7 +95,7 @@
                     Distinctly Islamic by Design, Not an Afterthought
                 </h2>
                 <p class="mt-4 text-base text-slate-600 dark:text-slate-400">
-                    Unlike standard dating applications, Nikah Connect strictly adheres to Islamic marriage jurisprudence, family involvement, and modesty standards.
+                    Unlike standard dating applications, Global Nikkah strictly adheres to Islamic marriage jurisprudence, family involvement, and modesty standards.
                 </p>
             </div>
 

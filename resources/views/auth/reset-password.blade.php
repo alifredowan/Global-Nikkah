@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Reset Password - Nikah Connect')
+@section('title', 'Reset Password - Global Nikkah')
 
 @section('content')
 <div class="py-16 bg-slate-50 dark:bg-slate-950 min-h-screen">

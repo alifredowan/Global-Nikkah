@@ -111,4 +111,71 @@ class WaliController extends Controller
 
         return back()->with('info', 'Interest request declined by Guardian.');
     }
+
+    /**
+     * Show guardian invitation page via email link.
+     */
+    public function showInvitation(string $token): View
+    {
+        $link = WaliLink::with(['seeker.profile.primaryPhoto'])
+            ->where('invite_token', $token)
+            ->firstOrFail();
+
+        return view('wali.invitation', compact('link'));
+    }
+
+    /**
+     * Accept guardian invitation.
+     */
+    public function acceptInvitation(Request $request, string $token): RedirectResponse
+    {
+        $link = WaliLink::with('seeker')->where('invite_token', $token)->firstOrFail();
+
+        if ($link->status === 'active') {
+            if (Auth::check()) {
+                return redirect()->route('wali.dashboard')->with('info', 'This Guardian connection is already active.');
+            }
+
+            return redirect()->route('login')->with('info', 'This Guardian connection is already active. Please sign in to your dashboard.');
+        }
+
+        $currentUser = Auth::user();
+
+        // Link user ID directly if logged in
+        $this->waliService->approveWaliLink($link, $currentUser);
+
+        AuditLog::record(
+            $currentUser?->id ?? $link->seeker_user_id,
+            'wali_invitation_accepted',
+            'WaliLink',
+            $link->id,
+            ['email' => $link->wali_email]
+        );
+
+        if ($currentUser) {
+            return redirect()->route('wali.dashboard')->with('success', "Alhamdulillah! You have successfully confirmed guardianship for {$link->seeker->name}.");
+        }
+
+        return redirect()->route('login')->with('success', "Alhamdulillah! You have confirmed guardianship for {$link->seeker->name}. Please sign in to chaperone and supervise discussions.");
+    }
+
+    /**
+     * Decline guardian invitation.
+     */
+    public function declineInvitation(Request $request, string $token): RedirectResponse
+    {
+        $link = WaliLink::where('invite_token', $token)->firstOrFail();
+
+        $this->waliService->declineWaliLink($link);
+
+        AuditLog::record(
+            Auth::id() ?? $link->seeker_user_id,
+            'wali_invitation_declined',
+            'WaliLink',
+            $link->id,
+            ['email' => $link->wali_email]
+        );
+
+        return redirect()->route('landing')->with('info', 'Guardian connection request has been declined.');
+    }
 }

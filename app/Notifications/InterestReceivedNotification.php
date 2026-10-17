@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class InterestReceivedNotification extends Notification implements ShouldBroadcastNow
@@ -34,7 +35,38 @@ class InterestReceivedNotification extends Notification implements ShouldBroadca
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return ['database', 'broadcast', 'mail'];
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        $sender = $this->interest->sender;
+        $url = route('interests.index');
+
+        if ($this->isWali) {
+            $seekerName = $this->forSeeker?->name ?: 'your ward';
+
+            return (new MailMessage)
+                ->subject("New Matrimonial Interest for {$seekerName} - Global Nikkah")
+                ->greeting("Assalamu Alaikum, {$notifiable->name}!")
+                ->line("A candidate suitor, **{$sender->name}**, has sent an expression of interest to your {$seekerName}.")
+                ->line('As their designated Wali, you can review this proposal, inspect religious compatibility, and authorize chaperoned communication.')
+                ->action('Review Proposal on Wali Console', route('wali.dashboard'))
+                ->line('Global Nikkah ensures full modesty and guardian supervision at every stage.')
+                ->salutation('Warm regards, The Global Nikkah Team');
+        }
+
+        return (new MailMessage)
+            ->subject("New Halal Expression of Interest from {$sender->name} - Global Nikkah")
+            ->greeting("Assalamu Alaikum, {$notifiable->name}!")
+            ->line("**{$sender->name}** has expressed serious matrimonial interest in your profile on Global Nikkah.")
+            ->line('You can review their biodata, religious practice, and family background.')
+            ->action('View Interest Request', $url)
+            ->line('Your privacy and blurred photo controls remain strictly protected until mutual acceptance.')
+            ->salutation('Warm regards, The Global Nikkah Team');
     }
 
     /**

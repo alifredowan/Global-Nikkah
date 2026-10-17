@@ -58,7 +58,7 @@ class InterestController extends Controller
         }
 
         if ($recipient->isMarried()) {
-            return back()->with('error', 'This candidate has completed their Nikah through Nikah Connect and is no longer accepting new proposals.');
+            return back()->with('error', 'This candidate has completed their Nikah through Global Nikkah and is no longer accepting new proposals.');
         }
 
         if ($sender->gender && $recipient->gender && $sender->gender === $recipient->gender) {

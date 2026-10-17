@@ -73,7 +73,7 @@ class AuthController extends Controller
 
         $validated = $request->validate($rules, [
             'email.unique' => 'An account with this email address already exists. Please sign in or use forgot password.',
-            'dob.before_or_equal' => 'You must be at least 18 years old to register for Nikah Connect.',
+            'dob.before_or_equal' => 'You must be at least 18 years old to register for Global Nikkah.',
         ]);
 
         $user = User::create([
@@ -86,8 +86,14 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
             'role' => $role,
             'is_active' => true,
-            'email_verified_at' => now(),
+            'email_verified_at' => null,
         ]);
+
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            Log::warning('Email verification dispatch failed: '.$e->getMessage());
+        }
 
         if ($role === 'seeker') {
             // Initialize user profile
@@ -109,7 +115,7 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            return redirect()->route('profile.edit')->with('success', 'Account registered successfully! Please complete your Islamic profile.');
+            return redirect()->route('profile.edit')->with('success', 'Account registered successfully! A verification email has been sent to your address.');
         }
 
         // Wali Registration
@@ -119,7 +125,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('wali.link')->with('success', 'Guardian account created successfully! Please configure your ward (family member) details.');
+        return redirect()->route('wali.link')->with('success', 'Guardian account created successfully! A verification email has been sent to your inbox.');
     }
 
     public function showLogin(): View
@@ -276,5 +282,49 @@ class AuthController extends Controller
         }
 
         return back()->withErrors(['email' => __($status)]);
+    }
+
+    /**
+     * Handle email verification link.
+     */
+    public function verifyEmail(Request $request, int $id, string $hash): RedirectResponse
+    {
+        if (! $request->hasValidSignature()) {
+            return redirect()->route('login')->with('error', 'This email verification link has expired or is invalid. Please request a new link.');
+        }
+
+        $user = User::findOrFail($id);
+
+        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            return redirect()->route('login')->with('error', 'Invalid verification link parameters.');
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            $user->update(['is_verified' => true]);
+            AuditLog::record($user->id, 'email_verified', 'User', $user->id, ['email' => $user->email]);
+        }
+
+        if (! Auth::check()) {
+            Auth::login($user);
+        }
+
+        return redirect()->route('profile.show')->with('success', 'Alhamdulillah! Your email address has been verified successfully. Welcome to Global Nikkah!');
+    }
+
+    /**
+     * Resend verification notification email.
+     */
+    public function resendVerification(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+
+        if ($user->hasVerifiedEmail()) {
+            return back()->with('info', 'Your email address is already verified.');
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return back()->with('success', 'A new verification email has been sent to your email address.');
     }
 }

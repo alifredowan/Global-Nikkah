@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Account Settings - Nikah Connect')
+@section('title', 'Account Settings - Global Nikkah')
 @section('page_title', 'Account Settings')
 
 @section('content')

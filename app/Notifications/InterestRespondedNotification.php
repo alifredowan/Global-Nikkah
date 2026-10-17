@@ -10,6 +10,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class InterestRespondedNotification extends Notification implements ShouldBroadcastNow
@@ -36,7 +37,37 @@ class InterestRespondedNotification extends Notification implements ShouldBroadc
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return ['database', 'broadcast', 'mail'];
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        $sender = $this->interest->sender;
+        $recipient = $this->interest->recipient;
+        $isAccepted = $this->action === 'accepted';
+        $chatUrl = $this->conversation ? route('chat.show', $this->conversation->id) : route('interests.index');
+
+        if ($isAccepted) {
+            return (new MailMessage)
+                ->subject("Alhamdulillah! Interest Accepted by {$recipient->name} - Global Nikkah")
+                ->greeting("Assalamu Alaikum, {$notifiable->name}!")
+                ->line("Alhamdulillah! **{$recipient->name}** has accepted your matrimonial expression of interest.")
+                ->line('Your halal chaperoned conversation has been unlocked. Please maintain Islamic modesty and noble character in all discussions.')
+                ->action('Open Chaperoned Chat', $chatUrl)
+                ->line('May Allah (SWT) grant peace and guidance in your communication.')
+                ->salutation('Warm regards, The Global Nikkah Team');
+        }
+
+        return (new MailMessage)
+            ->subject('Matrimonial Interest Update - Global Nikkah')
+            ->greeting("Assalamu Alaikum, {$notifiable->name}!")
+            ->line("The expression of interest sent to **{$recipient->name}** was politely declined.")
+            ->line('Do not be disheartened. We believe Allah (SWT) has written the best match for you at the appointed time. Keep exploring with patience and dua.')
+            ->action('Discover More Matches', route('discovery.index'))
+            ->salutation('Warm regards, The Global Nikkah Team');
     }
 
     /**

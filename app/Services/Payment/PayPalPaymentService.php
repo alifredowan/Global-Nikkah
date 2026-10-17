@@ -119,7 +119,7 @@ class PayPalPaymentService
                     'purchase_units' => [
                         [
                             'reference_id' => "sub_{$user->id}_".time(),
-                            'description' => "Nikah Connect: {$planName} ({$billingCycle})",
+                            'description' => "Global Nikkah: {$planName} ({$billingCycle})",
                             'custom_id' => $customMetadata,
                             'amount' => [
                                 'currency_code' => 'USD',
@@ -145,7 +145,7 @@ class PayPalPaymentService
                         ],
                     ],
                     'application_context' => [
-                        'brand_name' => config('app.name', 'Nikah Connect'),
+                        'brand_name' => config('app.name', 'Global Nikkah'),
                         'locale' => 'en-US',
                         'landing_page' => 'NO_PREFERENCE',
                         'user_action' => 'PAY_NOW',

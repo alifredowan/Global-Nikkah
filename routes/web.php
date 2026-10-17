@@ -23,6 +23,14 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscription.pricing');
 Route::get('/photos/{photo}/view', [PhotoController::class, 'show'])->name('photos.view');
 
+// Email Verification (Public Signed)
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+
+// Wali (Guardian) Email Invitation Approval (Public Token)
+Route::get('/wali/invite/{token}', [WaliController::class, 'showInvitation'])->name('wali.invite.show');
+Route::post('/wali/invite/{token}/accept', [WaliController::class, 'acceptInvitation'])->name('wali.invite.accept');
+Route::post('/wali/invite/{token}/decline', [WaliController::class, 'declineInvitation'])->name('wali.invite.decline');
+
 // Payment Gateway Webhooks (Public)
 Route::post('/webhook/stripe', [PaymentWebhookController::class, 'handleStripe'])->name('webhook.stripe');
 Route::post('/webhook/paypal', [PaymentWebhookController::class, 'handlePayPal'])->name('webhook.paypal');
@@ -45,6 +53,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/account/deactivate', [AuthController::class, 'deactivate'])->name('account.deactivate');
+    Route::post('/email/resend', [AuthController::class, 'resendVerification'])->name('verification.send');
 
     // Account & Security Settings (Super Admin, Moderator, and Normal Users)
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

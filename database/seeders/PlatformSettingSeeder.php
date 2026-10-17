@@ -11,7 +11,7 @@ class PlatformSettingSeeder extends Seeder
     public function run(): void
     {
         // General platform policy settings (FR-7.3)
-        PlatformSetting::set('platform_name', 'Nikah Connect', 'string', 'general', 'Platform working brand name');
+        PlatformSetting::set('platform_name', 'Global Nikkah', 'string', 'general', 'Platform working brand name');
         PlatformSetting::set('require_wali_by_default', true, 'boolean', 'moderation', 'Whether Wali guardian linkage is prompted by default for female profiles');
         PlatformSetting::set('max_photos_per_profile', 6, 'integer', 'general', 'Maximum photos a user can upload (FR-2.2)');
         PlatformSetting::set('free_tier_daily_profile_views', 10, 'integer', 'subscription', 'Daily profile views quota for free tier (FR-3.4)');

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Nikah Connect - Muslim Matrimonial Platform')</title>
+    <title>@yield('title', 'Global Nikkah - Muslim Matrimonial Platform')</title>
 
     <!-- Theme Initialization (Prevent FOUC: 4 Moods Supported) -->
     <script>
@@ -170,7 +170,7 @@
                     <button type="button"
                             @click="toggleSidebar()"
                             class="flex items-center gap-3 group flex-1 min-w-0 text-left cursor-pointer focus:outline-none"
-                            title="Open / Close Sidebar (NikahConnect Logo)">
+                            title="Open / Close Sidebar (Global Nikkah Logo)">
                         <div class="w-10 h-10 rounded-xl bg-emerald-gradient flex items-center justify-center text-white shadow-lg shadow-emerald-950/50 group-hover:scale-105 transition transform">
                             <svg class="w-6 h-6 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
@@ -178,7 +178,7 @@
                         </div>
                         <div>
                             <div class="font-heading font-extrabold text-base text-white tracking-tight flex items-center gap-1 group-hover:text-emerald-400 transition">
-                                Nikah<span class="text-amber-400">Connect</span>
+                                Global<span class="text-amber-400">Nikkah</span>
                             </div>
                             <div class="flex items-center gap-1.5 mt-0.5">
                                 <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -251,18 +251,18 @@
                             </svg>
                         </button>
 
-                        <!-- NikahConnect Brand Logo & Name (Shown when sidebar is collapsed, or on mobile) -->
+                        <!-- Global Nikkah Brand Logo & Name (Shown when sidebar is collapsed, or on mobile) -->
                         <div @click="toggleSidebar()"
                              x-show="!sidebarOpen || window.innerWidth < 1024"
                              class="flex items-center gap-2.5 cursor-pointer select-none group"
-                             title="Open / Close Sidebar (NikahConnect Logo)">
+                             title="Open / Close Sidebar (Global Nikkah Logo)">
                             <div class="w-9 h-9 rounded-xl bg-emerald-gradient flex items-center justify-center text-white shadow-md shadow-emerald-950/20 group-hover:scale-105 transition transform">
                                 <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                                 </svg>
                             </div>
                             <span class="font-heading font-extrabold text-base tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition">
-                                Nikah<span class="text-amber-500">Connect</span>
+                                Global<span class="text-amber-500">Nikkah</span>
                             </span>
                         </div>
                     </div>
@@ -588,7 +588,7 @@
 
                 <!-- Compact Footer -->
                 <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400">
-                    <p>&copy; {{ date('Y') }} Nikah Connect — Islamic Matrimonial Platform grounded in Shariah & Haya.</p>
+                    <p>&copy; {{ date('Y') }} Global Nikkah — Islamic Matrimonial Platform grounded in Shariah & Haya.</p>
                 </footer>
             </div>
         </div>
@@ -612,7 +612,7 @@
                                 </div>
                                 <div>
                                     <span class="font-heading font-extrabold text-xl tracking-tight text-emerald-950 dark:text-emerald-100 flex items-center gap-1.5">
-                                        Nikah<span class="text-amber-500">Connect</span>
+                                        Global<span class="text-amber-500">Nikkah</span>
                                     </span>
                                     <span class="text-[10px] uppercase font-bold tracking-widest text-emerald-700 dark:text-emerald-400 block -mt-1">Halal Matrimonial</span>
                                 </div>
@@ -658,7 +658,7 @@
                                 <div class="w-8 h-8 rounded-lg bg-emerald-gradient flex items-center justify-center text-white">
                                     <span class="font-bold text-amber-300">☪</span>
                                 </div>
-                                <span class="font-heading font-bold text-xl text-white">Nikah Connect</span>
+                                <span class="font-heading font-bold text-xl text-white">Global Nikkah</span>
                             </div>
                             <p class="text-slate-400 text-sm max-w-sm leading-relaxed">
                                 A modern, Halal matchmaking platform for Muslims seeking blessed marriage (Nikah). Grounded in Islamic jurisprudence, guardian supervision, and strict photo privacy controls.
@@ -684,7 +684,7 @@
                         </div>
                     </div>
                     <div class="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-                        <p>&copy; {{ date('Y') }} Nikah Connect. All rights reserved.</p>
+                        <p>&copy; {{ date('Y') }} Global Nikkah. All rights reserved.</p>
                         <div class="flex items-center gap-4 text-slate-400">
                             <a href="#" class="hover:text-white transition">Privacy Policy</a>
                             <span>•</span>

@@ -20,8 +20,8 @@ class MatrimonialFeatureTest extends TestCase
     {
         $response = $this->get('/');
         $response->assertStatus(200);
-        $response->assertSee('Nikah');
-        $response->assertSee('Connect');
+        $response->assertSee('Global');
+        $response->assertSee('Nikkah');
     }
 
     public function test_registration_rejects_under_18_candidates(): void

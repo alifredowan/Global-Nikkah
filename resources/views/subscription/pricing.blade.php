@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Single Marriage Pass • One-Time Payment Until Nikah - Nikah Connect')
+@section('title', 'Single Marriage Pass • One-Time Payment Until Nikah - Global Nikkah')
 
 @section('content')
 <div class="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
@@ -17,7 +17,7 @@
             </h1>
             <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
                 Conventional dating apps profit from keeping users single and paying monthly subscriptions indefinitely.
-                <strong class="text-slate-900 dark:text-slate-200">Nikah Connect aligns directly with your success</strong>: pay a single one-time pass fee and enjoy all premium matrimonial privileges until your marriage is confirmed.
+                <strong class="text-slate-900 dark:text-slate-200">Global Nikkah aligns directly with your success</strong>: pay a single one-time pass fee and enjoy all premium matrimonial privileges until your marriage is confirmed.
             </p>
 
             <!-- Three Core Pillars -->
@@ -194,7 +194,7 @@
                 <div>
                     <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Our Single Marriage Guarantee (১ বার সাবস্ক্রিপশন গ্যারান্টি)</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">
-                        When you purchase a pass, you will never be subjected to unexpected monthly charges. Your account maintains all tier privileges until you and your chosen partner register and confirm your successful Nikah milestone on Nikah Connect.
+                        When you purchase a pass, you will never be subjected to unexpected monthly charges. Your account maintains all tier privileges until you and your chosen partner register and confirm your successful Nikah milestone on Global Nikkah.
                     </p>
                 </div>
             </div>

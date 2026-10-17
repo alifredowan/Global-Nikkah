@@ -8,6 +8,10 @@ use App\Models\Interest;
 use App\Models\User;
 use App\Models\WaliLink;
 use App\Notifications\InterestRespondedNotification;
+use App\Notifications\WaliConnectionApprovedNotification;
+use App\Notifications\WaliConnectionRequestNotification;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class WaliWorkflowService
 {
@@ -22,29 +26,81 @@ class WaliWorkflowService
         ?string $waliEmail = null,
         ?string $waliPhone = null
     ): WaliLink {
-        // If an existing user matches the email/phone, link directly
+        $normalizedEmail = $waliEmail ? strtolower(trim($waliEmail)) : null;
+
+        // If an existing user matches the email, link directly
         $waliUser = null;
-        if ($waliEmail) {
-            $waliUser = User::where('email', $waliEmail)->first();
+        if ($normalizedEmail) {
+            $waliUser = User::where('email', $normalizedEmail)->first();
         }
 
         $link = WaliLink::create([
             'seeker_user_id' => $seeker->id,
             'wali_user_id' => $waliUser?->id,
             'wali_name' => $waliName,
-            'wali_email' => $waliEmail,
+            'wali_email' => $normalizedEmail,
             'wali_phone' => $waliPhone,
             'relationship_type' => $relationshipType,
             'permission_level' => $permissionLevel,
-            'status' => $waliUser ? 'active' : 'pending',
-            'invite_token' => bin2hex(random_bytes(16)),
+            'status' => 'pending',
+            'invite_token' => bin2hex(random_bytes(24)),
         ]);
 
-        if ($waliUser) {
-            $this->syncWaliToConversations($seeker, $waliUser);
+        if ($normalizedEmail) {
+            try {
+                if ($waliUser) {
+                    $waliUser->notify(new WaliConnectionRequestNotification($link, $seeker));
+                } else {
+                    Notification::route('mail', $normalizedEmail)
+                        ->notify(new WaliConnectionRequestNotification($link, $seeker));
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Failed to dispatch Wali connection request email: '.$e->getMessage());
+            }
         }
 
         return $link;
+    }
+
+    /**
+     * Approve a Wali link invitation (via token or direct approval).
+     */
+    public function approveWaliLink(WaliLink $link, ?User $waliUser = null): bool
+    {
+        $link->status = 'active';
+        if ($waliUser) {
+            $link->wali_user_id = $waliUser->id;
+        }
+        $link->save();
+
+        if ($link->seeker && $link->wali_user_id) {
+            $waliModel = $link->wali ?: User::find($link->wali_user_id);
+            if ($waliModel) {
+                $this->syncWaliToConversations($link->seeker, $waliModel);
+            }
+        }
+
+        // Notify seeker via email & database
+        if ($link->seeker) {
+            try {
+                $link->seeker->notify(new WaliConnectionApprovedNotification($link));
+            } catch (\Throwable $e) {
+                Log::warning('Failed to dispatch WaliConnectionApprovedNotification: '.$e->getMessage());
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Decline a Wali link invitation.
+     */
+    public function declineWaliLink(WaliLink $link): bool
+    {
+        $link->status = 'declined';
+        $link->save();
+
+        return true;
     }
 
     /**

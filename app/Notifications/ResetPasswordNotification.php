@@ -37,12 +37,12 @@ class ResetPasswordNotification extends Notification
         }
 
         return (new MailMessage)
-            ->subject('Reset Your Nikah Connect Password')
+            ->subject('Reset Your Global Nikkah Password')
             ->greeting("Assalamu Alaikum, {$notifiable->name}!")
-            ->line('You are receiving this email because we received a password reset request for your Nikah Connect account.')
+            ->line('You are receiving this email because we received a password reset request for your Global Nikkah account.')
             ->action('Reset Password', $url)
             ->line('This password reset link will expire in 60 minutes.')
             ->line('If you did not request a password reset, no further action is required. Your account remains secure.')
-            ->salutation('Warm regards, The Nikah Connect Team');
+            ->salutation('Warm regards, The Global Nikkah Team');
     }
 }

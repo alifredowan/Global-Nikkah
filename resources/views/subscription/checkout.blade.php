@@ -103,7 +103,7 @@
                         </span>
                     </div>
                     <p class="text-xs text-emerald-800/90 dark:text-emerald-300 leading-relaxed">
-                        This is a single one-time charge of <strong class="font-extrabold">${{ number_format($planDetails['monthly_price'], 2) }}</strong>. You will <strong>never be auto-billed</strong> monthly or annually. Your pass remains active until you register and confirm your marriage on Nikah Connect.
+                        This is a single one-time charge of <strong class="font-extrabold">${{ number_format($planDetails['monthly_price'], 2) }}</strong>. You will <strong>never be auto-billed</strong> monthly or annually. Your pass remains active until you register and confirm your marriage on Global Nikkah.
                     </p>
                 </div>
 

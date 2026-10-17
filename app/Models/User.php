@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use App\Notifications\ResetPasswordNotification;
+use App\Notifications\WelcomeVerificationNotification;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,10 +19,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, MustVerifyEmailTrait, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -321,5 +324,13 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
+     * Send email verification notification.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new WelcomeVerificationNotification);
     }
 }

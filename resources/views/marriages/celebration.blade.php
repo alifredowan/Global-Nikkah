@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Nikah Mubarak - Celebration & Milestone - Nikah Connect')
+@section('title', 'Nikah Mubarak - Celebration & Milestone - Global Nikkah')
 
 @section('content')
 <div class="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen">
@@ -140,7 +140,7 @@
                     Shielded Account Safeguards & End Results
                 </h2>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    How Nikah Connect protects your privacy and concludes your matrimonial journey with dignity.
+                    How Global Nikkah protects your privacy and concludes your matrimonial journey with dignity.
                 </p>
             </div>
 
@@ -198,7 +198,7 @@
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                             Story Title
                         </label>
-                        <input type="text" name="story_title" value="{{ old('story_title', $marriage->story_title ?? 'How We Found Halal Compatibility Through Nikah Connect') }}" required
+                        <input type="text" name="story_title" value="{{ old('story_title', $marriage->story_title ?? 'How We Found Halal Compatibility Through Global Nikkah') }}" required
                                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
@@ -214,7 +214,7 @@
                         <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
                             <input type="checkbox" name="story_is_public" value="1" {{ old('story_is_public', $marriage->story_is_public ?? true) ? 'checked' : '' }}
                                    class="rounded text-emerald-600 focus:ring-emerald-500">
-                            <span>Allow publishing anonymously on the Nikah Connect Success Stories page</span>
+                            <span>Allow publishing anonymously on the Global Nikkah Success Stories page</span>
                         </label>
 
                         <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition">

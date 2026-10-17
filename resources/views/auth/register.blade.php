@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Register - Nikah Connect')
+@section('title', 'Register - Global Nikkah')
 
 @section('content')
 <div class="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen" x-data="{ role: '{{ old('role', 'seeker') }}' }">

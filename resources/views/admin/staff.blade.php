@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Staff & Access Control - Nikah Connect Admin')
+@section('title', 'Staff & Access Control - Global Nikkah Admin')
 @section('page_title', 'Staff & Permissions')
 
 @section('content')
@@ -200,7 +200,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
-                        <input type="email" name="email" required placeholder="staff@nikahconnect.com"
+                        <input type="email" name="email" required placeholder="staff@globalnikkah.com"
                                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                     <div>

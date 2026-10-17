@@ -40,9 +40,9 @@ class SendTestEmailCommand extends Command
         $this->info("Attempting to send test email to: {$recipient}...");
 
         try {
-            Mail::raw('This is a test email from Nikah Connect to verify your mail delivery setup.', function ($message) use ($recipient) {
+            Mail::raw('This is a test email from Global Nikkah to verify your mail delivery setup.', function ($message) use ($recipient) {
                 $message->to($recipient)
-                    ->subject('Nikah Connect - Mail Delivery Test');
+                    ->subject('Global Nikkah - Mail Delivery Test');
             });
 
             if ($mailer === 'log') {

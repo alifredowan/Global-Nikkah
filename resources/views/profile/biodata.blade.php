@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $targetUser->name }} - Islamic Matrimonial Biodata | Nikah Connect</title>
+    <title>{{ $targetUser->name }} - Islamic Matrimonial Biodata | Global Nikkah</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,7 +57,7 @@
                     Shariah Matrimonial Biodata
                 </span>
                 <span class="text-xs text-slate-400">•</span>
-                <span class="text-xs font-semibold text-emerald-900">Nikah Connect Platform</span>
+                <span class="text-xs font-semibold text-emerald-900">Global Nikkah Platform</span>
             </div>
         </div>
 
@@ -272,7 +272,7 @@
                 &ldquo;And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy.&rdquo; (Surah Ar-Rum: 21)
             </p>
             <p class="text-[10px] text-slate-400 pt-2 font-mono">
-                Generated via Nikah Connect • Halal Islamic Matrimonial Platform • {{ now()->toFormattedDateString() }}
+                Generated via Global Nikkah • Halal Islamic Matrimonial Platform • {{ now()->toFormattedDateString() }}
             </p>
         </div>
 

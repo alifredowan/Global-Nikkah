@@ -88,7 +88,7 @@ class UnifiedSidebarTest extends TestCase
         $response->assertDontSee('🛡️ Moderator Console');
         // Topbar must have 3-dots toggle and clickable logo
         $response->assertSee('Open / Close Sidebar (3 Dots)');
-        $response->assertSee('Open / Close Sidebar (NikahConnect Logo)');
+        $response->assertSee('Open / Close Sidebar (Global Nikkah Logo)');
     }
 
     public function test_seeker_sidebar_shows_only_seeker_links_and_no_admin_links(): void

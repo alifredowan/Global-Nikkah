@@ -67,7 +67,7 @@ class StripePaymentService
                                 'currency' => 'usd',
                                 'unit_amount' => $amountInCents,
                                 'product_data' => [
-                                    'name' => "Nikah Connect: {$planName} ({$billingCycle})",
+                                    'name' => "Global Nikkah: {$planName} ({$billingCycle})",
                                     'description' => "Membership subscription upgrade for {$user->name}",
                                 ],
                             ],
