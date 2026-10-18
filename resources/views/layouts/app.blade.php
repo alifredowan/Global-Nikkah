@@ -54,13 +54,16 @@
 </head>
 <body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-emerald-500 selection:text-white transition-colors duration-200"
       x-data="{
-          sidebarOpen: localStorage.getItem('sidebar_open') !== 'false',
+          sidebarOpen: (function() {
+              try { localStorage.removeItem('sidebar_open'); } catch(e){}
+              return localStorage.getItem('sidebar_expanded') === 'true';
+          })(),
           mobileSidebarOpen: false,
           commandPaletteOpen: false,
           toggleSidebar() {
               if (window.innerWidth >= 1024) {
                   this.sidebarOpen = !this.sidebarOpen;
-                  localStorage.setItem('sidebar_open', this.sidebarOpen);
+                  localStorage.setItem('sidebar_expanded', this.sidebarOpen);
               } else {
                   this.mobileSidebarOpen = !this.mobileSidebarOpen;
               }
@@ -586,10 +589,8 @@
                     @yield('content')
                 </main>
 
-                <!-- Compact Footer -->
-                <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400">
-                    <p>&copy; {{ date('Y') }} Global Nikkah — Islamic Matrimonial Platform grounded in Shariah & Haya.</p>
-                </footer>
+                <!-- Unified Platform Footer -->
+                @include('layouts.partials.footer')
             </div>
         </div>
 
@@ -649,52 +650,8 @@
                 @yield('content')
             </main>
 
-            <!-- Public Footer -->
-            <footer class="bg-slate-900 text-slate-400 text-sm border-t border-slate-800 mt-16">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                        <div class="col-span-1 md:col-span-2">
-                            <div class="flex items-center gap-2 mb-3">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-gradient flex items-center justify-center text-white">
-                                    <span class="font-bold text-amber-300">☪</span>
-                                </div>
-                                <span class="font-heading font-bold text-xl text-white">Global Nikkah</span>
-                            </div>
-                            <p class="text-slate-400 text-sm max-w-sm leading-relaxed">
-                                A modern, Halal matchmaking platform for Muslims seeking blessed marriage (Nikah). Grounded in Islamic jurisprudence, guardian supervision, and strict photo privacy controls.
-                            </p>
-                        </div>
-                        <div>
-                            <h4 class="text-white font-semibold mb-3">Islamic Integrity</h4>
-                            <ul class="space-y-2 text-xs">
-                                <li>🛡️ Guardian (Wali) Chaperoning</li>
-                                <li>🔒 Blurred Photo Privacy</li>
-                                <li>🚫 No Unsolicited Dating</li>
-                                <li>🛡️ Anti-Harassment Scanning</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-white font-semibold mb-3">Governance & Privacy</h4>
-                            <ul class="space-y-2 text-xs">
-                                <li>GDPR Right to Erasure & Deletion</li>
-                                <li>OWASP ASVS Security Baseline</li>
-                                <li>Verified Government ID (KYC)</li>
-                                <li>PCI-DSS Encrypted Payments</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-                        <p>&copy; {{ date('Y') }} Global Nikkah. All rights reserved.</p>
-                        <div class="flex items-center gap-4 text-slate-400">
-                            <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                            <span>•</span>
-                            <a href="#" class="hover:text-white transition">Terms of Service</a>
-                            <span>•</span>
-                            <a href="#" class="hover:text-white transition">Community Guidelines</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <!-- Unified Platform Footer -->
+            @include('layouts.partials.footer')
         </div>
     @endauth
 
@@ -737,6 +694,7 @@
                              { name: 'User Safety Reports', cat: 'Admin', icon: '🚩', url: '{{ route('admin.reports') }}' },
                              { name: 'Dynamic Packages & Pricing Tiers', cat: 'Billing', icon: '💳', url: '{{ route('admin.packages.index') }}' },
                              { name: 'Promo Codes & VIP Discounts', cat: 'Billing', icon: '🏷️', url: '{{ route('admin.promo-codes.index') }}' },
+                             { name: 'Payment Gateways & PayPal/Stripe Setup', cat: 'Billing', icon: '💰', url: '{{ route('admin.payment-settings') }}' },
                              @if(Auth::user()->isSuperAdmin())
                                  { name: 'Staff Management & Role Permissions', cat: 'Governance', icon: '👥', url: '{{ route('admin.staff') }}' },
                              @endif

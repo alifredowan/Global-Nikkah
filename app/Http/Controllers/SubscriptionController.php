@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiscountCode;
+use App\Models\PlatformSetting;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Services\Payment\PayPalPaymentService;
@@ -46,15 +47,18 @@ class SubscriptionController extends Controller
             ->where('is_active', true)
             ->first();
 
+        $stripeEnabled = $stripeService->isEnabled();
         $stripeConfigured = $stripeService->isConfigured();
+        $paypalEnabled = $paypalService->isEnabled();
         $paypalConfigured = $paypalService->isConfigured();
+        $simulatedEnabled = (bool) PlatformSetting::get('simulated_payment_enabled', true);
 
         if (! $planModel || $planModel->isFree()) {
             // Also allow fallback if plan is 'premium' or 'premium_plus'
             if (in_array($plan, ['premium', 'premium_plus'], true)) {
                 $planDetails = Subscription::getPlanDetails($plan);
 
-                return view('subscription.checkout', compact('plan', 'planDetails', 'stripeConfigured', 'paypalConfigured'));
+                return view('subscription.checkout', compact('plan', 'planDetails', 'stripeEnabled', 'stripeConfigured', 'paypalEnabled', 'paypalConfigured', 'simulatedEnabled'));
             }
 
             return redirect()->route('subscription.pricing')->with('error', 'Invalid or inactive plan selected for checkout.');
@@ -62,7 +66,7 @@ class SubscriptionController extends Controller
 
         $planDetails = $planModel->toLegacyPlanDetails();
 
-        return view('subscription.checkout', compact('plan', 'planModel', 'planDetails', 'stripeConfigured', 'paypalConfigured'));
+        return view('subscription.checkout', compact('plan', 'planModel', 'planDetails', 'stripeEnabled', 'stripeConfigured', 'paypalEnabled', 'paypalConfigured', 'simulatedEnabled'));
     }
 
     public function validatePromo(Request $request): JsonResponse
@@ -173,6 +177,10 @@ class SubscriptionController extends Controller
 
         // Stripe Checkout Flow
         if ($paymentMethod === 'stripe') {
+            if (! $stripeService->isEnabled()) {
+                return back()->withErrors(['payment' => 'Stripe payment method is currently disabled by administrator.'])->withInput();
+            }
+
             if ($stripeService->isConfigured()) {
                 $session = $stripeService->createCheckoutSession(
                     $user,
@@ -213,6 +221,10 @@ class SubscriptionController extends Controller
 
         // PayPal Orders Flow
         if ($paymentMethod === 'paypal') {
+            if (! $paypalService->isEnabled()) {
+                return back()->withErrors(['payment' => 'PayPal payment method is currently disabled by administrator.'])->withInput();
+            }
+
             if ($paypalService->isConfigured()) {
                 $order = $paypalService->createOrder(
                     $user,
@@ -252,6 +264,11 @@ class SubscriptionController extends Controller
         }
 
         // Default: Simulated Instant Card (maintains backward compatibility with tests)
+        $simulatedAllowed = (bool) PlatformSetting::get('simulated_payment_enabled', true) || app()->environment(['local', 'testing']);
+        if (! $simulatedAllowed && $paymentMethod === 'simulated') {
+            return back()->withErrors(['payment' => 'Developer / demo payment mode is currently disabled by administrator.'])->withInput();
+        }
+
         $newSub = $subscriptionService->activateSubscription(
             $user,
             $request->plan,

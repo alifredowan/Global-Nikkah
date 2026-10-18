@@ -68,12 +68,15 @@
                     </h2>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Manage live subscription tiers, configure daily limits & feature flags, and create promo codes with special VIP user discounts.</p>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
                     <a href="{{ route('admin.packages.index') }}" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5">
                         <span>💳</span> Setup Packages ({{ $metrics['active_packages'] ?? 0 }} Active)
                     </a>
                     <a href="{{ route('admin.promo-codes.index') }}" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5">
                         <span>🏷️</span> Generate Promo Codes ({{ $metrics['active_promo_codes'] ?? 0 }} Active)
+                    </a>
+                    <a href="{{ route('admin.payment-settings') }}" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5">
+                        <span>💰</span> Payment Gateways
                     </a>
                 </div>
             </div>

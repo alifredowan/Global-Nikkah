@@ -90,7 +90,7 @@
                             <option value="all">All Paid Packages</option>
                             @foreach($packages as $pkg)
                                 <option value="{{ $pkg->slug }}">
-                                    {{ $pkg->name }} (${{ number_format($pkg->monthly_price, 2) }}/mo)
+                                    {{ $pkg->name }} (${{ number_format($pkg->monthly_price, 2) }} 1-time pass)
                                 </option>
                             @endforeach
                         </select>

@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Route;
 // Public routes
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscription.pricing');
+Route::get('/privacy', [LandingController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [LandingController::class, 'terms'])->name('terms');
+Route::get('/about', [LandingController::class, 'about'])->name('about');
 Route::get('/photos/{photo}/view', [PhotoController::class, 'show'])->name('photos.view');
 
 // Email Verification (Public Signed & Notice)
@@ -178,6 +181,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
             Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
             Route::post('/discounts', [AdminController::class, 'createDiscount'])->name('discounts.store');
+
+            // Payment Gateways & Transaction Configuration (PayPal & Stripe)
+            Route::get('/payment-settings', [AdminController::class, 'paymentSettings'])->name('payment-settings');
+            Route::post('/payment-settings', [AdminController::class, 'updatePaymentSettings'])->name('payment-settings.update');
+            Route::post('/payment-settings/toggle', [AdminController::class, 'togglePaymentGateway'])->name('payment-settings.toggle');
         });
     });
 });

@@ -2,6 +2,7 @@
 
 namespace App\Services\Payment;
 
+use App\Models\PlatformSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Log;
 
 class PayPalPaymentService
 {
+    protected bool $enabled;
+
     protected ?string $clientId;
 
     protected ?string $clientSecret;
@@ -17,24 +20,46 @@ class PayPalPaymentService
 
     protected string $baseUrl;
 
+    protected string $currency;
+
+    protected ?string $webhookId;
+
     public function __construct()
     {
-        $this->clientId = config('services.paypal.client_id');
-        $this->clientSecret = config('services.paypal.client_secret');
-        $this->mode = config('services.paypal.mode', 'sandbox');
+        $this->enabled = (bool) PlatformSetting::get('paypal_enabled', config('services.paypal.enabled', true));
+        $this->clientId = PlatformSetting::get('paypal_client_id') ?: config('services.paypal.client_id');
+        $this->clientSecret = PlatformSetting::get('paypal_client_secret') ?: config('services.paypal.client_secret');
+        $this->mode = PlatformSetting::get('paypal_mode') ?: config('services.paypal.mode', 'sandbox');
+        $this->currency = PlatformSetting::get('paypal_currency') ?: config('services.paypal.currency', 'USD');
+        $this->webhookId = PlatformSetting::get('paypal_webhook_id') ?: config('services.paypal.webhook_id');
         $this->baseUrl = $this->mode === 'live'
             ? 'https://api-m.paypal.com'
             : 'https://api-m.sandbox.paypal.com';
     }
 
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
     public function isConfigured(): bool
     {
-        return ! empty($this->clientId) && ! empty($this->clientSecret);
+        return $this->enabled && ! empty($this->clientId) && ! empty($this->clientSecret);
     }
 
     public function getMode(): string
     {
         return $this->mode;
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    public function getWebhookId(): ?string
+    {
+        return $this->webhookId;
     }
 
     /**
@@ -122,11 +147,11 @@ class PayPalPaymentService
                             'description' => "Global Nikkah: {$planName} ({$billingCycle})",
                             'custom_id' => $customMetadata,
                             'amount' => [
-                                'currency_code' => 'USD',
+                                'currency_code' => $this->currency,
                                 'value' => number_format($amount, 2, '.', ''),
                                 'breakdown' => [
                                     'item_total' => [
-                                        'currency_code' => 'USD',
+                                        'currency_code' => $this->currency,
                                         'value' => number_format($amount, 2, '.', ''),
                                     ],
                                 ],
@@ -135,7 +160,7 @@ class PayPalPaymentService
                                 [
                                     'name' => "{$planName} ({$billingCycle})",
                                     'unit_amount' => [
-                                        'currency_code' => 'USD',
+                                        'currency_code' => $this->currency,
                                         'value' => number_format($amount, 2, '.', ''),
                                     ],
                                     'quantity' => '1',

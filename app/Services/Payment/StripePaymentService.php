@@ -2,33 +2,55 @@
 
 namespace App\Services\Payment;
 
+use App\Models\PlatformSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class StripePaymentService
 {
+    protected bool $enabled;
+
     protected ?string $secretKey;
 
     protected ?string $publicKey;
 
     protected ?string $webhookSecret;
 
+    protected string $currency;
+
     public function __construct()
     {
-        $this->secretKey = config('services.stripe.secret');
-        $this->publicKey = config('services.stripe.key');
-        $this->webhookSecret = config('services.stripe.webhook_secret');
+        $this->enabled = (bool) PlatformSetting::get('stripe_enabled', config('services.stripe.enabled', true));
+        $this->secretKey = PlatformSetting::get('stripe_secret') ?: config('services.stripe.secret');
+        $this->publicKey = PlatformSetting::get('stripe_key') ?: config('services.stripe.key');
+        $this->webhookSecret = PlatformSetting::get('stripe_webhook_secret') ?: config('services.stripe.webhook_secret');
+        $this->currency = PlatformSetting::get('stripe_currency') ?: config('services.stripe.currency', 'USD');
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
     }
 
     public function isConfigured(): bool
     {
-        return ! empty($this->secretKey);
+        return $this->enabled && ! empty($this->secretKey);
     }
 
     public function getPublicKey(): ?string
     {
         return $this->publicKey;
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    public function getWebhookSecret(): ?string
+    {
+        return $this->webhookSecret;
     }
 
     /**
@@ -64,7 +86,7 @@ class StripePaymentService
                     'line_items' => [
                         [
                             'price_data' => [
-                                'currency' => 'usd',
+                                'currency' => strtolower($this->currency),
                                 'unit_amount' => $amountInCents,
                                 'product_data' => [
                                     'name' => "Global Nikkah: {$planName} ({$billingCycle})",

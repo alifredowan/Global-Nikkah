@@ -45,6 +45,15 @@
             <!-- Quick Links & Promo Codes Section -->
             <div class="space-y-6">
                 <!-- Direct Management Cards -->
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-3xl p-6 shadow-sm space-y-3">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-200">Payment Infrastructure</span>
+                    <h3 class="text-lg font-bold font-heading">Payment Gateways & Keys</h3>
+                    <p class="text-xs text-indigo-100 leading-relaxed">Toggle PayPal & Stripe methods on/off, configure API keys, webhooks, and currencies dynamically.</p>
+                    <a href="{{ route('admin.payment-settings') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-indigo-800 rounded-xl font-bold text-xs hover:bg-indigo-50 transition shadow-xs">
+                        💰 Configure Gateways &rarr;
+                    </a>
+                </div>
+
                 <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-3xl p-6 shadow-sm space-y-3">
                     <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-200">Admin Control</span>
                     <h3 class="text-lg font-bold font-heading">Dynamic Packages & Tiers</h3>

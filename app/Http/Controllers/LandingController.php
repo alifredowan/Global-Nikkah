@@ -39,4 +39,19 @@ class LandingController extends Controller
 
         return view('landing', compact('stats', 'recentProfiles', 'plans'));
     }
+
+    public function privacy(): View
+    {
+        return view('pages.privacy');
+    }
+
+    public function terms(): View
+    {
+        return view('pages.terms');
+    }
+
+    public function about(): View
+    {
+        return view('pages.about');
+    }
 }

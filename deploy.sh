@@ -96,6 +96,11 @@ rm -f public/hot
 
 chown -R "$WEB_USER:$WEB_GROUP" storage bootstrap/cache
 chmod -R ug+rwX storage bootstrap/cache
+if [[ -d public/build ]]; then
+    chown -R "$WEB_USER:$WEB_GROUP" public/build
+    chmod -R ugo+rX public/build
+fi
+
 
 # Signals existing workers; Supervisor/systemd must already manage them.
 "$PHP_BIN" artisan queue:restart --no-interaction
