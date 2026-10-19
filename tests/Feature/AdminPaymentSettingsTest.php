@@ -9,6 +9,7 @@ use App\Models\User;
 use Database\Seeders\PlatformSettingSeeder;
 use Database\Seeders\SubscriptionPlanSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AdminPaymentSettingsTest extends TestCase
@@ -166,5 +167,64 @@ class AdminPaymentSettingsTest extends TestCase
         $response->assertDontSee('/ month');
         $response->assertSee('Pay 1-Time');
         $response->assertSee('Active Until Confirmed Nikah');
+    }
+
+    public function test_admin_can_test_stripe_gateway_connection_success(): void
+    {
+        Http::fake([
+            'https://api.stripe.com/v1/balance' => Http::response(['object' => 'balance'], 200),
+        ]);
+
+        $superAdmin = $this->createSuperAdmin();
+        PlatformSetting::set('stripe_secret', 'sk_test_mock_123', 'string', 'payment');
+
+        $response = $this->actingAs($superAdmin)->post(route('admin.payment-settings.test'), [
+            'gateway' => 'stripe',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+    }
+
+    public function test_admin_can_test_paypal_gateway_connection_success(): void
+    {
+        Http::fake([
+            'https://api-m.sandbox.paypal.com/v1/oauth2/token' => Http::response([
+                'access_token' => 'mock_access_token_123',
+                'token_type' => 'Bearer',
+                'expires_in' => 32400,
+            ], 200),
+        ]);
+
+        $superAdmin = $this->createSuperAdmin();
+        PlatformSetting::set('paypal_client_id', 'mock_paypal_client_id', 'string', 'payment');
+        PlatformSetting::set('paypal_client_secret', 'mock_paypal_secret', 'string', 'payment');
+        PlatformSetting::set('paypal_mode', 'sandbox', 'string', 'payment');
+
+        $response = $this->actingAs($superAdmin)->post(route('admin.payment-settings.test'), [
+            'gateway' => 'paypal',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+    }
+
+    public function test_admin_gateway_test_connection_handles_failure(): void
+    {
+        Http::fake([
+            'https://api.stripe.com/v1/balance' => Http::response([
+                'error' => ['message' => 'Invalid API Key provided'],
+            ], 401),
+        ]);
+
+        $superAdmin = $this->createSuperAdmin();
+        PlatformSetting::set('stripe_secret', 'sk_test_invalid_key', 'string', 'payment');
+
+        $response = $this->actingAs($superAdmin)->post(route('admin.payment-settings.test'), [
+            'gateway' => 'stripe',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
     }
 }

@@ -82,7 +82,6 @@ class StripePaymentService
                     'mode' => 'payment',
                     'customer_email' => $user->email,
                     'client_reference_id' => (string) $user->id,
-                    'payment_method_types' => ['card'],
                     'line_items' => [
                         [
                             'price_data' => [

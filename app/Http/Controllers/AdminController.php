@@ -18,6 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -499,6 +500,67 @@ class AdminController extends Controller
         $status = ! $current ? 'activated' : 'deactivated';
 
         return back()->with('success', ucfirst($gateway).' payment method successfully '.$status.'.');
+    }
+
+    public function testPaymentGateway(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'gateway' => ['required', 'string', 'in:stripe,paypal'],
+        ]);
+
+        $gateway = $request->input('gateway');
+
+        if ($gateway === 'stripe') {
+            $secret = PlatformSetting::get('stripe_secret') ?: config('services.stripe.secret');
+            if (empty($secret)) {
+                return back()->with('error', 'Stripe Secret Key is empty. Please configure your secret key first.');
+            }
+
+            try {
+                $response = Http::withToken($secret)->get('https://api.stripe.com/v1/balance');
+                if ($response->successful()) {
+                    return back()->with('success', '✓ Stripe API authentication successful! Your Stripe keys are active and connected.');
+                }
+
+                $err = $response->json('error.message') ?? $response->body();
+
+                return back()->with('error', "Stripe authentication failed: {$err}");
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Could not reach Stripe server: '.$e->getMessage());
+            }
+        }
+
+        if ($gateway === 'paypal') {
+            $clientId = PlatformSetting::get('paypal_client_id') ?: config('services.paypal.client_id');
+            $clientSecret = PlatformSetting::get('paypal_client_secret') ?: config('services.paypal.client_secret');
+            $mode = PlatformSetting::get('paypal_mode') ?: config('services.paypal.mode', 'sandbox');
+
+            if (empty($clientId) || empty($clientSecret)) {
+                return back()->with('error', 'PayPal Client ID or Secret Key is empty. Please configure them first.');
+            }
+
+            $baseUrl = $mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+
+            try {
+                $response = Http::asForm()
+                    ->withBasicAuth($clientId, $clientSecret)
+                    ->post("{$baseUrl}/v1/oauth2/token", [
+                        'grant_type' => 'client_credentials',
+                    ]);
+
+                if ($response->successful()) {
+                    return back()->with('success', "✓ PayPal authentication successful! Connected in [{$mode}] mode.");
+                }
+
+                $err = $response->json('error_description') ?? $response->json('error') ?? $response->body();
+
+                return back()->with('error', "PayPal Authentication Failed in [{$mode}] mode: {$err}. Please verify your Client ID & Secret in PayPal Developer Dashboard and ensure environment mode (Sandbox vs Live) matches.");
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Could not reach PayPal server: '.$e->getMessage());
+            }
+        }
+
+        return back();
     }
 
     public function createDiscount(Request $request): RedirectResponse

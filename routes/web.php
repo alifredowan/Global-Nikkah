@@ -186,6 +186,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/payment-settings', [AdminController::class, 'paymentSettings'])->name('payment-settings');
             Route::post('/payment-settings', [AdminController::class, 'updatePaymentSettings'])->name('payment-settings.update');
             Route::post('/payment-settings/toggle', [AdminController::class, 'togglePaymentGateway'])->name('payment-settings.toggle');
+            Route::post('/payment-settings/test', [AdminController::class, 'testPaymentGateway'])->name('payment-settings.test');
         });
     });
 });

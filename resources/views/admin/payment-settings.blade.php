@@ -50,6 +50,13 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs font-semibold flex items-center gap-2.5 shadow-xs">
+            <span class="text-base">⚠️</span>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     @if($errors->any())
         <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs space-y-1 shadow-xs">
             <div class="font-bold flex items-center gap-1.5">
@@ -106,13 +113,21 @@
             </div>
 
             <div class="mt-4 pt-2 flex items-center justify-between gap-2">
-                <span class="text-[11px] text-slate-400">Checkout status:</span>
+                <form action="{{ route('admin.payment-settings.test') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="gateway" value="stripe">
+                    <button type="submit"
+                            title="Send an API test ping to Stripe servers"
+                            class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer flex items-center gap-1 shadow-xs">
+                        <span>⚡</span> Test API
+                    </button>
+                </form>
                 <form action="{{ route('admin.payment-settings.toggle') }}" method="POST">
                     @csrf
                     <input type="hidden" name="gateway" value="stripe">
                     <button type="submit"
                             class="px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer {{ $stripeSettings['enabled'] ? 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs' }}">
-                        {{ $stripeSettings['enabled'] ? 'Deactivate Stripe' : 'Activate Stripe' }}
+                        {{ $stripeSettings['enabled'] ? 'Deactivate' : 'Activate' }}
                     </button>
                 </form>
             </div>
@@ -161,13 +176,21 @@
             </div>
 
             <div class="mt-4 pt-2 flex items-center justify-between gap-2">
-                <span class="text-[11px] text-slate-400">Checkout status:</span>
+                <form action="{{ route('admin.payment-settings.test') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="gateway" value="paypal">
+                    <button type="submit"
+                            title="Send an OAuth token authentication request to PayPal"
+                            class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer flex items-center gap-1 shadow-xs">
+                        <span>⚡</span> Test API
+                    </button>
+                </form>
                 <form action="{{ route('admin.payment-settings.toggle') }}" method="POST">
                     @csrf
                     <input type="hidden" name="gateway" value="paypal">
                     <button type="submit"
                             class="px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer {{ $paypalSettings['enabled'] ? 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800' : 'bg-sky-600 hover:bg-sky-700 text-white shadow-xs' }}">
-                        {{ $paypalSettings['enabled'] ? 'Deactivate PayPal' : 'Activate PayPal' }}
+                        {{ $paypalSettings['enabled'] ? 'Deactivate' : 'Activate' }}
                     </button>
                 </form>
             </div>
