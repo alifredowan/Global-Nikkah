@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Single Marriage Pass • One-Time Payment Until Nikah - Global Nikkah')
+@section('meta_description', 'Compare Global Nikkah membership plans and choose a one-time marriage pass with premium matrimonial privileges until confirmed Nikah.')
+@section('canonical_url', route('subscription.pricing'))
+@section('robots', 'index, follow')
 
 @section('content')
 <div class="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">

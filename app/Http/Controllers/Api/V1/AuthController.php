@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Profile;
 use App\Models\Subscription;
 use App\Models\User;
@@ -129,6 +130,8 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
+        $user = $request->user();
+        AuditLog::record($user->id, 'api_session_revoked');
         $request->user()->currentAccessToken()?->delete();
 
         return response()->json([
@@ -139,7 +142,9 @@ class AuthController extends Controller
 
     public function logoutAll(Request $request): JsonResponse
     {
-        $request->user()->tokens()->delete();
+        $user = $request->user();
+        $user->tokens()->delete();
+        AuditLog::record($user->id, 'api_sessions_revoked');
 
         return response()->json([
             'status' => 'success',

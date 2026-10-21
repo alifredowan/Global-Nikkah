@@ -65,7 +65,7 @@ class AuthController extends Controller
                     return $query->whereRaw('LOWER(email) = ?', [$normalizedEmail]);
                 }),
             ],
-            'phone_country' => ['required_with:phone', 'string', 'size:2'],
+            'phone_country' => ['nullable', 'required_with:phone', 'string', 'size:2'],
             'phone' => ['nullable', 'string', new Phone, 'unique:users,phone'],
             'gender' => ['required', 'in:male,female'],
             'dob' => ['required', 'date_format:d/m/Y', "before_or_equal:{$maxBirthDate}"],

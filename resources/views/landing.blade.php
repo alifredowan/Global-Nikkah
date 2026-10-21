@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Global Nikkah - Blessed Halal Muslim Matrimonial Platform')
+@section('meta_description', 'Find a righteous Muslim marriage partner through Global Nikkah, with verified profiles, Wali participation, privacy-first matchmaking, and serious Nikah intentions.')
+@section('canonical_url', route('landing'))
+@section('robots', 'index, follow')
 
 @section('content')
 <div class="overflow-hidden">

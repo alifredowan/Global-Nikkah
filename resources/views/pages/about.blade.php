@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'About Us - Global Nikkah | Ethical Islamic Matrimonial Platform')
+@section('meta_description', 'Learn how Global Nikkah supports ethical Muslim matchmaking through verified identities, family involvement, privacy, and a marriage-first experience.')
+@section('canonical_url', route('about'))
+@section('robots', 'index, follow')
 
 @section('content')
 <div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 py-10 sm:py-16">

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+    <title id="title">Global Nikkah</title>
+    <rect width="64" height="64" rx="16" fill="#064e3b"/>
+    <path d="m32 10 4.75 13.25L50 28l-13.25 4.75L32 46l-4.75-13.25L14 28l13.25-4.75L32 10Z" fill="#fbbf24"/>
+    <circle cx="32" cy="28" r="4" fill="#064e3b"/>
+    <path d="M23 48c2.75-4 5.75-6 9-6s6.25 2 9 6" fill="none" stroke="#34d399" stroke-linecap="round" stroke-width="3"/>
+</svg>

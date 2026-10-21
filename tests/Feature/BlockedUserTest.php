@@ -9,6 +9,7 @@ use App\Models\Photo;
 use App\Models\PhotoAccessGrant;
 use App\Models\Profile;
 use App\Models\User;
+use App\Services\MatchingEngineService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -108,6 +109,25 @@ class BlockedUserTest extends TestCase
             'conversation_id' => $conversation->id,
             'sender_id' => $blocker->id,
         ]);
+    }
+
+    public function test_blocked_users_are_excluded_from_daily_matches_in_both_directions(): void
+    {
+        $seeker = $this->createSeeker('male', 'daily-match-blocker@example.com');
+        $blocked = $this->createSeeker('female', 'daily-match-blocked@example.com');
+        $blockedBy = $this->createSeeker('female', 'daily-match-blocked-by@example.com');
+
+        Profile::create(['user_id' => $seeker->id]);
+        Profile::create(['user_id' => $blocked->id]);
+        Profile::create(['user_id' => $blockedBy->id]);
+
+        $seeker->blockedUsers()->attach($blocked->id);
+        $blockedBy->blockedUsers()->attach($seeker->id);
+
+        $matches = app(MatchingEngineService::class)->getDailyMatches($seeker);
+
+        $this->assertFalse($matches->contains('user_id', $blocked->id));
+        $this->assertFalse($matches->contains('user_id', $blockedBy->id));
     }
 
     public function test_blocking_revokes_existing_private_photo_access(): void

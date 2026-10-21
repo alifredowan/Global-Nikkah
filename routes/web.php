@@ -16,6 +16,7 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileVisitorController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WaliController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,8 @@ Route::get('/privacy', [LandingController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [LandingController::class, 'terms'])->name('terms');
 Route::get('/about', [LandingController::class, 'about'])->name('about');
 Route::get('/how-it-works', [LandingController::class, 'howItWorks'])->name('how-it-works');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots.txt');
+Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
 Route::get('/photos/{photo}/view', [PhotoController::class, 'show'])
     ->middleware('throttle:180,1')
     ->name('photos.view');
@@ -84,8 +87,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:3,60')
         ->name('account.deactivate');
     Route::get('/blocked-users', [BlockedUserController::class, 'index'])->name('blocked-users.index');
-    Route::post('/blocked-users/{userId}', [BlockedUserController::class, 'store'])->name('blocked-users.store');
-    Route::delete('/blocked-users/{userId}', [BlockedUserController::class, 'destroy'])->name('blocked-users.destroy');
+    Route::post('/blocked-users/{userId}', [BlockedUserController::class, 'store'])
+        ->middleware('throttle:30,1')
+        ->name('blocked-users.store');
+    Route::delete('/blocked-users/{userId}', [BlockedUserController::class, 'destroy'])
+        ->middleware('throttle:30,1')
+        ->name('blocked-users.destroy');
 
     // Authenticated seeker home
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -108,12 +115,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Profile Management & Pro Features
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile', [ProfileController::class, 'update'])
+        ->middleware('throttle:20,1')
+        ->name('profile.update');
     Route::post('/profile/photos', [ProfileController::class, 'uploadPhoto'])
         ->middleware('throttle:20,60')
         ->name('profile.photos.upload');
-    Route::post('/profile/photos/{id}/primary', [ProfileController::class, 'setPrimaryPhoto'])->name('profile.photos.primary');
-    Route::delete('/profile/photos/{id}', [ProfileController::class, 'deletePhoto'])->name('profile.photos.delete');
+    Route::post('/profile/photos/{id}/primary', [ProfileController::class, 'setPrimaryPhoto'])
+        ->middleware('throttle:30,1')
+        ->name('profile.photos.primary');
+    Route::delete('/profile/photos/{id}', [ProfileController::class, 'deletePhoto'])
+        ->middleware('throttle:30,1')
+        ->name('profile.photos.delete');
     Route::post('/profile/photos/grant/{userId}', [ProfileController::class, 'grantPhotoAccess'])
         ->middleware('throttle:30,1')
         ->name('profile.photos.grant');
@@ -124,7 +137,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:5,60')
         ->name('profile.verification.submit');
     Route::get('/profile/visitors', [ProfileVisitorController::class, 'index'])->name('profile.visitors');
-    Route::post('/profile/incognito', [ProfileVisitorController::class, 'toggleIncognito'])->name('profile.incognito.toggle');
+    Route::post('/profile/incognito', [ProfileVisitorController::class, 'toggleIncognito'])
+        ->middleware('throttle:30,1')
+        ->name('profile.incognito.toggle');
     Route::get('/profile/biodata', [ProfileController::class, 'biodata'])->name('profile.biodata');
     Route::get('/profile/{id}/biodata', [ProfileController::class, 'biodata'])->name('profile.biodata.show');
 
@@ -141,9 +156,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/discover', [DiscoveryController::class, 'index'])->name('discovery.index');
     Route::get('/profile/{id}', [DiscoveryController::class, 'show'])->name('discovery.show');
     Route::get('/discover/{id}', [DiscoveryController::class, 'show']);
-    Route::post('/saved-searches', [DiscoveryController::class, 'saveSearch'])->name('discovery.save-search');
-    Route::post('/saved-searches/{id}/toggle-alerts', [DiscoveryController::class, 'toggleSavedSearchAlerts'])->name('discovery.saved-searches.toggle-alerts');
-    Route::delete('/saved-searches/{id}', [DiscoveryController::class, 'destroySavedSearch'])->name('discovery.saved-searches.destroy');
+    Route::post('/saved-searches', [DiscoveryController::class, 'saveSearch'])
+        ->middleware('throttle:30,1')
+        ->name('discovery.save-search');
+    Route::post('/saved-searches/{id}/toggle-alerts', [DiscoveryController::class, 'toggleSavedSearchAlerts'])
+        ->middleware('throttle:30,1')
+        ->name('discovery.saved-searches.toggle-alerts');
+    Route::delete('/saved-searches/{id}', [DiscoveryController::class, 'destroySavedSearch'])
+        ->middleware('throttle:30,1')
+        ->name('discovery.saved-searches.destroy');
 
     // Interests & Requests
     Route::get('/interests', [InterestController::class, 'index'])->name('interests.index');
@@ -161,10 +182,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Wali (Guardian) workflow
     Route::get('/wali/link', [WaliController::class, 'linkForm'])->name('wali.link');
-    Route::post('/wali/link', [WaliController::class, 'linkStore'])->name('wali.link.store');
+    Route::post('/wali/link', [WaliController::class, 'linkStore'])
+        ->middleware('throttle:5,10')
+        ->name('wali.link.store');
     Route::get('/wali/dashboard', [WaliController::class, 'dashboard'])->name('wali.dashboard');
-    Route::post('/wali/interests/{id}/approve', [WaliController::class, 'approveInterest'])->name('wali.interests.approve');
-    Route::post('/wali/interests/{id}/reject', [WaliController::class, 'rejectInterest'])->name('wali.interests.reject');
+    Route::post('/wali/interests/{id}/approve', [WaliController::class, 'approveInterest'])
+        ->middleware('throttle:20,1')
+        ->name('wali.interests.approve');
+    Route::post('/wali/interests/{id}/reject', [WaliController::class, 'rejectInterest'])
+        ->middleware('throttle:20,1')
+        ->name('wali.interests.reject');
 
     // Halal Chaperoned Messaging
     Route::get('/messages', [ChatController::class, 'index'])->name('chat.index');
@@ -178,18 +205,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Nikah Mubarak & Marriage Completion Milestone
     Route::get('/nikah-mubarak', [MarriageController::class, 'celebration'])->name('marriages.celebration');
-    Route::post('/marriages/initiate', [MarriageController::class, 'initiate'])->name('marriages.initiate');
-    Route::post('/marriages/{id}/confirm', [MarriageController::class, 'confirm'])->name('marriages.confirm');
-    Route::post('/marriages/{id}/decline', [MarriageController::class, 'decline'])->name('marriages.decline');
-    Route::post('/marriages/{id}/story', [MarriageController::class, 'submitStory'])->name('marriages.story');
+    Route::post('/marriages/initiate', [MarriageController::class, 'initiate'])
+        ->middleware('throttle:10,10')
+        ->name('marriages.initiate');
+    Route::post('/marriages/{id}/confirm', [MarriageController::class, 'confirm'])
+        ->middleware('throttle:10,10')
+        ->name('marriages.confirm');
+    Route::post('/marriages/{id}/decline', [MarriageController::class, 'decline'])
+        ->middleware('throttle:10,10')
+        ->name('marriages.decline');
+    Route::post('/marriages/{id}/story', [MarriageController::class, 'submitStory'])
+        ->middleware('throttle:5,10')
+        ->name('marriages.story');
 
     // Subscription & Checkout
     Route::get('/checkout/{plan}', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
-    Route::post('/checkout/validate-promo', [SubscriptionController::class, 'validatePromo'])->name('subscription.validate-promo');
-    Route::post('/checkout/process', [SubscriptionController::class, 'process'])->name('subscription.process');
+    Route::post('/checkout/validate-promo', [SubscriptionController::class, 'validatePromo'])
+        ->middleware('throttle:20,1')
+        ->name('subscription.validate-promo');
+    Route::post('/checkout/process', [SubscriptionController::class, 'process'])
+        ->middleware('throttle:10,10')
+        ->name('subscription.process');
     Route::get('/checkout/stripe/success', [SubscriptionController::class, 'stripeSuccess'])->name('subscription.stripe.success');
     Route::get('/checkout/paypal/success', [SubscriptionController::class, 'paypalSuccess'])->name('subscription.paypal.success');
-    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])
+        ->middleware('throttle:5,10')
+        ->name('subscription.cancel');
 
     // Admin & Moderation Console
     Route::middleware('moderator')->prefix('admin')->name('admin.')->group(function () {
@@ -201,14 +242,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/verifications/{id}/documents/{type}', [AdminController::class, 'downloadVerificationDocument'])
                 ->middleware('throttle:30,1')
                 ->name('verifications.documents');
-            Route::post('/verifications/{id}/approve', [AdminController::class, 'approveVerification'])->name('verifications.approve');
-            Route::post('/verifications/{id}/reject', [AdminController::class, 'rejectVerification'])->name('verifications.reject');
+            Route::post('/verifications/{id}/approve', [AdminController::class, 'approveVerification'])
+                ->middleware('throttle:30,1')
+                ->name('verifications.approve');
+            Route::post('/verifications/{id}/reject', [AdminController::class, 'rejectVerification'])
+                ->middleware('throttle:30,1')
+                ->name('verifications.reject');
         });
 
         // User Abuse Reports & Moderation (manage_reports permission)
         Route::middleware('permission:manage_reports')->group(function () {
             Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
-            Route::post('/reports/{id}/action', [AdminController::class, 'actionReport'])->name('reports.action');
+            Route::post('/reports/{id}/action', [AdminController::class, 'actionReport'])
+                ->middleware('throttle:30,1')
+                ->name('reports.action');
         });
 
         // Audit Logs (view_audit_logs permission)
@@ -219,39 +266,71 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Super Admin Only: Staff Management & Permissions Control
         Route::middleware('super_admin')->group(function () {
             Route::get('/staff', [AdminController::class, 'staff'])->name('staff');
-            Route::post('/staff', [AdminController::class, 'storeStaff'])->name('staff.store');
-            Route::post('/staff/{id}/permissions', [AdminController::class, 'updateStaffPermissions'])->name('staff.permissions');
-            Route::post('/staff/{id}/toggle-status', [AdminController::class, 'toggleStaffStatus'])->name('staff.toggle-status');
+            Route::post('/staff', [AdminController::class, 'storeStaff'])
+                ->middleware('throttle:10,10')
+                ->name('staff.store');
+            Route::post('/staff/{id}/permissions', [AdminController::class, 'updateStaffPermissions'])
+                ->middleware('throttle:30,1')
+                ->name('staff.permissions');
+            Route::post('/staff/{id}/toggle-status', [AdminController::class, 'toggleStaffStatus'])
+                ->middleware('throttle:30,1')
+                ->name('staff.toggle-status');
         });
 
         // Platform Policies, Dynamic Packages & Promo Codes (manage_settings or Super Admin)
         Route::middleware('permission:manage_settings')->group(function () {
             // Dynamic Subscription Packages
             Route::get('/packages', [AdminController::class, 'packages'])->name('packages.index');
-            Route::post('/packages', [AdminController::class, 'storePackage'])->name('packages.store');
-            Route::put('/packages/{id}', [AdminController::class, 'updatePackage'])->name('packages.update');
-            Route::post('/packages/{id}/toggle-status', [AdminController::class, 'togglePackageStatus'])->name('packages.toggle-status');
-            Route::delete('/packages/{id}', [AdminController::class, 'destroyPackage'])->name('packages.destroy');
+            Route::post('/packages', [AdminController::class, 'storePackage'])
+                ->middleware('throttle:30,1')
+                ->name('packages.store');
+            Route::put('/packages/{id}', [AdminController::class, 'updatePackage'])
+                ->middleware('throttle:30,1')
+                ->name('packages.update');
+            Route::post('/packages/{id}/toggle-status', [AdminController::class, 'togglePackageStatus'])
+                ->middleware('throttle:30,1')
+                ->name('packages.toggle-status');
+            Route::delete('/packages/{id}', [AdminController::class, 'destroyPackage'])
+                ->middleware('throttle:30,1')
+                ->name('packages.destroy');
 
             // Promo Codes & Special User Discounts
             Route::get('/promo-codes', [AdminController::class, 'promoCodes'])->name('promo-codes.index');
-            Route::post('/promo-codes', [AdminController::class, 'storePromoCode'])->name('promo-codes.store');
-            Route::post('/promo-codes/{id}/toggle-status', [AdminController::class, 'togglePromoCodeStatus'])->name('promo-codes.toggle-status');
-            Route::delete('/promo-codes/{id}', [AdminController::class, 'destroyPromoCode'])->name('promo-codes.destroy');
+            Route::post('/promo-codes', [AdminController::class, 'storePromoCode'])
+                ->middleware('throttle:30,1')
+                ->name('promo-codes.store');
+            Route::post('/promo-codes/{id}/toggle-status', [AdminController::class, 'togglePromoCodeStatus'])
+                ->middleware('throttle:30,1')
+                ->name('promo-codes.toggle-status');
+            Route::delete('/promo-codes/{id}', [AdminController::class, 'destroyPromoCode'])
+                ->middleware('throttle:30,1')
+                ->name('promo-codes.destroy');
 
             // Platform Policy Parameters
             Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
-            Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
-            Route::post('/discounts', [AdminController::class, 'createDiscount'])->name('discounts.store');
+            Route::post('/settings', [AdminController::class, 'updateSettings'])
+                ->middleware('throttle:30,1')
+                ->name('settings.update');
+            Route::post('/discounts', [AdminController::class, 'createDiscount'])
+                ->middleware('throttle:30,1')
+                ->name('discounts.store');
 
             // Payment Gateways & Transaction Configuration (PayPal & Stripe)
             Route::get('/payment-settings', [AdminController::class, 'paymentSettings'])->name('payment-settings');
-            Route::post('/payment-settings', [AdminController::class, 'updatePaymentSettings'])->name('payment-settings.update');
-            Route::post('/payment-settings/toggle', [AdminController::class, 'togglePaymentGateway'])->name('payment-settings.toggle');
-            Route::post('/payment-settings/test', [AdminController::class, 'testPaymentGateway'])->name('payment-settings.test');
+            Route::post('/payment-settings', [AdminController::class, 'updatePaymentSettings'])
+                ->middleware('throttle:30,1')
+                ->name('payment-settings.update');
+            Route::post('/payment-settings/toggle', [AdminController::class, 'togglePaymentGateway'])
+                ->middleware('throttle:30,1')
+                ->name('payment-settings.toggle');
+            Route::post('/payment-settings/test', [AdminController::class, 'testPaymentGateway'])
+                ->middleware('throttle:5,10')
+                ->name('payment-settings.test');
 
             // Cloudflare Turnstile CAPTCHA Configuration
-            Route::post('/settings/captcha', [AdminController::class, 'updateCaptchaSettings'])->name('settings.captcha.update');
+            Route::post('/settings/captcha', [AdminController::class, 'updateCaptchaSettings'])
+                ->middleware('throttle:30,1')
+                ->name('settings.captcha.update');
         });
     });
 });

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Terms of Service & Shariah Matrimonial Code - Global Nikkah')
+@section('meta_description', 'Review the Global Nikkah terms of service and matrimonial code covering truthful intentions, respectful conduct, Wali involvement, and Nikah-only use.')
+@section('canonical_url', route('terms'))
+@section('robots', 'index, follow')
 
 @section('content')
 <div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 py-10 sm:py-16">

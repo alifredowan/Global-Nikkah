@@ -199,8 +199,15 @@ class MatchingEngineService
             return collect();
         }
 
-        $query = Profile::with(['user.activeSubscription', 'primaryPhoto', 'photos'])
+        $excludedUserIds = $user->blockedUsers()
+            ->pluck('users.id')
+            ->merge($user->blockedByUsers()->pluck('users.id'))
+            ->unique()
+            ->values();
+
+        $query = Profile::with(['user.activeSubscription', 'primaryPhoto'])
             ->where('user_id', '!=', $user->id)
+            ->whereNotIn('user_id', $excludedUserIds)
             ->whereHas('user', function ($q) use ($targetGender) {
                 $q->where('is_active', true)
                     ->where('role', 'seeker')

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Privacy Policy & Islamic Data Governance - Global Nikkah')
+@section('meta_description', 'Read Global Nikkah’s privacy policy covering personal data, photo privacy, Wali transparency, account security, and GDPR-aligned data governance.')
+@section('canonical_url', route('privacy'))
+@section('robots', 'index, follow')
 
 @section('content')
 <div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 py-10 sm:py-16">

@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Global Nikkah - Muslim Matrimonial Platform')</title>
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="alternate icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <meta name="description" content="@yield('meta_description', 'Global Nikkah is an ethical Muslim matrimonial platform for serious marriage with verified profiles, Wali participation, and privacy-first matchmaking.')">
+    <meta name="robots" content="@yield('robots', 'noindex, nofollow')">
+    @hasSection('canonical_url')
+        <link rel="canonical" href="{{ config('seo.url').(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo()) }}">
+        <meta property="og:url" content="{{ config('seo.url').(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo()) }}">
+    @endif
+    <meta property="og:title" content="@yield('title', 'Global Nikkah - Muslim Matrimonial Platform')">
+    <meta property="og:description" content="@yield('meta_description', 'Global Nikkah is an ethical Muslim matrimonial platform for serious marriage with verified profiles, Wali participation, and privacy-first matchmaking.')">
+    <meta property="og:type" content="website">
 
     <!-- Theme Initialization (Prevent FOUC: 4 Moods Supported) -->
     <script>
