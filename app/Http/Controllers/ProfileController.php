@@ -80,24 +80,24 @@ class ProfileController extends Controller
             'bio' => ['nullable', 'string', 'max:2000'],
 
             // Religious fields
-            'sect_madhhab' => ['nullable', 'string', 'max:100'],
-            'prayer_frequency' => ['nullable', 'string', 'max:50'],
-            'hijab_niqab_practice' => ['nullable', 'string', 'max:50'],
-            'beard_practice' => ['nullable', 'string', 'max:50'],
-            'quran_knowledge' => ['nullable', 'string', 'max:50'],
-            'mosque_attendance' => ['nullable', 'string', 'max:50'],
-            'halal_dietary_adherence' => ['nullable', 'string', 'max:50'],
+            'sect_madhhab' => ['nullable', 'string', 'in:Sunni - Hanafi,Sunni - Shafi\'i,Sunni - Maliki,Sunni - Hanbali,Shia - Jafari,Muslim (Unspecified)'],
+            'prayer_frequency' => ['nullable', 'string', 'in:5x_daily,occasional,rarely'],
+            'hijab_niqab_practice' => ['nullable', 'string', 'in:hijab,niqab,modest_without_hijab,planning_to_wear'],
+            'beard_practice' => ['nullable', 'string', 'in:full_sunnah_beard,trimmed_beard,clean_shaven'],
+            'quran_knowledge' => ['nullable', 'string', 'in:hafiz,fluent_reciter,basic_reader,learning'],
+            'mosque_attendance' => ['nullable', 'string', 'in:daily,weekly_jummah,occasional'],
+            'halal_dietary_adherence' => ['nullable', 'string', 'in:strictly_halal,halal_meat_only,flexible'],
             'polygamy_opinion' => ['nullable', 'string', 'max:50'],
-            'desired_family_structure' => ['nullable', 'string', 'max:50'],
+            'desired_family_structure' => ['nullable', 'string', 'in:independent,joint_family'],
 
             // Family fields
             'parents_status' => ['nullable', 'string', 'max:100'],
             'parents_occupation' => ['nullable', 'string', 'max:100'],
             'siblings_count' => ['nullable', 'integer', 'min:0', 'max:20'],
-            'family_religiosity' => ['nullable', 'string', 'max:50'],
+            'family_religiosity' => ['nullable', 'string', 'in:very_practicing,moderate,traditional'],
 
             // Partner preferences
-            'pref_age_min' => ['nullable', 'integer', 'min:18', 'max:80'],
+            'pref_age_min' => ['nullable', 'integer', 'min:18', 'max:80', 'lte:pref_age_max'],
             'pref_age_max' => ['nullable', 'integer', 'min:18', 'max:80'],
             'pref_sect' => ['nullable', 'string', 'max:100'],
             'pref_location' => ['nullable', 'string', 'max:100'],
@@ -131,7 +131,7 @@ class ProfileController extends Controller
     public function uploadPhoto(Request $request): RedirectResponse
     {
         $request->validate([
-            'photo' => ['required', 'image', 'max:5120'], // max 5MB
+            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // max 5MB
             'is_private' => ['nullable', 'boolean'],
         ]);
 
@@ -195,13 +195,19 @@ class ProfileController extends Controller
         $request->validate([
             'document_type' => ['required', 'in:national_id,passport,driving_license'],
             'document' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
-            'selfie' => ['nullable', 'image', 'max:5120'],
+            'selfie' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
         $user = Auth::user();
 
-        $docPath = $request->file('document')->store('verifications', 'public');
-        $selfiePath = $request->hasFile('selfie') ? $request->file('selfie')->store('verifications', 'public') : null;
+        if (VerificationRequest::where('user_id', $user->id)->where('status', 'pending')->exists()) {
+            return back()->withErrors([
+                'document' => 'You already have a verification request awaiting review.',
+            ]);
+        }
+
+        $docPath = $request->file('document')->store('verifications', 'local');
+        $selfiePath = $request->hasFile('selfie') ? $request->file('selfie')->store('verifications', 'local') : null;
 
         VerificationRequest::create([
             'user_id' => $user->id,
@@ -218,7 +224,21 @@ class ProfileController extends Controller
 
     public function grantPhotoAccess(int $userId): RedirectResponse
     {
-        $profile = Auth::user()->profile;
+        $user = Auth::user();
+        $profile = $user->profile;
+        $recipient = User::query()
+            ->whereKey($userId)
+            ->where('role', 'seeker')
+            ->where('is_active', true)
+            ->first();
+
+        if (! $profile || ! $recipient || $recipient->id === $user->id) {
+            return back()->withErrors(['photo' => 'Photo access can only be granted to an active candidate.']);
+        }
+
+        if ($user->hasBlockedRelationshipWith($recipient)) {
+            return back()->withErrors(['photo' => 'Photo access cannot be granted because this profile is blocked.']);
+        }
 
         PhotoAccessGrant::updateOrCreate([
             'profile_id' => $profile->id,
@@ -226,8 +246,28 @@ class ProfileController extends Controller
         ], [
             'status' => 'active',
         ]);
+        AuditLog::record($user->id, 'photo_access_granted', 'User', $recipient->id);
 
         return back()->with('success', 'Photo access granted! The recipient can now view your unblurred photos.');
+    }
+
+    public function revokePhotoAccess(int $userId): RedirectResponse
+    {
+        $user = Auth::user();
+        $profile = $user->profile;
+        $grant = $profile?->photoAccessGrants()
+            ->where('granted_to_user_id', $userId)
+            ->where('status', 'active')
+            ->first();
+
+        if (! $grant) {
+            return back()->withErrors(['photo' => 'No active photo access grant was found for this user.']);
+        }
+
+        $grant->update(['status' => 'revoked']);
+        AuditLog::record($user->id, 'photo_access_revoked', 'User', $userId);
+
+        return back()->with('success', 'Photo access revoked.');
     }
 
     public function biodata(?int $userId = null): View|RedirectResponse

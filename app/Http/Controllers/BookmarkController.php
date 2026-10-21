@@ -35,18 +35,27 @@ class BookmarkController extends Controller
             ->get();
 
         $userProfile = $user->profile;
+        $candidateIds = $bookmarks->pluck('bookmarked_user_id')->filter()->values();
+        $interestByCandidate = Interest::query()
+            ->where(function ($query) use ($user, $candidateIds) {
+                $query->where(function ($nested) use ($user, $candidateIds) {
+                    $nested->where('sender_id', $user->id)->whereIn('recipient_id', $candidateIds);
+                })->orWhere(function ($nested) use ($user, $candidateIds) {
+                    $nested->whereIn('sender_id', $candidateIds)->where('recipient_id', $user->id);
+                });
+            })
+            ->get()
+            ->keyBy(fn (Interest $interest): int => $interest->sender_id === $user->id
+                ? $interest->recipient_id
+                : $interest->sender_id);
 
-        $bookmarks->transform(function ($b) use ($userProfile, $user) {
+        $bookmarks->transform(function ($b) use ($userProfile, $user, $interestByCandidate) {
             $candidate = $b->bookmarkedUser;
             $b->compatibility_score = ($userProfile && $candidate->profile)
                 ? $this->matchingEngine->computeCompatibility($userProfile, $candidate->profile)
                 : null;
 
-            $b->existing_interest = Interest::where(function ($q) use ($user, $candidate) {
-                $q->where('sender_id', $user->id)->where('recipient_id', $candidate->id);
-            })->orWhere(function ($q) use ($user, $candidate) {
-                $q->where('sender_id', $candidate->id)->where('recipient_id', $user->id);
-            })->first();
+            $b->existing_interest = $interestByCandidate->get($candidate->id);
 
             $b->is_photo_visible = $candidate->profile ? $candidate->profile->isPhotoVisibleTo($user) : false;
 
@@ -61,6 +70,10 @@ class BookmarkController extends Controller
 
     public function toggle(Request $request, int $userId): JsonResponse|RedirectResponse
     {
+        $request->validate([
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+
         $user = Auth::user();
 
         if (! $user->isPro()) {

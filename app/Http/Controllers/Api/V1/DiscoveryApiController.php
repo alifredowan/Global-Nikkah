@@ -19,6 +19,11 @@ class DiscoveryApiController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $request->validate([
+            'country' => ['nullable', 'string', 'max:255'],
+            'sect' => ['nullable', 'string', 'in:Sunni - Hanafi,Sunni - Shafi\'i,Sunni - Maliki,Sunni - Hanbali,Shia - Jafari,Muslim (Unspecified)'],
+        ]);
+
         $user = $request->user();
         $targetGender = $user->gender === 'male' ? 'female' : ($user->gender === 'female' ? 'male' : 'female');
 
@@ -44,6 +49,7 @@ class DiscoveryApiController extends Controller
         if ($user->profile) {
             $profiles->getCollection()->transform(function ($p) use ($user) {
                 $p->compatibility_score = $this->matchingEngine->computeCompatibility($user->profile, $p);
+                $this->hidePrivateCandidateFields($p->user);
 
                 return $p;
             });
@@ -71,11 +77,19 @@ class DiscoveryApiController extends Controller
         $user = $request->user();
         $targetUser = User::with(['profile.photos', 'profile.primaryPhoto'])->findOrFail($userId);
 
+        if ($targetUser->id === $user->id || ! $targetUser->is_active || $targetUser->role !== 'seeker' || ! $targetUser->profile) {
+            return response()->json(['status' => 'error', 'message' => 'Profile not found or not available for matrimonial matching.'], 404);
+        }
+
         if ($user->hasBlockedRelationshipWith($targetUser)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'This profile is unavailable because one of the profiles has been blocked.',
             ], 403);
+        }
+
+        if ($targetUser->isMarried() && $user->spouse()?->id !== $targetUser->id) {
+            return response()->json(['status' => 'error', 'message' => 'This candidate is no longer available for matching.'], 404);
         }
 
         if (! $this->quotaService->canViewProfile($user, $targetUser->id)) {
@@ -93,12 +107,24 @@ class DiscoveryApiController extends Controller
         }
 
         $isPhotoVisible = $targetUser->profile?->isPhotoVisibleTo($user);
+        $this->hidePrivateCandidateFields($targetUser);
 
         return response()->json([
             'status' => 'success',
             'user' => $targetUser,
             'compatibility_score' => $compatibility,
             'is_photo_visible' => $isPhotoVisible,
+        ]);
+    }
+
+    private function hidePrivateCandidateFields(User $candidate): void
+    {
+        $candidate->makeHidden([
+            'email',
+            'phone',
+            'dob',
+            'remember_token',
+            'two_factor_secret',
         ]);
     }
 }

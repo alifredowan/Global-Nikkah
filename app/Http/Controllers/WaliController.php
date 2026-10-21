@@ -105,7 +105,11 @@ class WaliController extends Controller
         $wali = Auth::user();
         $interest = Interest::findOrFail($interestId);
 
-        $this->waliService->rejectByWali($interest, $wali);
+        $success = $this->waliService->rejectByWali($interest, $wali);
+
+        if (! $success) {
+            return back()->with('error', 'You are not authorized to decline this interest request.');
+        }
 
         AuditLog::record($wali->id, 'wali_rejected_interest', 'Interest', $interest->id);
 

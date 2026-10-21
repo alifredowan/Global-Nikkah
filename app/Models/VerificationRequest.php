@@ -10,6 +10,11 @@ class VerificationRequest extends Model
 {
     use HasFactory;
 
+    protected $hidden = [
+        'document_path',
+        'selfie_path',
+    ];
+
     protected $fillable = [
         'user_id',
         'document_type',

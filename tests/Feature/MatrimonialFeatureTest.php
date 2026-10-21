@@ -151,6 +151,16 @@ class MatrimonialFeatureTest extends TestCase
         $this->assertFalse($response->isRedirection());
         $contentType = $response->headers->get('Content-Type');
         $this->assertTrue(in_array($contentType, ['image/svg+xml', 'image/jpeg', 'image/png']));
+
+        $ownerResponse = $this->actingAs($bride)->get(route('photos.view', $primaryPhoto->id));
+        $ownerResponse->assertOk();
+        $this->assertFalse($ownerResponse->isRedirection());
+        $this->assertSame('image/svg+xml', $ownerResponse->headers->get('Content-Type'));
+
+        $bride->update(['is_active' => false]);
+        $inactiveResponse = $this->actingAs($bride)->get(route('photos.view', $primaryPhoto->id));
+        $inactiveResponse->assertOk();
+        $this->assertSame('image/svg+xml', $inactiveResponse->headers->get('Content-Type'));
     }
 
     public function test_registration_rejects_duplicate_email_case_insensitively_and_with_spaces(): void

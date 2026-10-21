@@ -23,6 +23,20 @@ class DiscoveryController extends Controller
 
     public function index(Request $request): View
     {
+        $request->validate([
+            'gender' => ['nullable', 'in:male,female'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'marital_status' => ['nullable', 'in:never_married,divorced,widowed,annulled'],
+            'age_min' => ['nullable', 'integer', 'min:18', 'max:100', 'lte:age_max'],
+            'age_max' => ['nullable', 'integer', 'min:18', 'max:100'],
+            'sect' => ['nullable', 'string', 'in:Sunni - Hanafi,Sunni - Shafi\'i,Sunni - Maliki,Sunni - Hanbali,Shia - Jafari,Muslim (Unspecified)'],
+            'prayer_frequency' => ['nullable', 'in:5x_daily,occasional,rarely'],
+            'education_level' => ['nullable', 'string', 'max:255'],
+            'wali_required' => ['nullable', 'boolean'],
+            'sort' => ['nullable', 'in:newest,verified,complete'],
+        ]);
+
         $currentUser = Auth::user();
         $userProfile = $currentUser->profile;
 
@@ -169,6 +183,10 @@ class DiscoveryController extends Controller
 
         // Check photo visibility permission (blurred vs visible)
         $isPhotoVisible = $profile->isPhotoVisibleTo($currentUser);
+        $hasGrantedPhotoAccess = $currentUser->profile?->photoAccessGrants()
+            ->where('granted_to_user_id', $targetUser->id)
+            ->where('status', 'active')
+            ->exists() ?? false;
 
         // Check existing interest relationship
         $existingInterest = Interest::where(function ($q) use ($currentUser, $targetUser) {
@@ -183,7 +201,7 @@ class DiscoveryController extends Controller
         // Check if shortlisted by current user
         $isBookmarked = $currentUser->hasBookmarked($targetUser->id);
 
-        return view('discovery.show', compact('targetUser', 'profile', 'compatibilityScore', 'compatibilityHighlights', 'isPhotoVisible', 'existingInterest', 'activeWaliLink', 'isBookmarked'));
+        return view('discovery.show', compact('targetUser', 'profile', 'compatibilityScore', 'compatibilityHighlights', 'isPhotoVisible', 'hasGrantedPhotoAccess', 'existingInterest', 'activeWaliLink', 'isBookmarked'));
     }
 
     public function saveSearch(Request $request): RedirectResponse

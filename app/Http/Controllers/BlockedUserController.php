@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
+use App\Models\PhotoAccessGrant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -29,13 +31,28 @@ class BlockedUserController extends Controller
         }
 
         $user->blockedUsers()->syncWithoutDetaching([$targetUser->id]);
+        PhotoAccessGrant::query()
+            ->where(function ($query) use ($user, $targetUser): void {
+                $query->where(function ($nested) use ($user, $targetUser): void {
+                    $nested->whereHas('profile', fn ($profileQuery) => $profileQuery->where('user_id', $user->id))
+                        ->where('granted_to_user_id', $targetUser->id);
+                })->orWhere(function ($nested) use ($user, $targetUser): void {
+                    $nested->whereHas('profile', fn ($profileQuery) => $profileQuery->where('user_id', $targetUser->id))
+                        ->where('granted_to_user_id', $user->id);
+                });
+            })
+            ->where('status', 'active')
+            ->update(['status' => 'revoked']);
+        AuditLog::record($user->id, 'user_blocked', 'User', $targetUser->id);
 
         return redirect()->route('discovery.index')->with('success', 'Profile blocked. You will no longer see this person in discovery or receive profile access to them.');
     }
 
     public function destroy(int $userId): RedirectResponse
     {
-        Auth::user()->blockedUsers()->detach($userId);
+        $user = Auth::user();
+        $user->blockedUsers()->detach($userId);
+        AuditLog::record($user->id, 'user_unblocked', 'User', $userId);
 
         return back()->with('success', 'Profile unblocked.');
     }

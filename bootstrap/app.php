@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\EnsureHasAdminPermission;
 use App\Http\Middleware\EnsureUserIsModerator;
 use App\Http\Middleware\EnsureUserIsSuperAdmin;
@@ -17,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(AddSecurityHeaders::class);
+
         $middleware->validateCsrfTokens(except: [
             'webhook/*',
             'api/*',

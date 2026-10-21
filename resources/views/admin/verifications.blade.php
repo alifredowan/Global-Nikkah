@@ -33,6 +33,12 @@
                             </td>
                             <td class="p-4 capitalize font-semibold text-slate-800 dark:text-slate-200">
                                 {{ str_replace('_', ' ', $v->document_type) }}
+                                <div class="mt-1 flex gap-2 text-[10px] normal-case">
+                                    <a href="{{ route('admin.verifications.documents', [$v->id, 'document']) }}" class="text-blue-600 dark:text-blue-400 hover:underline">Download ID</a>
+                                    @if($v->selfie_path)
+                                        <a href="{{ route('admin.verifications.documents', [$v->id, 'selfie']) }}" class="text-blue-600 dark:text-blue-400 hover:underline">Download selfie</a>
+                                    @endif
+                                </div>
                             </td>
                             <td class="p-4 text-slate-400 dark:text-slate-500">
                                 {{ $v->created_at->format('M d, Y H:i') }}

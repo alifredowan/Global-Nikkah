@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Conversation;
 use App\Models\ConversationParticipant;
 use App\Models\Interest;
+use App\Models\Photo;
+use App\Models\PhotoAccessGrant;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -105,6 +107,75 @@ class BlockedUserTest extends TestCase
         $this->assertDatabaseMissing('messages', [
             'conversation_id' => $conversation->id,
             'sender_id' => $blocker->id,
+        ]);
+    }
+
+    public function test_blocking_revokes_existing_private_photo_access(): void
+    {
+        $blocker = $this->createSeeker('male', 'photo-blocker@example.com');
+        $blocked = $this->createSeeker('female', 'photo-blocked@example.com');
+        $blockerProfile = Profile::create(['user_id' => $blocker->id]);
+        $photo = Photo::create([
+            'profile_id' => $blockerProfile->id,
+            'file_path' => 'profile-photos/private.jpg',
+            'is_primary' => true,
+            'is_blurred' => false,
+            'moderation_status' => 'approved',
+        ]);
+
+        $grant = PhotoAccessGrant::create([
+            'profile_id' => $blockerProfile->id,
+            'granted_to_user_id' => $blocked->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($blocker)->post(route('blocked-users.store', $blocked->id));
+
+        $this->assertDatabaseHas('photo_access_grants', [
+            'id' => $grant->id,
+            'status' => 'revoked',
+        ]);
+        $this->actingAs($blocked)->get(route('photos.view', $photo->id))
+            ->assertHeader('Content-Type', 'image/svg+xml');
+
+        $this->actingAs($blocker)->delete(route('blocked-users.destroy', $blocked->id));
+
+        $this->assertDatabaseHas('photo_access_grants', [
+            'id' => $grant->id,
+            'status' => 'revoked',
+        ]);
+    }
+
+    public function test_photo_access_can_be_granted_and_revoked_by_the_profile_owner(): void
+    {
+        $owner = $this->createSeeker('male', 'photo-owner@example.com');
+        $recipient = $this->createSeeker('female', 'photo-recipient@example.com');
+        Profile::create(['user_id' => $owner->id]);
+        Profile::create(['user_id' => $recipient->id]);
+
+        $grantResponse = $this->actingAs($owner)->post(route('profile.photos.grant', $recipient->id));
+        $grantResponse->assertSessionHas('success');
+
+        $grant = PhotoAccessGrant::where('profile_id', $owner->profile->id)
+            ->where('granted_to_user_id', $recipient->id)
+            ->firstOrFail();
+        $this->assertSame('active', $grant->status);
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $owner->id,
+            'action' => 'photo_access_granted',
+            'target_id' => $recipient->id,
+        ]);
+
+        $revokeResponse = $this->actingAs($owner)->delete(route('profile.photos.revoke', $recipient->id));
+        $revokeResponse->assertSessionHas('success');
+        $this->assertDatabaseHas('photo_access_grants', [
+            'id' => $grant->id,
+            'status' => 'revoked',
+        ]);
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $owner->id,
+            'action' => 'photo_access_revoked',
+            'target_id' => $recipient->id,
         ]);
     }
 

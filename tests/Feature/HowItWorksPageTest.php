@@ -19,6 +19,10 @@ class HowItWorksPageTest extends TestCase
             ->assertSee('Seeker B')
             ->assertSee('Wali / Family')
             ->assertSee('From first profile to family conversation')
+            ->assertSee('Choose your perspective')
+            ->assertSee('For the seeker')
+            ->assertSee('For the Wali')
+            ->assertSee('For the family')
             ->assertSee(route('how-it-works'));
     }
 }

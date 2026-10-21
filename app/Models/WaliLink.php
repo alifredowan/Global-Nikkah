@@ -10,6 +10,10 @@ class WaliLink extends Model
 {
     use HasFactory;
 
+    protected $hidden = [
+        'invite_token',
+    ];
+
     protected $fillable = [
         'seeker_user_id',
         'wali_user_id',

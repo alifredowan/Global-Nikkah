@@ -153,6 +153,18 @@
                                 <span>Photos are blurred by default until mutual interest is accepted or explicit reciprocal photo permission is granted.</span>
                             </div>
                         </div>
+                        @if(Auth::user()->profile && ! $hasGrantedPhotoAccess)
+                            <form action="{{ route('profile.photos.grant', $targetUser->id) }}" method="POST" class="shrink-0">
+                                @csrf
+                                <button type="submit" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition">
+                                    Grant them photo access
+                                </button>
+                            </form>
+                        @elseif($hasGrantedPhotoAccess)
+                            <span class="shrink-0 rounded-xl border border-emerald-300 bg-emerald-100 px-4 py-2.5 text-center text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                                ✓ Photo access granted
+                            </span>
+                        @endif
                     </div>
                 @endif
             </div>

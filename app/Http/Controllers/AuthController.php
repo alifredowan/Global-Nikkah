@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
+use App\Models\PhotoAccessGrant;
 use App\Models\Profile;
 use App\Models\Subscription;
 use App\Models\User;
@@ -231,6 +232,14 @@ class AuthController extends Controller
             'is_active' => false,
             'deactivation_reason' => $request->reason,
         ]);
+        $user->tokens()->delete();
+        PhotoAccessGrant::query()
+            ->where(function ($query) use ($user): void {
+                $query->whereHas('profile', fn ($profileQuery) => $profileQuery->where('user_id', $user->id))
+                    ->orWhere('granted_to_user_id', $user->id);
+            })
+            ->where('status', 'active')
+            ->update(['status' => 'revoked']);
 
         AuditLog::record($user->id, 'account_deactivated', 'User', $user->id, ['reason' => $request->reason]);
 
@@ -304,6 +313,7 @@ class AuthController extends Controller
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
+                $user->tokens()->delete();
 
                 event(new PasswordReset($user));
                 AuditLog::record($user->id, 'password_reset', 'User', $user->id);

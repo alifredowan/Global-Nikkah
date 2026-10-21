@@ -48,6 +48,10 @@ class InterestController extends Controller
 
     public function send(Request $request, int $recipientId): RedirectResponse
     {
+        $request->validate([
+            'note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
         $sender = Auth::user();
 
         if ($sender->id === $recipientId) {

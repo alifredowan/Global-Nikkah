@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Propaganistas\LaravelPhone\Rules\Phone;
 
 class AuthController extends Controller
 {
@@ -36,7 +37,7 @@ class AuthController extends Controller
                     return $query->whereRaw('LOWER(email) = ?', [$normalizedEmail]);
                 }),
             ],
-            'phone' => ['nullable', 'string', 'unique:users'],
+            'phone' => ['nullable', 'string', (new Phone)->international(), 'unique:users,phone'],
             'gender' => ['required', 'in:male,female'],
             'dob' => ['required', 'date', "before_or_equal:{$maxBirthDate}"],
             'marital_status' => ['required', 'in:never_married,divorced,widowed,annulled'],
@@ -45,10 +46,12 @@ class AuthController extends Controller
             'email.unique' => 'An account with this email address already exists. Please sign in or use forgot password.',
         ]);
 
+        $normalizedPhoneNumber = $validated['phone'] ? phone($validated['phone'])->formatE164() : null;
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
+            'phone' => $normalizedPhoneNumber,
             'gender' => $validated['gender'],
             'dob' => $validated['dob'],
             'marital_status' => $validated['marital_status'],
@@ -126,11 +129,21 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->currentAccessToken()?->delete();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Logged out successfully',
+        ]);
+    }
+
+    public function logoutAll(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'All API sessions have been revoked',
         ]);
     }
 }

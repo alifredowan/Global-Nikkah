@@ -16,7 +16,21 @@ class PhotoController extends Controller
      */
     public function show(Request $request, Photo $photo): Response
     {
+        if (! $photo->profile?->user?->is_active) {
+            return $this->serveSvgSilhouette($photo);
+        }
+
         $viewer = Auth::user();
+        $photoOwner = $photo->profile?->user;
+
+        if ($viewer && ! $viewer->is_active) {
+            return $this->serveSvgSilhouette($photo);
+        }
+
+        if ($viewer && $photoOwner && $viewer->hasBlockedRelationshipWith($photoOwner)) {
+            return $this->serveSvgSilhouette($photo);
+        }
+
         $isAuthorized = $photo->profile?->isPhotoVisibleTo($viewer);
 
         if ($isAuthorized) {
@@ -31,7 +45,7 @@ class PhotoController extends Controller
         $filePath = $photo->file_path;
 
         // If external URL (e.g. Unsplash demo image)
-        if (str_starts_with($filePath, 'http://') || str_starts_with($filePath, 'https://')) {
+        if ($this->isTrustedExternalImageUrl($filePath)) {
             return redirect()->away($filePath);
         }
 
@@ -69,7 +83,7 @@ class PhotoController extends Controller
         $imageData = null;
         $filePath = $photo->file_path;
 
-        if (str_starts_with($filePath, 'http://') || str_starts_with($filePath, 'https://')) {
+        if ($this->isTrustedExternalImageUrl($filePath)) {
             try {
                 $res = Http::timeout(4)->get($filePath);
                 if ($res->successful()) {
@@ -116,6 +130,14 @@ class PhotoController extends Controller
         }
 
         return $this->serveSvgSilhouette($photo);
+    }
+
+    private function isTrustedExternalImageUrl(string $url): bool
+    {
+        $parsedUrl = parse_url($url);
+
+        return ($parsedUrl['scheme'] ?? null) === 'https'
+            && ($parsedUrl['host'] ?? null) === 'images.unsplash.com';
     }
 
     protected function serveSvgSilhouette(Photo $photo): Response

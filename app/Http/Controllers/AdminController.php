@@ -20,9 +20,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminController extends Controller
 {
@@ -68,10 +70,40 @@ class AdminController extends Controller
         return view('admin.verifications', compact('verifications'));
     }
 
+    public function downloadVerificationDocument(int $id, string $type): BinaryFileResponse
+    {
+        if (! in_array($type, ['document', 'selfie'], true)) {
+            abort(404);
+        }
+
+        $verification = VerificationRequest::findOrFail($id);
+        $path = $type === 'document' ? $verification->document_path : $verification->selfie_path;
+
+        if (! $path || ! Storage::disk('local')->exists($path)) {
+            abort(404);
+        }
+
+        AuditLog::record(Auth::id(), 'verification_document_downloaded', 'VerificationRequest', $id, [
+            'document_type' => $type,
+        ]);
+
+        $extension = pathinfo($path, PATHINFO_EXTENSION) ?: 'bin';
+
+        $response = response()->download(
+            Storage::disk('local')->path($path),
+            "verification-{$id}-{$type}.{$extension}",
+        );
+        $response->headers->set('Cache-Control', 'private, no-store');
+
+        return $response;
+    }
+
     public function approveVerification(int $id): RedirectResponse
     {
         $admin = Auth::user();
-        $request = VerificationRequest::findOrFail($id);
+        $request = VerificationRequest::whereKey($id)
+            ->where('status', 'pending')
+            ->firstOrFail();
 
         $request->update([
             'status' => 'approved',
@@ -91,7 +123,9 @@ class AdminController extends Controller
         $request->validate(['rejection_reason' => 'required|string|max:500']);
 
         $admin = Auth::user();
-        $verification = VerificationRequest::findOrFail($id);
+        $verification = VerificationRequest::whereKey($id)
+            ->where('status', 'pending')
+            ->firstOrFail();
 
         $verification->update([
             'status' => 'rejected',
@@ -382,7 +416,10 @@ class AdminController extends Controller
 
     public function settings(TurnstileService $turnstileService): View
     {
-        $settings = PlatformSetting::all();
+        // Payment and security (CAPTCHA) settings have their own dedicated, validated
+        // forms below — never list them here, or they'd be editable/overwritable
+        // as plain text through the generic policy-parameters form.
+        $settings = PlatformSetting::whereNotIn('group', ['payment', 'security'])->get();
         $discountCodes = DiscountCode::with('plan')->latest('created_at')->get();
 
         $captchaSettings = [
@@ -397,10 +434,24 @@ class AdminController extends Controller
 
     public function updateSettings(Request $request): RedirectResponse
     {
-        $inputs = $request->except('_token');
+        // Only pre-existing, non-payment/non-security settings may be edited here.
+        // This whitelist is derived server-side so a crafted field name (e.g.
+        // stripe_secret, turnstile_secret_key) can never be written through this form.
+        $editableSettings = PlatformSetting::whereNotIn('group', ['payment', 'security'])->get();
 
-        foreach ($inputs as $key => $value) {
-            PlatformSetting::where('key', $key)->update(['value' => $value]);
+        foreach ($editableSettings as $setting) {
+            if (! $request->has($setting->key)) {
+                continue;
+            }
+
+            $value = match ($setting->type) {
+                'boolean' => $request->boolean($setting->key),
+                'integer' => (int) $request->input($setting->key),
+                'json' => $request->input($setting->key),
+                default => (string) $request->input($setting->key),
+            };
+
+            PlatformSetting::set($setting->key, $value, $setting->type, $setting->group, $setting->description);
         }
 
         AuditLog::record(Auth::id(), 'platform_settings_updated');
@@ -676,6 +727,10 @@ class AdminController extends Controller
     public function updateStaffPermissions(Request $request, int $id): RedirectResponse
     {
         $staff = User::findOrFail($id);
+
+        if ($staff->id === Auth::id()) {
+            return back()->with('error', 'You cannot modify your own role or permissions.');
+        }
 
         if ($staff->isSuperAdmin() && ! Auth::user()->isSuperAdmin()) {
             abort(403, 'Only a Super Admin can modify other Super Admins.');

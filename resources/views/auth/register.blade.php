@@ -82,17 +82,58 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Phone Number</label>
-                        <div class="flex gap-2">
-                            <select name="phone_country" class="w-28 px-2 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
-                                <option value="">Country</option>
-                                @foreach ($countries as $code => $country)
-                                    <option value="{{ $code }}" {{ old('phone_country') === $code ? 'selected' : '' }}>
-                                        {{ $country['name'] }} (+{{ $country['dial_code'] }})
-                                    </option>
-                                @endforeach
-                            </select>
+                        <div class="flex gap-2"
+                             x-data="{
+                                open: false,
+                                search: '',
+                                selected: '{{ old('phone_country', '') }}',
+                                countries: @js($countries),
+                                get filtered() {
+                                    const q = this.search.trim().toLowerCase();
+                                    return Object.entries(this.countries).filter(([code, c]) => {
+                                        return !q || c.name.toLowerCase().includes(q) || c.dial_code.includes(q) || code.toLowerCase().includes(q);
+                                    });
+                                },
+                                get selectedCountry() {
+                                    return this.selected ? this.countries[this.selected] : null;
+                                },
+                                choose(code) {
+                                    this.selected = code;
+                                    this.open = false;
+                                    this.search = '';
+                                }
+                             }"
+                             @click.outside="open = false">
+                            <div class="relative w-24 shrink-0">
+                                <input type="hidden" name="phone_country" :value="selected">
+                                <button type="button" @click="open = !open"
+                                        class="w-full h-full px-2 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition flex items-center justify-between gap-1">
+                                    <span x-text="selectedCountry ? ('+' + selectedCountry.dial_code) : 'Code'" class="truncate"></span>
+                                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                                <div x-show="open" x-cloak
+                                     class="absolute z-30 mt-1 w-64 max-h-72 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg flex flex-col">
+                                    <div class="p-2 border-b border-slate-100 dark:border-slate-700">
+                                        <input type="text" x-model="search" x-ref="countrySearch" @click.stop
+                                               placeholder="Search country or code..."
+                                               class="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    </div>
+                                    <div class="overflow-y-auto">
+                                        <template x-for="[code, c] in filtered" :key="code">
+                                            <button type="button" @click="choose(code)"
+                                                    class="w-full text-left px-3 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 flex items-center justify-between gap-2">
+                                                <span class="truncate" x-text="c.name"></span>
+                                                <span class="text-slate-400 shrink-0" x-text="'+' + c.dial_code"></span>
+                                            </button>
+                                        </template>
+                                        <p x-show="filtered.length === 0" class="px-3 py-2 text-xs text-slate-400">No country found.</p>
+                                    </div>
+                                </div>
+                            </div>
                             <input type="tel" name="phone" value="{{ old('phone') }}"
-                                   class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                                   class="flex-1 min-w-0 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
                                    placeholder="e.g. 555 123 4567">
                         </div>
                         <span class="text-[10px] text-slate-400 block mt-0.5">Select your country, then enter your local number.</span>

@@ -6,16 +6,30 @@ use App\Models\Profile;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class LandingController extends Controller
 {
     public function index(): View
     {
+        $landingData = app()->environment('testing')
+            ? $this->landingData()
+            : Cache::remember('landing.page.data', now()->addMinutes(5), fn (): array => $this->landingData());
+
+        return view('landing', $landingData);
+    }
+
+    /**
+     * @return array{stats: array{total_seekers: int, verified_profiles: int, successful_matches: int}, recentProfiles: \Illuminate\Database\Eloquent\Collection, plans: Collection}
+     */
+    private function landingData(): array
+    {
         $stats = [
             'total_seekers' => User::where('role', 'seeker')->count(),
             'verified_profiles' => User::where('is_verified', true)->count(),
-            'successful_matches' => 128, // Indicative showcase milestone
+            'successful_matches' => 128,
         ];
 
         $recentProfiles = Profile::with(['user', 'primaryPhoto'])
@@ -37,7 +51,7 @@ class LandingController extends Controller
             ]);
         }
 
-        return view('landing', compact('stats', 'recentProfiles', 'plans'));
+        return compact('stats', 'recentProfiles', 'plans');
     }
 
     public function privacy(): View

@@ -22,7 +22,10 @@ class MessageApiController extends Controller
 
         $conversations = Conversation::whereHas('participants', function ($q) use ($user) {
             $q->where('conversation_participants.user_id', $user->id);
-        })->with(['participants', 'latestMessage'])->latest('updated_at')->get();
+        })->with([
+            'participants:id,name,role,is_verified',
+            'latestMessage.sender:id,name,role',
+        ])->latest('updated_at')->get();
 
         $conversations = $conversations->reject(
             fn (Conversation $conversation): bool => $this->hasBlockedParticipant($conversation, $user)
@@ -38,7 +41,7 @@ class MessageApiController extends Controller
     {
         $user = $request->user();
 
-        $conversation = Conversation::with(['messages.sender', 'participants'])
+        $conversation = Conversation::with(['participants:id,name,role,is_verified'])
             ->findOrFail($conversationId);
 
         if (! $conversation->participants->contains('id', $user->id)) {
@@ -51,7 +54,13 @@ class MessageApiController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $conversation->messages,
+            'data' => $conversation->messages()
+                ->with('sender:id,name,role')
+                ->latest('created_at')
+                ->limit(50)
+                ->get()
+                ->reverse()
+                ->values(),
         ]);
     }
 

@@ -50,7 +50,7 @@ class SettingsController extends Controller
             'email' => [
                 'required',
                 'string',
-                'email:rfc,dns',
+                'email:rfc',
                 'max:255',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
@@ -76,6 +76,11 @@ class SettingsController extends Controller
             'email' => strtolower(trim($validated['email'])),
             'phone' => $validated['phone'] ?? null,
         ];
+        $emailChanged = $user->email !== $userData['email'];
+
+        if ($emailChanged) {
+            $userData['email_verified_at'] = null;
+        }
 
         if ($user->isSeeker()) {
             if (isset($validated['gender'])) {
@@ -100,12 +105,21 @@ class SettingsController extends Controller
 
         $user->update($userData);
 
+        if ($emailChanged) {
+            $user->tokens()->delete();
+            $user->sendEmailVerificationNotification();
+        }
+
         AuditLog::record($user->id, 'account_data_updated', 'User', $user->id, [
             'name' => $user->name,
             'email' => $user->email,
         ]);
 
-        return back()->with('success', 'Your personal account information has been updated successfully.');
+        $message = $emailChanged
+            ? 'Your account details were updated. Please verify your new email address to continue using the platform.'
+            : 'Your personal account information has been updated successfully.';
+
+        return back()->with('success', $message);
     }
 
     /**
@@ -128,10 +142,22 @@ class SettingsController extends Controller
         $user->update([
             'password' => Hash::make($request->password),
         ]);
+        $user->tokens()->delete();
 
         AuditLog::record($user->id, 'account_password_updated', 'User', $user->id);
 
         return back()->with('success', 'Your password has been changed successfully.');
+    }
+
+    public function revokeApiSessions(): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $user->tokens()->delete();
+
+        AuditLog::record($user->id, 'api_sessions_revoked');
+
+        return back()->with('success', 'All API sessions have been revoked.');
     }
 
     /**

@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\VerificationRequest;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class StaffManagementTest extends TestCase
@@ -87,6 +89,42 @@ class StaffManagementTest extends TestCase
         // Forbidden on reports
         $deniedResponse = $this->actingAs($moderator)->get(route('admin.reports'));
         $deniedResponse->assertStatus(403);
+    }
+
+    public function test_verification_documents_are_only_downloadable_by_authorized_moderators(): void
+    {
+        Storage::fake('local');
+
+        $moderator = User::create([
+            'name' => 'Verification Moderator',
+            'email' => 'document-verifier@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'moderator',
+            'permissions' => ['manage_verifications'],
+            'gender' => 'male',
+            'is_active' => true,
+        ]);
+        $candidate = User::factory()->create();
+        $verification = VerificationRequest::create([
+            'user_id' => $candidate->id,
+            'document_type' => 'passport',
+            'document_path' => 'verifications/passport.jpg',
+            'status' => 'pending',
+        ]);
+        Storage::disk('local')->put($verification->document_path, 'private document');
+
+        $allowedResponse = $this->actingAs($moderator)->get(
+            route('admin.verifications.documents', [$verification->id, 'document'])
+        );
+
+        $allowedResponse->assertOk()
+            ->assertHeader('Cache-Control', 'no-store, private');
+
+        $deniedResponse = $this->actingAs($candidate)->get(
+            route('admin.verifications.documents', [$verification->id, 'document'])
+        );
+
+        $deniedResponse->assertForbidden();
     }
 
     public function test_super_admin_can_create_new_moderator_with_permissions(): void

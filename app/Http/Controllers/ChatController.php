@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ChatController extends Controller
@@ -309,14 +310,20 @@ class ChatController extends Controller
 
     public function reportUser(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+
         $request->validate([
-            'reported_id' => ['required', 'exists:users,id'],
+            'reported_id' => ['required', 'exists:users,id', Rule::notIn([$user->id])],
             'reason' => ['required', 'string', 'max:100'],
             'details' => ['nullable', 'string', 'max:1000'],
-            'conversation_id' => ['nullable', 'exists:conversations,id'],
+            'conversation_id' => [
+                'nullable',
+                Rule::exists('conversation_participants', 'conversation_id')->where('user_id', $user->id),
+            ],
+        ], [
+            'reported_id.not_in' => 'You cannot report yourself.',
+            'conversation_id.exists' => 'That conversation could not be found.',
         ]);
-
-        $user = Auth::user();
 
         Report::create([
             'reporter_id' => $user->id,

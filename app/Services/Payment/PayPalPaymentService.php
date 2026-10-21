@@ -62,6 +62,52 @@ class PayPalPaymentService
         return $this->webhookId;
     }
 
+    public function verifyWebhookSignature(array $headers, array $event): bool
+    {
+        if (! $this->isConfigured() || empty($this->webhookId)) {
+            return false;
+        }
+
+        $requiredHeaders = [
+            'paypal-transmission-id',
+            'paypal-transmission-time',
+            'paypal-transmission-sig',
+            'paypal-cert-url',
+            'paypal-auth-algo',
+        ];
+
+        foreach ($requiredHeaders as $header) {
+            if (empty($headers[$header][0])) {
+                return false;
+            }
+        }
+
+        $accessToken = $this->getAccessToken();
+        if (! $accessToken) {
+            return false;
+        }
+
+        try {
+            $response = Http::withToken($accessToken)
+                ->acceptJson()
+                ->post("{$this->baseUrl}/v1/notifications/verify-webhook-signature", [
+                    'auth_algo' => $headers['paypal-auth-algo'][0],
+                    'cert_url' => $headers['paypal-cert-url'][0],
+                    'transmission_id' => $headers['paypal-transmission-id'][0],
+                    'transmission_sig' => $headers['paypal-transmission-sig'][0],
+                    'transmission_time' => $headers['paypal-transmission-time'][0],
+                    'webhook_id' => $this->webhookId,
+                    'webhook_event' => $event,
+                ]);
+
+            return $response->successful() && $response->json('verification_status') === 'SUCCESS';
+        } catch (\Throwable $e) {
+            Log::warning('PayPal webhook verification request failed: '.$e->getMessage());
+
+            return false;
+        }
+    }
+
     /**
      * Get OAuth 2.0 access token from PayPal.
      */

@@ -49,15 +49,32 @@ class InterestApiController extends Controller
 
     public function store(Request $request, int $recipientId): JsonResponse
     {
+        $request->validate([
+            'note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
         $user = $request->user();
 
         if ($user->id === $recipientId) {
             return response()->json(['status' => 'error', 'message' => 'Cannot send interest to yourself'], 422);
         }
 
-        $recipient = User::findOrFail($recipientId);
+        $recipient = User::with('profile')->findOrFail($recipientId);
+
+        if ($recipient->role !== 'seeker' || ! $recipient->is_active) {
+            return response()->json(['status' => 'error', 'message' => 'This user is not accepting matrimonial interest requests.'], 422);
+        }
+
         if ($user->hasBlockedRelationshipWith($recipient)) {
             return response()->json(['status' => 'error', 'message' => 'This interaction is unavailable because one of the profiles has been blocked.'], 403);
+        }
+
+        if ($user->isMarried() || $recipient->isMarried()) {
+            return response()->json(['status' => 'error', 'message' => 'Married profiles cannot exchange new interest requests.'], 422);
+        }
+
+        if ($user->gender && $recipient->gender && $user->gender === $recipient->gender) {
+            return response()->json(['status' => 'error', 'message' => 'Interest requests can only be sent to candidates of the opposite gender.'], 422);
         }
 
         if (! $this->quotaService->canSendInterest($user)) {
@@ -66,13 +83,17 @@ class InterestApiController extends Controller
 
         $requiresWali = $this->waliService->requiresWaliApproval($recipient);
 
+        if (Interest::where('sender_id', $user->id)->where('recipient_id', $recipient->id)->exists()) {
+            return response()->json(['status' => 'error', 'message' => 'You have already sent an interest request to this candidate.'], 409);
+        }
+
         $interest = Interest::firstOrCreate([
             'sender_id' => $user->id,
             'recipient_id' => $recipient->id,
         ], [
             'status' => 'pending',
             'wali_approval_status' => $requiresWali ? 'pending' : 'not_required',
-            'message_note' => $request->note,
+            'message_note' => $request->input('note'),
         ]);
 
         return response()->json([
@@ -91,6 +112,10 @@ class InterestApiController extends Controller
 
         if ($user->hasBlockedRelationshipWith($interest->sender)) {
             return response()->json(['status' => 'error', 'message' => 'This interaction is unavailable because one of the profiles has been blocked.'], 403);
+        }
+
+        if ($interest->status !== 'pending') {
+            return response()->json(['status' => 'error', 'message' => "This interest request has already been {$interest->status}."], 409);
         }
 
         if ($request->action === 'accept') {

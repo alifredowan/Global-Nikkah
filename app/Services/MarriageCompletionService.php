@@ -179,6 +179,19 @@ class MarriageCompletionService
      */
     public function decline(Marriage $marriage, User $decliner): void
     {
+        $isSpouse = ($decliner->id === $marriage->groom_id || $decliner->id === $marriage->bride_id);
+        $isWali = false;
+        if (! $isSpouse && $decliner->isWali()) {
+            $isWali = $decliner->waliLinksAsWali()
+                ->whereIn('seeker_user_id', [$marriage->groom_id, $marriage->bride_id])
+                ->where('status', 'active')
+                ->exists();
+        }
+
+        if (! $isSpouse && ! $isWali && ! $decliner->isAdmin()) {
+            throw new InvalidArgumentException('You are not authorized to decline this marriage.');
+        }
+
         $marriage->update(['status' => 'declined']);
 
         AuditLog::record($decliner->id, 'nikah_declined', 'Marriage', $marriage->id);

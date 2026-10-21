@@ -179,6 +179,21 @@
                         </button>
                     </div>
                 </form>
+
+                <div class="mt-6 border-t border-slate-100 dark:border-slate-800 pt-5">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-800 dark:text-slate-200">Revoke API sessions</h3>
+                            <p class="mt-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">Sign out API-connected devices and apps if you suspect a token has been exposed.</p>
+                        </div>
+                        <form action="{{ route('settings.api-sessions.revoke') }}" method="POST" class="shrink-0" onsubmit="return confirm('Revoke all API sessions?')">
+                            @csrf
+                            <button type="submit" class="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-bold text-rose-700 transition hover:bg-rose-100 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300">
+                                Revoke all
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <!-- 2. Password & Security Form -->

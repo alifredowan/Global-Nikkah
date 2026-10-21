@@ -41,21 +41,30 @@ class ProfileVisitorController extends Controller
         $visitors = collect();
         if ($isPro) {
             // Group by viewer_id to show unique recent visitors with their latest visit time
-            $rawVisitors = $query->get()->unique('viewer_id')->values();
+            $rawVisitors = $query->limit(100)->get()->unique('viewer_id')->values();
+            $viewerIds = $rawVisitors->pluck('viewer_id')->filter()->values();
+            $interestByViewer = Interest::query()
+                ->where(function ($interestQuery) use ($user, $viewerIds) {
+                    $interestQuery->where(function ($query) use ($user, $viewerIds) {
+                        $query->where('sender_id', $user->id)->whereIn('recipient_id', $viewerIds);
+                    })->orWhere(function ($query) use ($user, $viewerIds) {
+                        $query->whereIn('sender_id', $viewerIds)->where('recipient_id', $user->id);
+                    });
+                })
+                ->get()
+                ->keyBy(fn (Interest $interest): int => $interest->sender_id === $user->id
+                    ? $interest->recipient_id
+                    : $interest->sender_id);
 
             $userProfile = $user->profile;
-            $visitors = $rawVisitors->map(function ($view) use ($userProfile, $user) {
+            $visitors = $rawVisitors->map(function ($view) use ($userProfile, $user, $interestByViewer) {
                 $viewer = $view->viewer;
                 $compatibility = null;
                 if ($userProfile && $viewer->profile) {
                     $compatibility = $this->matchingEngine->computeCompatibility($userProfile, $viewer->profile);
                 }
 
-                $existingInterest = Interest::where(function ($q) use ($user, $viewer) {
-                    $q->where('sender_id', $user->id)->where('recipient_id', $viewer->id);
-                })->orWhere(function ($q) use ($user, $viewer) {
-                    $q->where('sender_id', $viewer->id)->where('recipient_id', $user->id);
-                })->first();
+                $existingInterest = $interestByViewer->get($viewer->id);
 
                 $view->viewer_compatibility = $compatibility;
                 $view->existing_interest = $existingInterest;

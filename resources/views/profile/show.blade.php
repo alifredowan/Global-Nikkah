@@ -144,6 +144,22 @@
                     </form>
                 @endif
             </div>
+
+            @if($profile->photoAccessGrants->where('status', 'active')->isNotEmpty())
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
+                    <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">People with unblurred-photo access</h3>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($profile->photoAccessGrants->where('status', 'active') as $grant)
+                            <form action="{{ route('profile.photos.revoke', $grant->granted_to_user_id) }}" method="POST" class="inline-flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5">
+                                @csrf
+                                @method('DELETE')
+                                <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">{{ $grant->grantedToUser?->name ?? 'Candidate' }}</span>
+                                <button type="submit" class="text-[10px] font-bold text-rose-600 dark:text-rose-400 hover:underline">Revoke</button>
+                            </form>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- KYC Verification Section (FR-1.4) -->

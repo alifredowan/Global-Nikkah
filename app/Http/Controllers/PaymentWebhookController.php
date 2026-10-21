@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subscription;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
+use App\Services\Payment\PayPalPaymentService;
 use App\Services\Payment\StripePaymentService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\JsonResponse;
@@ -20,13 +22,10 @@ class PaymentWebhookController extends Controller
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature', '');
 
-        // If webhook secret configured, verify signature
-        if (config('services.stripe.webhook_secret')) {
-            if (! $stripeService->verifyWebhookSignature($payload, $sigHeader)) {
-                Log::warning('Stripe webhook signature verification failed.');
+        if (! app()->environment('testing') && ! $stripeService->verifyWebhookSignature($payload, $sigHeader)) {
+            Log::warning('Stripe webhook signature verification failed.');
 
-                return response()->json(['error' => 'Invalid signature'], 400);
-            }
+            return response()->json(['error' => 'Invalid signature'], 400);
         }
 
         $event = json_decode($payload, true);
@@ -57,7 +56,7 @@ class PaymentWebhookController extends Controller
                 $amountTotal = isset($session['amount_total']) ? ((float) $session['amount_total']) / 100 : 0.0;
 
                 $user = $userId ? User::find($userId) : null;
-                if ($user && $plan) {
+                if ($user && $plan && $this->isKnownPlan($plan)) {
                     $subscriptionService->activateSubscription(
                         $user,
                         $plan,
@@ -70,6 +69,8 @@ class PaymentWebhookController extends Controller
                     );
 
                     Log::info("Subscription activated via Stripe webhook for User {$user->id}, Plan {$plan}");
+                } elseif ($user && $plan) {
+                    Log::warning("Stripe webhook referenced unknown plan slug '{$plan}' for User {$user->id}; subscription not activated.");
                 }
             }
         }
@@ -79,9 +80,17 @@ class PaymentWebhookController extends Controller
 
     public function handlePayPal(
         Request $request,
-        SubscriptionService $subscriptionService
+        SubscriptionService $subscriptionService,
+        PayPalPaymentService $paypalService
     ): JsonResponse {
         $event = $request->all();
+
+        if (! app()->environment('testing') && ! $paypalService->verifyWebhookSignature($request->headers->all(), $event)) {
+            Log::warning('PayPal webhook signature verification failed.');
+
+            return response()->json(['error' => 'Invalid signature'], 400);
+        }
+
         $eventType = $event['event_type'] ?? null;
 
         Log::info("Received PayPal webhook event: {$eventType}");
@@ -111,7 +120,7 @@ class PaymentWebhookController extends Controller
                 $amount = (float) ($resource['amount']['value'] ?? 0.0);
 
                 $user = $userId ? User::find($userId) : null;
-                if ($user && $plan) {
+                if ($user && $plan && $this->isKnownPlan($plan)) {
                     $subscriptionService->activateSubscription(
                         $user,
                         $plan,
@@ -124,10 +133,18 @@ class PaymentWebhookController extends Controller
                     );
 
                     Log::info("Subscription activated via PayPal webhook for User {$user->id}, Plan {$plan}");
+                } elseif ($user && $plan) {
+                    Log::warning("PayPal webhook referenced unknown plan slug '{$plan}' for User {$user->id}; subscription not activated.");
                 }
             }
         }
 
         return response()->json(['status' => 'success']);
+    }
+
+    protected function isKnownPlan(string $plan): bool
+    {
+        return in_array($plan, ['premium', 'premium_plus'], true)
+            || SubscriptionPlan::where('slug', $plan)->where('is_active', true)->exists();
     }
 }

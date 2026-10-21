@@ -183,6 +183,15 @@ class WaliWorkflowService
      */
     public function rejectByWali(Interest $interest, User $wali): bool
     {
+        $isAuthorized = WaliLink::where('seeker_user_id', $interest->recipient_id)
+            ->where('wali_user_id', $wali->id)
+            ->where('status', 'active')
+            ->exists();
+
+        if (! $isAuthorized && ! $wali->isAdmin()) {
+            return false;
+        }
+
         $interest->update([
             'wali_approval_status' => 'rejected',
             'wali_id' => $wali->id,
