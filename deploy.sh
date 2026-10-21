@@ -82,11 +82,17 @@ npm ci --include=dev
 npm run build
 rm -f public/hot
 
-# Clear compiled files without flushing application data or requiring cache tables.
+# Clear compiled files without requiring cache tables.
 "$PHP_BIN" artisan config:clear --no-interaction
 "$PHP_BIN" artisan route:clear --no-interaction
 "$PHP_BIN" artisan event:clear --no-interaction
 "$PHP_BIN" artisan view:clear --no-interaction
+
+# Stale serialized cache entries (e.g. Eloquent collections cached by LandingController)
+# can become unreadable after composer regenerates the autoloader, throwing
+# "incomplete object ... unserialize()" on the next request. Clear it every deploy;
+# non-fatal in case the configured cache store needs a table that isn't set up yet.
+"$PHP_BIN" artisan cache:clear --no-interaction || echo "Warning: cache:clear failed (non-fatal) — check CACHE_STORE configuration." >&2
 "$PHP_BIN" artisan migrate --force --no-interaction
 "$PHP_BIN" artisan storage:link --no-interaction
 "$PHP_BIN" artisan config:cache --no-interaction
