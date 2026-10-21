@@ -24,7 +24,10 @@ class WaliConnectionRequestNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return $notifiable->allowsNotification('wali_notifications')
+            && $notifiable->allowsNotification('email_notifications')
+            ? ['mail']
+            : [];
     }
 
     /**

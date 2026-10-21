@@ -28,7 +28,9 @@ class NewChatMessageNotification extends Notification implements ShouldBroadcast
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return $notifiable->allowsNotification('message_notifications')
+            ? ['database', 'broadcast']
+            : [];
     }
 
     /**

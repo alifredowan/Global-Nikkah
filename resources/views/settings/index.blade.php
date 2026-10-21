@@ -367,6 +367,7 @@
 
                     <form action="{{ route('settings.preferences.update') }}" method="POST" class="space-y-4">
                         @csrf
+                        <input type="hidden" name="section" value="privacy">
 
                         <!-- Incognito Browsing -->
                         <div class="flex items-start justify-between gap-3">
@@ -410,6 +411,35 @@
                     </form>
                 </div>
             @endif
+
+            <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
+                    <span class="text-lg">🔔</span>
+                    <div>
+                        <h3 class="font-heading text-sm font-bold text-slate-900 dark:text-white">Notification preferences</h3>
+                        <p class="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Choose which updates reach you through the platform.</p>
+                    </div>
+                </div>
+                @php($notificationPreferences = $user->notificationPreferences())
+                <form action="{{ route('settings.preferences.update') }}" method="POST" class="mt-4 space-y-3">
+                    @csrf
+                    <input type="hidden" name="section" value="notifications">
+                    @foreach([
+                        'email_notifications' => 'Email notifications',
+                        'interest_notifications' => 'Interest requests and responses',
+                        'message_notifications' => 'New chaperoned messages',
+                        'wali_notifications' => 'Wali and guardian updates',
+                        'saved_search_notifications' => 'Saved-search matches',
+                        'marriage_notifications' => 'Nikah milestone updates',
+                    ] as $preferenceKey => $preferenceLabel)
+                        <label class="flex items-center justify-between gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                            <span>{{ $preferenceLabel }}</span>
+                            <input type="checkbox" name="{{ $preferenceKey }}" value="1" {{ $notificationPreferences[$preferenceKey] ? 'checked' : '' }} class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 dark:border-slate-700">
+                        </label>
+                    @endforeach
+                    <button type="submit" class="mt-2 w-full rounded-xl border border-emerald-300 bg-emerald-50 py-2 font-bold text-xs text-emerald-800 transition hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">Save notification preferences</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

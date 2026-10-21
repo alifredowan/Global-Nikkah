@@ -25,7 +25,9 @@ class SavedSearchMatchNotification extends Notification implements ShouldBroadca
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return $notifiable->allowsNotification('saved_search_notifications')
+            ? ['database', 'broadcast']
+            : [];
     }
 
     /**

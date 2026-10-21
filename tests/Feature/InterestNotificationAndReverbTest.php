@@ -311,6 +311,36 @@ class InterestNotificationAndReverbTest extends TestCase
         $this->assertEquals(0, $user->fresh()->unreadNotifications()->count());
     }
 
+    public function test_notification_preferences_can_disable_interest_notifications(): void
+    {
+        $user = $this->createSeeker('Preference User');
+        $sender = $this->createSeeker('Preference Sender');
+
+        $response = $this->actingAs($user)->post(route('settings.preferences.update'), [
+            'section' => 'notifications',
+            'interest_notifications' => '0',
+            'email_notifications' => '1',
+            'message_notifications' => '1',
+            'wali_notifications' => '1',
+            'saved_search_notifications' => '1',
+            'marriage_notifications' => '1',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertFalse($user->fresh()->allowsNotification('interest_notifications'));
+
+        $interest = Interest::create([
+            'sender_id' => $sender->id,
+            'recipient_id' => $user->id,
+            'status' => 'pending',
+            'wali_approval_status' => 'not_required',
+        ]);
+
+        $user->notify(new InterestReceivedNotification($interest, targetUserId: $user->id));
+
+        $this->assertSame(0, $user->fresh()->notifications()->count());
+    }
+
     public function test_recipient_can_access_sender_profile_and_respond_directly_from_profile_and_notifications(): void
     {
         $sender = User::factory()->create([

@@ -28,7 +28,7 @@
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
                             @if($other?->profile?->primaryPhoto)
-                                <img src="{{ $other->profile->primaryPhoto->displayUrl() }}" alt="{{ $other->name }}" class="w-full h-full object-cover">
+                                <img src="{{ $other->profile->primaryPhoto->displayUrl() }}" alt="{{ $other->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-lg">
                                     {{ substr($other?->name ?? 'User', 0, 1) }}

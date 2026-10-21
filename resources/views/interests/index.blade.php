@@ -29,7 +29,7 @@
                     <div class="flex items-center gap-4">
                         <a href="{{ route('discovery.show', $interest->sender_id) }}" class="w-14 h-14 rounded-xl overflow-hidden bg-slate-800 shrink-0 hover:ring-2 hover:ring-emerald-500 transition block group cursor-pointer" title="View Candidate Profile">
                             @if($interest->sender->profile?->primaryPhoto)
-                                <img src="{{ $interest->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->sender->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition">
+                                <img src="{{ $interest->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->sender->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-xl group-hover:bg-emerald-900 transition">
                                     {{ substr($interest->sender->name, 0, 1) }}
@@ -121,7 +121,7 @@
                     <div class="flex items-center gap-4">
                         <a href="{{ route('discovery.show', $interest->recipient_id) }}" class="w-14 h-14 rounded-xl overflow-hidden bg-slate-800 shrink-0 hover:ring-2 hover:ring-emerald-500 transition block group cursor-pointer" title="View Candidate Profile">
                             @if($interest->recipient->profile?->primaryPhoto)
-                                <img src="{{ $interest->recipient->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->recipient->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition">
+                                <img src="{{ $interest->recipient->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->recipient->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-xl group-hover:bg-emerald-900 transition">
                                     {{ substr($interest->recipient->name, 0, 1) }}

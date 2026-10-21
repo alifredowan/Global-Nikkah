@@ -8,6 +8,7 @@ use App\Models\PhotoAccessGrant;
 use App\Models\Profile;
 use App\Models\User;
 use App\Models\VerificationRequest;
+use App\Services\ImageOptimizationService;
 use App\Services\SavedSearchAlertService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,10 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function __construct(
+        protected ImageOptimizationService $imageOptimizationService
+    ) {}
+
     public function show(): View|RedirectResponse
     {
         $user = Auth::user();
@@ -142,7 +147,7 @@ class ProfileController extends Controller
             return back()->withErrors(['photo' => 'You can upload a maximum of 6 photos (FR-2.2).']);
         }
 
-        $path = $request->file('photo')->store('profile-photos', 'private');
+        $path = $this->imageOptimizationService->store($request->file('photo'), 'profile-photos');
 
         $isFirstPhoto = ! $profile->photos()->exists();
 

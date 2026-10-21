@@ -33,6 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'permissions',
+        'notification_preferences',
         'gender',
         'dob',
         'marital_status',
@@ -61,6 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'is_incognito' => 'boolean',
             'two_factor_enabled' => 'boolean',
             'permissions' => 'array',
+            'notification_preferences' => 'array',
             'password' => 'hashed',
         ];
     }
@@ -197,6 +199,26 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->orWhereColumn('messages.created_at', '>', 'conversation_participants.last_read_at');
             })
             ->count('messages.id');
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    public function notificationPreferences(): array
+    {
+        return array_merge([
+            'email_notifications' => true,
+            'interest_notifications' => true,
+            'message_notifications' => true,
+            'wali_notifications' => true,
+            'saved_search_notifications' => true,
+            'marriage_notifications' => true,
+        ], $this->notification_preferences ?? []);
+    }
+
+    public function allowsNotification(string $category): bool
+    {
+        return (bool) ($this->notificationPreferences()[$category] ?? true);
     }
 
     public function profileViewsGiven(): HasMany

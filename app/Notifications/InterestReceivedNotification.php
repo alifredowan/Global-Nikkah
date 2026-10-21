@@ -35,7 +35,13 @@ class InterestReceivedNotification extends Notification implements ShouldBroadca
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast', 'mail'];
+        if (! $notifiable->allowsNotification('interest_notifications')) {
+            return [];
+        }
+
+        return $notifiable->allowsNotification('email_notifications')
+            ? ['database', 'broadcast', 'mail']
+            : ['database', 'broadcast'];
     }
 
     /**

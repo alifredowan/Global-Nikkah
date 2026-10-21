@@ -167,20 +167,35 @@ class SettingsController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        // Incognito browsing
-        $isIncognito = $request->boolean('is_incognito');
-        $user->update(['is_incognito' => $isIncognito]);
+        $section = $request->string('section', 'privacy')->toString();
+        $notificationPreferenceKeys = [
+            'email_notifications',
+            'interest_notifications',
+            'message_notifications',
+            'wali_notifications',
+            'saved_search_notifications',
+            'marriage_notifications',
+        ];
+        $notificationPreferences = collect($notificationPreferenceKeys)
+            ->mapWithKeys(fn (string $key): array => [$key => $request->boolean($key)])
+            ->all();
 
-        // Wali requirement for seekers
-        if ($user->isSeeker() && $user->profile) {
-            $user->profile->update([
-                'wali_required' => $request->boolean('wali_required'),
-            ]);
+        if ($section === 'notifications') {
+            $user->update(['notification_preferences' => $notificationPreferences]);
+        } else {
+            $isIncognito = $request->boolean('is_incognito');
+            $user->update(['is_incognito' => $isIncognito]);
+
+            if ($user->isSeeker() && $user->profile) {
+                $user->profile->update([
+                    'wali_required' => $request->boolean('wali_required'),
+                ]);
+            }
         }
 
-        AuditLog::record($user->id, 'account_preferences_updated', 'User', $user->id, [
-            'is_incognito' => $isIncognito,
-        ]);
+        AuditLog::record($user->id, 'account_preferences_updated', 'User', $user->id, $section === 'notifications'
+            ? ['notification_preferences' => $notificationPreferences]
+            : ['is_incognito' => $user->is_incognito]);
 
         return back()->with('success', 'Your preferences have been saved successfully.');
     }

@@ -26,7 +26,13 @@ class NikahMilestoneNotification extends Notification implements ShouldBroadcast
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast', 'mail'];
+        if (! $notifiable->allowsNotification('marriage_notifications')) {
+            return [];
+        }
+
+        return $notifiable->allowsNotification('email_notifications')
+            ? ['database', 'broadcast', 'mail']
+            : ['database', 'broadcast'];
     }
 
     /**

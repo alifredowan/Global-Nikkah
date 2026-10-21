@@ -23,7 +23,7 @@
                         <div class="flex min-w-0 items-center gap-3">
                             <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-emerald-950 font-bold text-amber-300">
                                 @if($blockedUser->profile?->primaryPhoto)
-                                    <img src="{{ $blockedUser->profile->primaryPhoto->displayUrl() }}" alt="{{ $blockedUser->name }}" class="photo-blur h-full w-full object-cover">
+                                    <img src="{{ $blockedUser->profile->primaryPhoto->displayUrl() }}" alt="{{ $blockedUser->name }}" class="photo-blur h-full w-full object-cover" loading="lazy" decoding="async">
                                 @else
                                     {{ substr($blockedUser->name, 0, 1) }}
                                 @endif

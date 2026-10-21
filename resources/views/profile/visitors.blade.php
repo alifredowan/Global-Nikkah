@@ -127,7 +127,7 @@
                                         <div class="flex items-center gap-3">
                                             <div class="relative w-14 h-14 rounded-2xl overflow-hidden bg-slate-800 shrink-0">
                                                 @if($profile && $profile->primaryPhoto)
-                                                    <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $viewer->name }}"
+                                                    <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $viewer->name }}" loading="lazy" decoding="async"
                                                          class="w-full h-full object-cover {{ $view->is_photo_visible ? '' : 'photo-blur' }}">
                                                 @else
                                                     <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-xl">

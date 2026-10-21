@@ -68,7 +68,7 @@
                                 <div class="flex items-center gap-3.5 mb-4">
                                     <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-800 shrink-0">
                                         @if($match->primaryPhoto)
-                                            <img src="{{ $match->primaryPhoto->displayUrl() }}" alt="{{ $match->user->name }}" class="w-full h-full object-cover photo-blur">
+                                            <img src="{{ $match->primaryPhoto->displayUrl() }}" alt="{{ $match->user->name }}" class="w-full h-full object-cover photo-blur" loading="lazy" decoding="async">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center bg-emerald-900 text-white font-bold text-xl">
                                                 {{ substr($match->user->name, 0, 1) }}
@@ -287,7 +287,7 @@
                             <!-- Photo Container with Blurred Default (FR-2.2) -->
                             <div class="relative h-56 bg-slate-900 overflow-hidden">
                                 @if($p->primaryPhoto)
-                                    <img src="{{ $p->primaryPhoto->displayUrl() }}" alt="{{ $p->user->name }}" class="w-full h-full object-cover photo-blur">
+                                    <img src="{{ $p->primaryPhoto->displayUrl() }}" alt="{{ $p->user->name }}" class="w-full h-full object-cover photo-blur" loading="lazy" decoding="async">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-4xl">
                                         {{ substr($p->user->name, 0, 1) }}

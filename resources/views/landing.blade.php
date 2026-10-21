@@ -274,7 +274,7 @@
                             <!-- Photo / Avatar Area with Modesty Scrim -->
                             <div class="relative h-52 bg-slate-800 overflow-hidden">
                                 @if($profile->primaryPhoto)
-                                    <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $profile->user->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition transform duration-300">
+                                    <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $profile->user->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition transform duration-300" loading="lazy" decoding="async">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-3xl">
                                         {{ substr($profile->user->name, 0, 1) }}

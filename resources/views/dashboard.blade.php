@@ -75,7 +75,7 @@
                                 <a href="{{ route('discovery.show', $match->user_id) }}" class="group flex items-center gap-3 rounded-2xl border border-slate-100 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/50 dark:border-slate-800 dark:hover:border-emerald-900 dark:hover:bg-emerald-950/30">
                                     <div class="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-emerald-950">
                                         @if($match->primaryPhoto)
-                                            <img src="{{ $match->primaryPhoto->displayUrl() }}" alt="{{ $match->user->name }}" class="photo-blur h-full w-full object-cover">
+                                            <img src="{{ $match->primaryPhoto->displayUrl() }}" alt="{{ $match->user->name }}" class="photo-blur h-full w-full object-cover" loading="lazy" decoding="async">
                                         @else
                                             <span class="flex h-full items-center justify-center font-bold text-amber-300">{{ substr($match->user->name, 0, 1) }}</span>
                                         @endif

@@ -27,7 +27,7 @@
             <div class="flex flex-col sm:flex-row items-center gap-5 p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
                 <div class="relative w-20 h-20 rounded-2xl overflow-hidden bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-3xl font-bold text-emerald-700 dark:text-emerald-400 border-2 border-emerald-500/20 shadow-xs flex-shrink-0">
                     @if($link->seeker->profile?->primaryPhoto)
-                        <img src="{{ asset('storage/' . $link->seeker->profile->primaryPhoto->file_path) }}" alt="{{ $link->seeker->name }}" class="w-full h-full object-cover">
+                        <img src="{{ $link->seeker->profile->primaryPhoto->displayUrl() }}" alt="{{ $link->seeker->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                     @else
                         {{ strtoupper(substr($link->seeker->name, 0, 1)) }}
                     @endif

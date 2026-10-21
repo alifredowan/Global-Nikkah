@@ -37,7 +37,7 @@
                     <div class="flex items-center gap-4">
                         <div class="w-16 h-16 rounded-xl bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
                             @if($pi->sender->profile?->primaryPhoto)
-                                <img src="{{ $pi->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $pi->sender->name }}" class="w-full h-full object-cover">
+                                <img src="{{ $pi->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $pi->sender->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-2xl">
                                     {{ substr($pi->sender->name, 0, 1) }}
