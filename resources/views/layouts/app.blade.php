@@ -107,6 +107,30 @@
       @keydown.window.cmd.k.prevent="commandPaletteOpen = true"
       @open-command-palette.window="commandPaletteOpen = true">
 
+    <div id="cookie-consent-banner"
+         class="fixed inset-x-3 bottom-3 z-[100] hidden sm:inset-x-auto sm:bottom-5 sm:left-5 sm:max-w-xl"
+         role="dialog"
+         aria-modal="false"
+         aria-labelledby="cookie-consent-title"
+         aria-describedby="cookie-consent-description">
+        <div class="rounded-2xl border border-emerald-200 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:border-emerald-900/80 dark:bg-slate-900/95 sm:p-5">
+            <div class="flex items-start gap-3">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-lg text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" aria-hidden="true">🍪</div>
+                <div class="min-w-0 flex-1">
+                    <h2 id="cookie-consent-title" class="font-heading text-sm font-extrabold text-slate-900 dark:text-white">Your privacy, your choice</h2>
+                    <p id="cookie-consent-description" class="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                        We use essential cookies to keep you signed in, protect forms, and remember your privacy preference. We do not use advertising cookies. <a href="{{ route('privacy') }}#cookies" class="font-bold text-emerald-700 underline underline-offset-2 dark:text-emerald-400">Read our cookie policy</a>.
+                    </p>
+                    <div class="mt-4 flex flex-wrap items-center gap-2">
+                        <button type="button" data-cookie-consent="accepted" class="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">Accept all</button>
+                        <button type="button" data-cookie-consent="essential" class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-emerald-700 dark:hover:text-emerald-400 dark:focus:ring-offset-slate-900">Essential only</button>
+                        <a href="{{ route('contact') }}" class="ml-auto text-[11px] font-bold text-slate-500 hover:text-emerald-700 hover:underline dark:text-slate-400 dark:hover:text-emerald-400">Questions?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @auth
         {{-- ========================================================= --}}
         {{-- AUTHENTICATED USER: FULL SIDEBAR LAYOUT (NO TOP TABS)    --}}
@@ -923,6 +947,31 @@
 
         // Initialize Laravel Reverb Echo Listener
         document.addEventListener('DOMContentLoaded', function() {
+            const cookieConsentKey = 'global_nikkah_cookie_consent';
+            const cookieConsentBanner = document.getElementById('cookie-consent-banner');
+
+            try {
+                if (!localStorage.getItem(cookieConsentKey) && cookieConsentBanner) {
+                    cookieConsentBanner.classList.remove('hidden');
+                }
+            } catch (error) {
+                if (cookieConsentBanner) {
+                    cookieConsentBanner.classList.remove('hidden');
+                }
+            }
+
+            document.querySelectorAll('[data-cookie-consent]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    try {
+                        localStorage.setItem(cookieConsentKey, button.dataset.cookieConsent);
+                    } catch (error) {
+                        // Continue with essential cookies when storage is unavailable.
+                    }
+
+                    cookieConsentBanner?.classList.add('hidden');
+                });
+            });
+
             @auth
                 if (window.Echo) {
                     const userId = {{ Auth::id() }};

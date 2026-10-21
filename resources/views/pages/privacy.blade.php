@@ -169,6 +169,19 @@
             <hr class="border-slate-100 dark:border-slate-800" />
 
             <!-- Section 6 -->
+            <section id="cookies" class="scroll-mt-24 space-y-3">
+                <div class="flex items-center gap-3">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 font-mono text-xs font-bold text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400">06</span>
+                    <h2 class="font-heading text-lg font-bold text-slate-900 dark:text-white sm:text-xl">Cookies &amp; Local Storage</h2>
+                </div>
+                <p class="pl-10 text-xs leading-relaxed text-slate-600 dark:text-slate-300 sm:text-sm">
+                    Global Nikkah uses strictly necessary session and security cookies to authenticate users, protect requests, and maintain a secure experience. The website also uses browser local storage for preferences such as theme selection and cookie-consent status. We do not use advertising cookies or sell browsing activity. You can choose essential-only cookies from the consent banner at any time by clearing your browser preference and choosing again.
+                </p>
+            </section>
+
+            <hr class="border-slate-100 dark:border-slate-800" />
+
+            <!-- Section 7 -->
             <section class="space-y-3">
                 <div class="flex items-center gap-3">
                     <span class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-xs font-bold font-mono">06</span>

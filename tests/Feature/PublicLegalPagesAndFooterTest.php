@@ -20,6 +20,7 @@ class PublicLegalPagesAndFooterTest extends TestCase
         $response->assertSee('Default Photo Blur');
         $response->assertSee('Guardian Transparency');
         $response->assertSee('Right to Erasure');
+        $response->assertSee('Cookies &amp; Local Storage', false);
     }
 
     public function test_terms_of_service_page_loads_successfully(): void
@@ -44,6 +45,16 @@ class PublicLegalPagesAndFooterTest extends TestCase
         $response->assertSee('Wali Chaperoning');
     }
 
+    public function test_contact_and_safety_page_loads_successfully(): void
+    {
+        $response = $this->get(route('contact'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Contact &amp; Safety', false);
+        $response->assertSee('support@globalnikkah.com');
+        $response->assertSee('safety@globalnikkah.com');
+    }
+
     public function test_unified_footer_is_visible_on_landing_page_with_dedicated_three_links(): void
     {
         $response = $this->get(route('landing'));
@@ -53,6 +64,9 @@ class PublicLegalPagesAndFooterTest extends TestCase
         $response->assertSee(route('privacy'));
         $response->assertSee(route('terms'));
         $response->assertSee(route('about'));
+        $response->assertSee(route('contact'));
+        $response->assertSee('cookie-consent-banner');
+        $response->assertSee('Essential only');
     }
 
     public function test_unified_footer_is_visible_for_authenticated_users(): void
@@ -80,5 +94,6 @@ class PublicLegalPagesAndFooterTest extends TestCase
         $response->assertSee(route('privacy'));
         $response->assertSee(route('terms'));
         $response->assertSee(route('about'));
+        $response->assertSee(route('contact'));
     }
 }
