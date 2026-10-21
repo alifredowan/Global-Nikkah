@@ -1,5 +1,11 @@
 <?php
 
+$seoUrl = rtrim((string) env('SEO_URL', 'https://globalnikkah.com'), '/');
+
+if (parse_url($seoUrl, PHP_URL_HOST) === 'globalnikkah.com') {
+    $seoUrl = 'https://globalnikah.com';
+}
+
 return [
-    'url' => rtrim((string) env('SEO_URL', env('APP_URL', 'http://localhost')), '/'),
+    'url' => $seoUrl,
 ];

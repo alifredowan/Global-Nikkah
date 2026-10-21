@@ -69,6 +69,11 @@ class LandingController extends Controller
         return view('pages.about');
     }
 
+    public function contact(): View
+    {
+        return view('pages.contact');
+    }
+
     public function howItWorks(): View
     {
         return view('pages.how-it-works');

@@ -25,6 +25,8 @@
                 <a href="{{ route('terms') }}" class="hover:text-emerald-400 transition">Terms of Service</a>
                 <span class="text-slate-700">•</span>
                 <a href="{{ route('about') }}" class="hover:text-emerald-400 transition">About Us</a>
+                <span class="text-slate-700">•</span>
+                <a href="{{ route('contact') }}" class="hover:text-emerald-400 transition">Contact &amp; Safety</a>
             </div>
         </div>
     </div>

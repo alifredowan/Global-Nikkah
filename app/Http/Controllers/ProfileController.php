@@ -142,7 +142,7 @@ class ProfileController extends Controller
             return back()->withErrors(['photo' => 'You can upload a maximum of 6 photos (FR-2.2).']);
         }
 
-        $path = $request->file('photo')->store('profile-photos', 'public');
+        $path = $request->file('photo')->store('profile-photos', 'private');
 
         $isFirstPhoto = ! $profile->photos()->exists();
 
@@ -175,8 +175,10 @@ class ProfileController extends Controller
         $profile = Auth::user()->profile;
         $photo = $profile->photos()->findOrFail($photoId);
 
-        if (Storage::disk('public')->exists($photo->file_path)) {
-            Storage::disk('public')->delete($photo->file_path);
+        foreach (['private', 'public'] as $disk) {
+            if (Storage::disk($disk)->exists($photo->file_path)) {
+                Storage::disk($disk)->delete($photo->file_path);
+            }
         }
 
         $cacheFile = storage_path('app/blurred-photos/blurred_'.$photo->id.'.jpg');

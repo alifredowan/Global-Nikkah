@@ -319,6 +319,28 @@
                 </div>
             </div>
 
+            <div class="rounded-3xl border border-rose-200 bg-rose-50 p-6 shadow-xs dark:border-rose-950/80 dark:bg-rose-950/20">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">⚠️</span>
+                    <h3 class="font-heading text-sm font-bold text-rose-900 dark:text-rose-200">Delete account permanently</h3>
+                </div>
+                <p class="mt-3 text-xs leading-5 text-rose-800/80 dark:text-rose-300/80">
+                    This permanently removes your profile, photos, messages, matches, and verification files. This action cannot be undone.
+                </p>
+                <form action="{{ route('account.delete') }}" method="POST" class="mt-5 space-y-3">
+                    @csrf
+                    <input type="password" name="password" required autocomplete="current-password" placeholder="Confirm your password" class="w-full rounded-xl border border-rose-200 bg-white px-3 py-2.5 text-xs text-slate-900 outline-none focus:ring-2 focus:ring-rose-500 dark:border-rose-900 dark:bg-slate-900 dark:text-white">
+                    <textarea name="reason" required maxlength="500" rows="2" placeholder="Why are you leaving? (required)" class="w-full rounded-xl border border-rose-200 bg-white px-3 py-2.5 text-xs text-slate-900 outline-none focus:ring-2 focus:ring-rose-500 dark:border-rose-900 dark:bg-slate-900 dark:text-white"></textarea>
+                    <label class="flex items-start gap-2 text-[11px] font-semibold leading-4 text-rose-900 dark:text-rose-200">
+                        <input type="checkbox" name="confirmation" value="1" required class="mt-0.5 rounded border-rose-300 text-rose-600 focus:ring-rose-500">
+                        <span>I understand that permanent deletion cannot be reversed.</span>
+                    </label>
+                    <button type="submit" class="w-full rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-rose-700" onclick="return confirm('Permanently delete your account and personal data? This cannot be undone.')">
+                        Permanently delete account
+                    </button>
+                </form>
+            </div>
+
             @if($user->isSuperAdmin() || $user->hasPermission('manage_settings'))
                 <!-- Admin Fast Link to Platform Policies -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-3">

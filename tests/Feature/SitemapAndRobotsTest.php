@@ -14,6 +14,7 @@ class SitemapAndRobotsTest extends TestCase
         $response = $this->get(route('sitemap'));
 
         $response->assertOk();
+        $response->assertDontSee('globalnikkah.com', false);
         $response->assertHeader('Content-Type', 'application/xml; charset=UTF-8');
         $response->assertSee('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', false);
         $response->assertSee(config('seo.url').'/', false);
@@ -21,6 +22,7 @@ class SitemapAndRobotsTest extends TestCase
         $response->assertSee(config('seo.url').'/privacy', false);
         $response->assertSee(config('seo.url').'/terms', false);
         $response->assertSee(config('seo.url').'/about', false);
+        $response->assertSee(config('seo.url').'/contact', false);
         $response->assertSee(config('seo.url').'/how-it-works', false);
         $response->assertDontSee('/dashboard', false);
         $response->assertDontSee('/admin', false);
@@ -49,6 +51,7 @@ class SitemapAndRobotsTest extends TestCase
             'privacy',
             'terms',
             'about',
+            'contact',
             'how-it-works',
         ] as $routeName) {
             $response = $this->get(route($routeName));
@@ -60,6 +63,9 @@ class SitemapAndRobotsTest extends TestCase
 
             $response->assertSee('<link rel="canonical" href="'.$canonicalUrl.'">', false);
             $response->assertSee('<meta name="description" content="', false);
+            $response->assertSee('<script type="application/ld+json">', false);
+            $response->assertSee('"@type":"Organization"', false);
+            $response->assertSee('"@type":"WebSite"', false);
         }
     }
 

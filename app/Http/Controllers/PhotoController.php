@@ -49,9 +49,9 @@ class PhotoController extends Controller
             return redirect()->away($filePath);
         }
 
-        // If local public storage
-        if (Storage::disk('public')->exists($filePath)) {
-            $fullPath = Storage::disk('public')->path($filePath);
+        // Local photos are private and can only be served after authorization.
+        if (Storage::disk('private')->exists($filePath)) {
+            $fullPath = Storage::disk('private')->path($filePath);
             $mime = mime_content_type($fullPath) ?: 'image/jpeg';
 
             return response()->file($fullPath, [
@@ -92,8 +92,8 @@ class PhotoController extends Controller
             } catch (\Throwable $e) {
                 // fall through to SVG
             }
-        } elseif (Storage::disk('public')->exists($filePath)) {
-            $imageData = Storage::disk('public')->get($filePath);
+        } elseif (Storage::disk('private')->exists($filePath)) {
+            $imageData = Storage::disk('private')->get($filePath);
         }
 
         if ($imageData && extension_loaded('gd')) {

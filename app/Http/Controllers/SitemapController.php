@@ -14,6 +14,7 @@ class SitemapController extends Controller
             $this->publicUrl('privacy'),
             $this->publicUrl('terms'),
             $this->publicUrl('about'),
+            $this->publicUrl('contact'),
             $this->publicUrl('how-it-works'),
         ];
 

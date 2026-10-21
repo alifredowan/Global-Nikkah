@@ -24,6 +24,8 @@ class SubscriptionPricingTest extends TestCase
             ->assertSee('Free Seeker')
             ->assertSee('Standard Nikah Pass')
             ->assertSee('VIP Barakah Pass')
+            ->assertSee('Our Single Marriage Guarantee (One-Time Pass Guarantee)')
+            ->assertDontSee('সাবস্ক্রিপশন গ্যারান্টি')
             ->assertSee('href="'.route('register').'"', false)
             ->assertDontSee('Current Active Plan')
             ->assertDontSee('Your Current Plan')

@@ -12,6 +12,29 @@
     @hasSection('canonical_url')
         <link rel="canonical" href="{{ config('seo.url').(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo()) }}">
         <meta property="og:url" content="{{ config('seo.url').(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo()) }}">
+        @php
+            $seoSiteUrl = rtrim((string) config('seo.url'), '/');
+            $seoSchema = [
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    [
+                        '@type' => 'Organization',
+                        '@id' => $seoSiteUrl.'/#organization',
+                        'name' => 'Global Nikkah',
+                        'url' => $seoSiteUrl.'/',
+                        'description' => 'An ethical Muslim matrimonial platform for serious marriage with verified profiles, Wali participation, and privacy-first matchmaking.',
+                    ],
+                    [
+                        '@type' => 'WebSite',
+                        '@id' => $seoSiteUrl.'/#website',
+                        'name' => 'Global Nikkah',
+                        'url' => $seoSiteUrl.'/',
+                        'publisher' => ['@id' => $seoSiteUrl.'/#organization'],
+                    ],
+                ],
+            ];
+        @endphp
+        <script type="application/ld+json">{!! json_encode($seoSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endif
     <meta property="og:title" content="@yield('title', 'Global Nikkah - Muslim Matrimonial Platform')">
     <meta property="og:description" content="@yield('meta_description', 'Global Nikkah is an ethical Muslim matrimonial platform for serious marriage with verified profiles, Wali participation, and privacy-first matchmaking.')">

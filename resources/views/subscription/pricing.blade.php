@@ -195,7 +195,7 @@
                     🤝
                 </div>
                 <div>
-                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Our Single Marriage Guarantee (১ বার সাবস্ক্রিপশন গ্যারান্টি)</h3>
+                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Our Single Marriage Guarantee (One-Time Pass Guarantee)</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">
                         When you purchase a pass, you will never be subjected to unexpected monthly charges. Your account maintains all tier privileges until you and your chosen partner register and confirm your successful Nikah milestone on Global Nikkah.
                     </p>

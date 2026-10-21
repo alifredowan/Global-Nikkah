@@ -27,6 +27,7 @@ Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscr
 Route::get('/privacy', [LandingController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [LandingController::class, 'terms'])->name('terms');
 Route::get('/about', [LandingController::class, 'about'])->name('about');
+Route::get('/contact', [LandingController::class, 'contact'])->name('contact');
 Route::get('/how-it-works', [LandingController::class, 'howItWorks'])->name('how-it-works');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots.txt');
 Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
@@ -86,6 +87,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/account/deactivate', [AuthController::class, 'deactivate'])
         ->middleware('throttle:3,60')
         ->name('account.deactivate');
+    Route::post('/account/delete', [AuthController::class, 'deleteAccount'])
+        ->middleware('throttle:3,60')
+        ->name('account.delete');
     Route::get('/blocked-users', [BlockedUserController::class, 'index'])->name('blocked-users.index');
     Route::post('/blocked-users/{userId}', [BlockedUserController::class, 'store'])
         ->middleware('throttle:30,1')

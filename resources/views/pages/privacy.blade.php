@@ -190,7 +190,7 @@
                     Our Data Protection Officer and Shariah Ethics Committee are here to assist you at any time.
                 </p>
             </div>
-            <a href="mailto:privacy@nikahconnect.com" class="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-emerald-950 text-xs font-bold transition shrink-0 shadow-md">
+            <a href="mailto:privacy@globalnikkah.com" class="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-emerald-950 text-xs font-bold transition shrink-0 shadow-md">
                 Contact Privacy Team &rarr;
             </a>
         </div>

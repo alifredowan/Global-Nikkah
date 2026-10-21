@@ -8,6 +8,7 @@ use App\Models\Profile;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Rules\Turnstile;
+use App\Services\AccountDeletionService;
 use App\Services\TurnstileService;
 use App\Services\WaliWorkflowService;
 use Carbon\Carbon;
@@ -248,6 +249,24 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('landing')->with('success', 'Your account has been deactivated.');
+    }
+
+    public function deleteAccount(Request $request, AccountDeletionService $accountDeletionService): RedirectResponse
+    {
+        $validated = $request->validate([
+            'password' => ['required', 'current_password'],
+            'reason' => ['required', 'string', 'max:500'],
+            'confirmation' => ['accepted'],
+        ]);
+
+        $user = Auth::user();
+        $accountDeletionService->delete($user, $validated['reason']);
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('landing')->with('success', 'Your account and personal data have been permanently deleted.');
     }
 
     public function showForgotPassword(): View
