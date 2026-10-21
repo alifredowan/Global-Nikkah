@@ -135,6 +135,56 @@ class MatchingEngineService
     }
 
     /**
+     * Explain the strongest compatibility signals shared by two profiles.
+     *
+     * @return array<int, array{icon: string, label: string, detail: string}>
+     */
+    public function getCompatibilityHighlights(Profile $p1, Profile $p2): array
+    {
+        if ($this->computeCompatibility($p1, $p2) === 0) {
+            return [];
+        }
+
+        $highlights = [];
+
+        if ($p1->sect_madhhab && $p2->sect_madhhab && strtolower($p1->sect_madhhab) === strtolower($p2->sect_madhhab)) {
+            $highlights[] = ['icon' => '🕌', 'label' => 'Shared madhhab', 'detail' => "Both profiles indicate {$p1->sect_madhhab}."];
+        }
+
+        if ($p1->prayer_frequency && $p2->prayer_frequency && $p1->prayer_frequency === $p2->prayer_frequency) {
+            $highlights[] = ['icon' => '🤲', 'label' => 'Prayer alignment', 'detail' => 'A similar daily prayer practice is listed.'];
+        }
+
+        if ($p1->halal_dietary_adherence && $p2->halal_dietary_adherence && $p1->halal_dietary_adherence === $p2->halal_dietary_adherence) {
+            $highlights[] = ['icon' => '🌿', 'label' => 'Shared halal practice', 'detail' => 'Both profiles list the same dietary standard.'];
+        }
+
+        if ($p1->desired_family_structure && $p2->desired_family_structure && $p1->desired_family_structure === $p2->desired_family_structure) {
+            $highlights[] = ['icon' => '🏡', 'label' => 'Family vision', 'detail' => 'Your preferred family structure is aligned.'];
+        }
+
+        if ($p1->family_religiosity && $p2->family_religiosity && $p1->family_religiosity === $p2->family_religiosity) {
+            $highlights[] = ['icon' => '🤝', 'label' => 'Family values', 'detail' => 'Both profiles describe a similar family-religiosity level.'];
+        }
+
+        if ($p1->country && $p2->country && strtolower($p1->country) === strtolower($p2->country)) {
+            $highlights[] = ['icon' => '📍', 'label' => 'Shared country', 'detail' => "Both profiles are based in {$p1->country}."];
+        }
+
+        if ($p1->education_level && $p2->education_level && $p1->education_level === $p2->education_level) {
+            $highlights[] = ['icon' => '🎓', 'label' => 'Education match', 'detail' => 'Both profiles list a similar education level.'];
+        }
+
+        $candidateAge = $p2->user->age;
+        $preferences = $p1->partner_preferences ?? [];
+        if ($candidateAge && ! empty($preferences['age_min']) && ! empty($preferences['age_max']) && $candidateAge >= $preferences['age_min'] && $candidateAge <= $preferences['age_max']) {
+            $highlights[] = ['icon' => '🎯', 'label' => 'Within your preference', 'detail' => 'Their age is within your selected partner range.'];
+        }
+
+        return array_slice($highlights, 0, 4);
+    }
+
+    /**
      * Get ranked match suggestions for a given user.
      */
     public function getDailyMatches(User $user, int $limit = 12): Collection
@@ -162,6 +212,7 @@ class MatchingEngineService
 
         return $candidates->map(function (Profile $candidate) use ($profile) {
             $candidate->compatibility_score = $this->computeCompatibility($profile, $candidate);
+            $candidate->compatibility_highlights = $this->getCompatibilityHighlights($profile, $candidate);
 
             return $candidate;
         })->sortByDesc(function (Profile $candidate) {

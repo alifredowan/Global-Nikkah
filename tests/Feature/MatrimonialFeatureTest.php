@@ -9,12 +9,12 @@ use App\Models\User;
 use App\Models\WaliLink;
 use App\Services\WaliWorkflowService;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class MatrimonialFeatureTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public function test_landing_page_loads_successfully(): void
     {
@@ -27,7 +27,7 @@ class MatrimonialFeatureTest extends TestCase
     public function test_registration_rejects_under_18_candidates(): void
     {
         // Under 18 (e.g. 17 years old)
-        $underageDob = Carbon::now()->subYears(17)->toDateString();
+        $underageDob = Carbon::now()->subYears(17)->format('d/m/Y');
 
         $response = $this->post('/register', [
             'name' => 'Underage Applicant',
@@ -46,7 +46,7 @@ class MatrimonialFeatureTest extends TestCase
     public function test_registration_accepts_adult_candidates(): void
     {
         // Exactly 22 years old
-        $adultDob = Carbon::now()->subYears(22)->toDateString();
+        $adultDob = Carbon::now()->subYears(22)->format('d/m/Y');
 
         $response = $this->post('/register', [
             'name' => 'Adult Applicant',
@@ -212,7 +212,7 @@ class MatrimonialFeatureTest extends TestCase
             'password' => 'SecretPassword123!',
         ]);
 
-        $response->assertRedirect(route('discovery.index'));
+        $response->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($user);
     }
 

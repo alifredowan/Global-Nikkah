@@ -23,9 +23,10 @@ class WaliEmailApprovalAndVerificationTest extends TestCase
         $response = $this->post('/register', [
             'name' => 'Fatima Zahra',
             'email' => 'fatima@example.com',
-            'phone' => '+15551239999',
+            'phone' => '4155552671',
+            'phone_country' => 'US',
             'gender' => 'female',
-            'dob' => '1998-05-15',
+            'dob' => '15/05/1998',
             'marital_status' => 'never_married',
             'password' => 'SecurePass123!',
             'password_confirmation' => 'SecurePass123!',

@@ -92,6 +92,15 @@
                                 <div class="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-4">
                                     {{ $match->bio ?? 'Committed to deen and building a righteous family.' }}
                                 </div>
+                                @if(!empty($match->compatibility_highlights))
+                                    <div class="flex flex-wrap gap-1.5 mb-3">
+                                        @foreach(array_slice($match->compatibility_highlights, 0, 2) as $highlight)
+                                            <span class="inline-flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1 text-[10px] font-semibold text-amber-800 dark:bg-amber-950/60 dark:text-amber-300" title="{{ $highlight['detail'] }}">
+                                                {{ $highlight['icon'] }} {{ $highlight['label'] }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                             <div class="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                                 <a href="{{ route('discovery.show', $match->user_id) }}" class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold text-center shadow-xs transition">
@@ -115,6 +124,17 @@
         <!-- Filter & Search Controls (FR-3.1) -->
         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs" x-data="{ advancedOpen: false }">
             <form action="{{ route('discovery.index') }}" method="GET" class="space-y-4">
+                <div class="flex flex-col gap-2 border-b border-slate-100 pb-4 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Shape your shortlist</p>
+                        <p class="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Choose how candidate profiles should be ordered.</p>
+                    </div>
+                    <select name="sort" aria-label="Sort candidate profiles" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 sm:w-56">
+                        <option value="newest" {{ $sort === 'newest' ? 'selected' : '' }}>Newest profiles</option>
+                        <option value="verified" {{ $sort === 'verified' ? 'selected' : '' }}>Verified first</option>
+                        <option value="complete" {{ $sort === 'complete' ? 'selected' : '' }}>Most complete profiles</option>
+                    </select>
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Age Range</label>
@@ -185,6 +205,70 @@
                 </div>
             </form>
         </div>
+
+        <!-- Saved Search Workspace -->
+        <section class="rounded-2xl border border-emerald-100 dark:border-emerald-900/50 bg-gradient-to-br from-emerald-50 via-white to-amber-50 dark:from-emerald-950/50 dark:via-slate-900 dark:to-amber-950/20 p-5 sm:p-6 shadow-xs">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div class="flex items-start gap-3">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-lg text-white shadow-md shadow-emerald-900/15">⌕</div>
+                    <div>
+                        <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Your search workspace</p>
+                        <h2 class="mt-1 font-heading text-lg font-extrabold text-slate-900 dark:text-white">Saved searches</h2>
+                        <p class="mt-1 max-w-2xl text-xs leading-relaxed text-slate-600 dark:text-slate-300">Keep your family’s priorities close. Reopen a search anytime or pause alerts when you have enough conversations in progress.</p>
+                    </div>
+                </div>
+                <span class="inline-flex w-fit items-center rounded-full border border-emerald-200 bg-white/70 px-3 py-1 text-[11px] font-bold text-emerald-800 dark:border-emerald-800 dark:bg-slate-900/70 dark:text-emerald-300">
+                    {{ $savedSearches->count() }} {{ $savedSearches->count() === 1 ? 'search' : 'searches' }}
+                </span>
+            </div>
+
+            @if($savedSearches->isNotEmpty())
+                <div class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
+                    @foreach($savedSearches as $savedSearch)
+                        @php
+                            $searchFilters = collect($savedSearch->filters ?? [])->filter(fn ($value) => filled($value));
+                            $searchUrl = route('discovery.index', $searchFilters->all());
+                        @endphp
+                        <article class="rounded-xl border border-white/80 bg-white/80 p-4 shadow-xs dark:border-slate-700/80 dark:bg-slate-900/70">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <h3 class="truncate text-sm font-bold text-slate-900 dark:text-white">{{ $savedSearch->title }}</h3>
+                                    <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Saved {{ $savedSearch->created_at->diffForHumans() }}</p>
+                                </div>
+                                <span class="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[10px] font-bold {{ $savedSearch->alerts_enabled ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' }}">
+                                    <span class="h-1.5 w-1.5 rounded-full {{ $savedSearch->alerts_enabled ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
+                                    {{ $savedSearch->alerts_enabled ? 'Alerts on' : 'Paused' }}
+                                </span>
+                            </div>
+                            <div class="mt-3 flex flex-wrap gap-1.5">
+                                @forelse($searchFilters->take(4) as $filterName => $filterValue)
+                                    <span class="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ str($filterName)->replace('_', ' ')->title() }}: {{ str($filterValue)->replace('_', ' ')->title() }}</span>
+                                @empty
+                                    <span class="text-[11px] text-slate-500 dark:text-slate-400">All active candidates</span>
+                                @endforelse
+                            </div>
+                            <div class="mt-4 flex items-center gap-2 border-t border-slate-100 pt-3 dark:border-slate-800">
+                                <a href="{{ $searchUrl }}" class="flex-1 rounded-lg bg-emerald-600 px-3 py-2 text-center text-[11px] font-bold text-white transition hover:bg-emerald-700">Run search</a>
+                                <form action="{{ route('discovery.saved-searches.toggle-alerts', $savedSearch->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="rounded-lg border border-slate-200 px-3 py-2 text-[11px] font-bold text-slate-600 transition hover:border-emerald-300 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-300 dark:hover:border-emerald-700 dark:hover:text-emerald-300">{{ $savedSearch->alerts_enabled ? 'Pause' : 'Resume' }}</button>
+                                </form>
+                                <form action="{{ route('discovery.saved-searches.destroy', $savedSearch->id) }}" method="POST" onsubmit="return confirm('Remove this saved search?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" aria-label="Remove {{ $savedSearch->title }}" class="rounded-lg border border-rose-200 px-3 py-2 text-[11px] font-bold text-rose-600 transition hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/40">Remove</button>
+                                </form>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @else
+                <div class="mt-5 flex flex-col items-start gap-3 rounded-xl border border-dashed border-emerald-200 bg-white/60 p-4 dark:border-emerald-900 dark:bg-slate-900/50 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-xs text-slate-600 dark:text-slate-300">No saved searches yet. Apply filters below, then save the combination for your next family review.</p>
+                    <button type="button" onclick="document.getElementById('saveSearchModal').classList.remove('hidden')" class="shrink-0 rounded-lg bg-emerald-600 px-3 py-2 text-[11px] font-bold text-white transition hover:bg-emerald-700">Save current search</button>
+                </div>
+            @endif
+        </section>
 
         <!-- Search Results Grid -->
         <div class="space-y-4">
@@ -305,8 +389,12 @@
             <input type="hidden" name="country" value="{{ request('country') }}">
             <input type="hidden" name="age_min" value="{{ request('age_min') }}">
             <input type="hidden" name="age_max" value="{{ request('age_max') }}">
+            <input type="hidden" name="city" value="{{ request('city') }}">
             <input type="hidden" name="sect" value="{{ request('sect') }}">
+            <input type="hidden" name="prayer_frequency" value="{{ request('prayer_frequency') }}">
+            <input type="hidden" name="education_level" value="{{ request('education_level') }}">
             <input type="hidden" name="marital_status" value="{{ request('marital_status') }}">
+            <input type="hidden" name="wali_required" value="{{ request('wali_required') }}">
 
             <div class="mb-4">
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Search Title</label>

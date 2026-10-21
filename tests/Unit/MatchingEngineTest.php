@@ -67,4 +67,34 @@ class MatchingEngineTest extends TestCase
 
         $this->assertGreaterThanOrEqual(85, $score);
     }
+
+    public function test_it_explains_shared_compatibility_signals(): void
+    {
+        $groom = new User(['gender' => 'male', 'dob' => '1995-01-01']);
+        $groomProfile = new Profile([
+            'sect_madhhab' => 'Sunni - Hanafi',
+            'prayer_frequency' => '5x_daily',
+            'country' => 'United Kingdom',
+            'education_level' => 'Master',
+            'partner_preferences' => ['age_min' => 22, 'age_max' => 30],
+        ]);
+        $groomProfile->setRelation('user', $groom);
+
+        $bride = new User(['gender' => 'female', 'dob' => '1998-01-01']);
+        $brideProfile = new Profile([
+            'sect_madhhab' => 'Sunni - Hanafi',
+            'prayer_frequency' => '5x_daily',
+            'country' => 'United Kingdom',
+            'education_level' => 'Master',
+        ]);
+        $brideProfile->setRelation('user', $bride);
+
+        $highlights = $this->service->getCompatibilityHighlights($groomProfile, $brideProfile);
+
+        $this->assertCount(4, $highlights);
+        $this->assertSame('Shared madhhab', $highlights[0]['label']);
+        $this->assertSame('Prayer alignment', $highlights[1]['label']);
+        $this->assertSame('Shared country', $highlights[2]['label']);
+        $this->assertSame('Education match', $highlights[3]['label']);
+    }
 }

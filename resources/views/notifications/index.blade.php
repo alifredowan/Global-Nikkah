@@ -35,7 +35,7 @@
                     $isUnread = is_null($n->read_at);
                     $icon = $data['icon'] ?? '🔔';
                     $type = $data['type'] ?? 'general';
-                    $candidateUserId = $data['sender_id'] ?? $data['recipient_id'] ?? null;
+                    $candidateUserId = $data['candidate_id'] ?? $data['sender_id'] ?? $data['recipient_id'] ?? null;
                     $candidateProfileUrl = $candidateUserId ? route('discovery.show', $candidateUserId) : null;
                     $actionUrl = !empty($data['action_url']) ? $data['action_url'] : $candidateProfileUrl;
                     if ($type === 'interest_received' && $candidateProfileUrl) {

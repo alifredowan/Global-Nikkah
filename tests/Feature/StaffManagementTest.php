@@ -4,16 +4,16 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class StaffManagementTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public function test_user_can_register_as_wali(): void
     {
-        $adultDob = Carbon::now()->subYears(45)->toDateString();
+        $adultDob = Carbon::now()->subYears(45)->format('d/m/Y');
 
         $response = $this->post('/register', [
             'role' => 'wali',

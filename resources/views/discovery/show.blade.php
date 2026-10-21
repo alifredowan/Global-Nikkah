@@ -78,6 +78,12 @@
                     <!-- Actions: Interest, Shortlist & Print Biodata -->
                     <div class="w-full sm:w-auto flex flex-col sm:items-end gap-2.5">
                         <div class="flex items-center gap-2 flex-wrap">
+                            <form action="{{ route('blocked-users.store', $targetUser->id) }}" method="POST" onsubmit="return confirm('Block this profile? You will no longer see or contact this person.')" class="inline">
+                                @csrf
+                                <button type="submit" class="px-3 py-2.5 rounded-xl border border-rose-200 bg-white text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:bg-slate-800 dark:text-rose-300 dark:hover:bg-rose-950/40 text-xs font-bold transition flex items-center gap-1 shadow-xs">
+                                    <span>⛔</span> Block
+                                </button>
+                            </form>
                             <form action="{{ route('bookmarks.toggle', $targetUser->id) }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" class="px-3 py-2.5 rounded-xl border {{ ($isBookmarked ?? false) ? 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-950 dark:border-amber-700 dark:text-amber-300' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700' }} text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-xs">
@@ -151,6 +157,27 @@
                 @endif
             </div>
         </div>
+
+        @if(!empty($compatibilityHighlights))
+            <section class="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-amber-50 p-5 shadow-xs dark:border-emerald-900/50 dark:from-emerald-950/40 dark:via-slate-900 dark:to-amber-950/20 sm:p-6">
+                <div class="flex items-start gap-3">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-lg text-white shadow-md shadow-emerald-900/15">✦</div>
+                    <div>
+                        <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Why this may be a good fit</p>
+                        <h2 class="mt-1 font-heading text-lg font-extrabold text-slate-900 dark:text-white">Shared signals behind your {{ $compatibilityScore }}% match</h2>
+                        <p class="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">These are conversation starters, not a final decision. Take time to review the full biodata and involve your family.</p>
+                    </div>
+                </div>
+                <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                    @foreach($compatibilityHighlights as $highlight)
+                        <div class="flex items-start gap-3 rounded-2xl border border-white/80 bg-white/75 p-3 dark:border-slate-700/80 dark:bg-slate-900/70">
+                            <span class="text-lg">{{ $highlight['icon'] }}</span>
+                            <div><p class="text-xs font-bold text-slate-900 dark:text-white">{{ $highlight['label'] }}</p><p class="mt-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">{{ $highlight['detail'] }}</p></div>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+        @endif
 
         <!-- Incoming Pending Interest Callout Banner -->
         @if($existingInterest && $existingInterest->status === 'pending' && $existingInterest->recipient_id === Auth::id())

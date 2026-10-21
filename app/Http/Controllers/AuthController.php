@@ -6,6 +6,8 @@ use App\Models\AuditLog;
 use App\Models\Profile;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Rules\Turnstile;
+use App\Services\TurnstileService;
 use App\Services\WaliWorkflowService;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
@@ -19,17 +21,22 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Propaganistas\LaravelPhone\Rules\Phone;
 
 class AuthController extends Controller
 {
-    public function showRegister(): View
+    public function showRegister(TurnstileService $turnstileService): View
     {
-        return view('auth.register');
+        return view('auth.register', [
+            'countries' => config('countries'),
+            'turnstileEnabled' => $turnstileService->isEnabled(),
+            'turnstileSiteKey' => $turnstileService->getSiteKey(),
+        ]);
     }
 
     public function register(Request $request): RedirectResponse
     {
-        $maxBirthDate = Carbon::now()->subYears(18)->toDateString();
+        $maxBirthDate = Carbon::now()->subYears(18)->format('d/m/Y');
 
         $role = $request->input('role', 'seeker');
         if (! in_array($role, ['seeker', 'wali'], true)) {
@@ -57,11 +64,13 @@ class AuthController extends Controller
                     return $query->whereRaw('LOWER(email) = ?', [$normalizedEmail]);
                 }),
             ],
-            'phone' => ['nullable', 'string', 'max:20', 'unique:users,phone'],
+            'phone_country' => ['required_with:phone', 'string', 'size:2'],
+            'phone' => ['nullable', 'string', new Phone, 'unique:users,phone'],
             'gender' => ['required', 'in:male,female'],
-            'dob' => ['required', 'date', "before_or_equal:{$maxBirthDate}"],
+            'dob' => ['required', 'date_format:d/m/Y', "before_or_equal:{$maxBirthDate}"],
             'password' => ['required', 'confirmed', Password::defaults()],
             'terms' => ['accepted'],
+            'cf-turnstile-response' => [new Turnstile],
         ];
 
         if ($role === 'seeker') {
@@ -73,15 +82,21 @@ class AuthController extends Controller
 
         $validated = $request->validate($rules, [
             'email.unique' => 'An account with this email address already exists. Please sign in or use forgot password.',
+            'phone.phone' => 'Please enter a valid phone number for the selected country.',
+            'dob.date_format' => 'Please enter the date of birth in dd/mm/yyyy format.',
             'dob.before_or_equal' => 'You must be at least 18 years old to register for Global Nikkah.',
         ]);
+
+        $normalizedPhoneNumber = $validated['phone']
+            ? phone($validated['phone'], $validated['phone_country'])->formatE164()
+            : null;
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
+            'phone' => $normalizedPhoneNumber,
             'gender' => $validated['gender'],
-            'dob' => $validated['dob'],
+            'dob' => Carbon::createFromFormat('d/m/Y', $validated['dob']),
             'marital_status' => $validated['marital_status'] ?? 'never_married',
             'password' => Hash::make($validated['password']),
             'role' => $role,
@@ -130,9 +145,12 @@ class AuthController extends Controller
             ->with('success', 'Assalamu Alaikum! Your Guardian account has been registered. Please check your email inbox and click the verification link to activate your account.');
     }
 
-    public function showLogin(): View
+    public function showLogin(TurnstileService $turnstileService): View
     {
-        return view('auth.login');
+        return view('auth.login', [
+            'turnstileEnabled' => $turnstileService->isEnabled(),
+            'turnstileSiteKey' => $turnstileService->getSiteKey(),
+        ]);
     }
 
     public function login(Request $request): RedirectResponse
@@ -143,7 +161,9 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'cf-turnstile-response' => [new Turnstile],
         ]);
+        unset($credentials['cf-turnstile-response']);
         $credentials['email'] = $normalizedEmail;
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
@@ -180,7 +200,7 @@ class AuthController extends Controller
                 return redirect()->route('wali.dashboard');
             }
 
-            return redirect()->intended(route('discovery.index'));
+            return redirect()->intended(route('dashboard'));
         }
 
         return back()->withErrors([

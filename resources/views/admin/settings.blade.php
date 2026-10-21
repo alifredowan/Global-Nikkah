@@ -44,6 +44,53 @@
 
             <!-- Quick Links & Promo Codes Section -->
             <div class="space-y-6">
+                <!-- Cloudflare Turnstile CAPTCHA -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4" x-data="{ showSecret: false }">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white font-heading">CAPTCHA (Cloudflare Turnstile)</h2>
+                        @if($captchaSettings['is_configured'])
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $captchaSettings['enabled'] ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' }}">
+                                {{ $captchaSettings['enabled'] ? 'Active' : 'Configured' }}
+                            </span>
+                        @else
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">Not Configured</span>
+                        @endif
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Get your Site Key and Secret Key from the <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank" rel="noopener" class="text-emerald-700 dark:text-emerald-400 underline font-medium">Cloudflare Turnstile dashboard</a>, then paste them below to protect Registration and Login from bots.
+                    </p>
+                    <form action="{{ route('admin.settings.captcha.update') }}" method="POST" class="space-y-3">
+                        @csrf
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Site Key</label>
+                            <input type="text" name="turnstile_site_key" value="{{ $captchaSettings['site_key'] }}" autocomplete="off"
+                                   placeholder="0x4AAAAAAA..."
+                                   class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Secret Key</label>
+                            <div class="relative">
+                                <input :type="showSecret ? 'text' : 'password'" name="turnstile_secret_key" value="{{ $captchaSettings['secret_key'] }}" autocomplete="off"
+                                       placeholder="0x4AAAAAAA..."
+                                       class="w-full px-3 py-2.5 pr-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <button type="button" @click="showSecret = !showSecret" tabindex="-1"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-[10px] font-bold uppercase">
+                                    <span x-show="!showSecret">Show</span>
+                                    <span x-show="showSecret" style="display:none;">Hide</span>
+                                </button>
+                            </div>
+                        </div>
+                        <label class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+                            <input type="checkbox" name="turnstile_enabled" value="1" {{ $captchaSettings['enabled'] ? 'checked' : '' }}
+                                   class="rounded text-emerald-600 focus:ring-emerald-500 dark:bg-slate-800 dark:border-slate-700">
+                            Enable CAPTCHA on Registration & Login
+                        </label>
+                        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition">
+                            Save CAPTCHA Settings
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Direct Management Cards -->
                 <div class="bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-3xl p-6 shadow-sm space-y-3">
                     <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-200">Payment Infrastructure</span>

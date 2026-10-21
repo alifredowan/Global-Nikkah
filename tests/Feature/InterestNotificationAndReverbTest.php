@@ -12,7 +12,7 @@ use App\Models\WaliLink;
 use App\Notifications\InterestReceivedNotification;
 use App\Notifications\InterestRespondedNotification;
 use App\Notifications\NewChatMessageNotification;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -20,7 +20,7 @@ use Tests\TestCase;
 
 class InterestNotificationAndReverbTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private function createSeeker(?string $name = null): User
     {

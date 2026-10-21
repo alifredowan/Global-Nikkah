@@ -5,6 +5,7 @@
     $pendingInterests = $user->isSeeker() ? $user->receivedInterests()->where('status', 'pending')->count() : 0;
     $pendingVerifications = $isAdminOrStaff ? \App\Models\VerificationRequest::where('status', 'pending')->count() : 0;
     $pendingReports = $isAdminOrStaff ? \App\Models\Report::where('status', 'pending')->count() : 0;
+    $unreadMessages = $user->unreadMessagesCount();
     $pendingMarriage = $user->pendingMarriage();
 @endphp
 
@@ -132,6 +133,14 @@
                 Matchmaking
             </div>
             <div class="space-y-1">
+                @if(!$isAdminOrStaff)
+                    <a href="{{ route('dashboard') }}"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('dashboard') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                        <span class="text-base">⌂</span>
+                        <span class="flex-1">My Dashboard</span>
+                    </a>
+                @endif
+
                 <a href="{{ route('discovery.index') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('discovery.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
                     <span class="text-base">🔍</span>
@@ -152,9 +161,11 @@
                 </a>
 
                 <a href="{{ route('chat.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('chat.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                    <span class="text-base">💬</span>
-                    <span class="flex-1">Messages</span>
+                   class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('chat.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <span class="flex items-center gap-3"><span class="text-base">💬</span><span>Messages</span></span>
+                    @if($unreadMessages > 0)
+                        <span class="rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-extrabold text-slate-950">{{ $unreadMessages > 99 ? '99+' : $unreadMessages }}</span>
+                    @endif
                 </a>
 
                 <a href="{{ route('bookmarks.index') }}"
@@ -288,6 +299,14 @@
                 <span class="text-base">⚙️</span>
                 <span class="flex-1">Account Settings</span>
             </a>
+
+            @if(!$isAdminOrStaff && $user->isSeeker())
+                <a href="{{ route('blocked-users.index') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('blocked-users.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <span class="text-base">⛔</span>
+                    <span class="flex-1">Blocked Profiles</span>
+                </a>
+            @endif
 
             <a href="{{ route('landing') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-emerald-300 transition">

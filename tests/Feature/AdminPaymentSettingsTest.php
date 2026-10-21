@@ -8,13 +8,13 @@ use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Database\Seeders\PlatformSettingSeeder;
 use Database\Seeders\SubscriptionPlanSeeder;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AdminPaymentSettingsTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {

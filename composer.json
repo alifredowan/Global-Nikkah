@@ -11,6 +11,7 @@
         "laravel/reverb": "^1.12",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
+        "propaganistas/laravel-phone": "^6.1",
         "pusher/pusher-php-server": "^7.3"
     },
     "require-dev": {

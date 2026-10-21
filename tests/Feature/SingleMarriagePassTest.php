@@ -12,13 +12,13 @@ use App\Models\User;
 use App\Services\MarriageCompletionService;
 use App\Services\SubscriptionService;
 use Database\Seeders\SubscriptionPlanSeeder;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class SingleMarriagePassTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {

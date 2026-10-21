@@ -18,6 +18,8 @@
 
             <!-- Policy & Essential Links -->
             <div class="flex items-center gap-4 sm:gap-6 text-xs text-slate-300 font-medium">
+                <a href="{{ route('how-it-works') }}" class="hover:text-emerald-400 transition">How It Works</a>
+                <span class="text-slate-700">•</span>
                 <a href="{{ route('privacy') }}" class="hover:text-emerald-400 transition">Privacy Policy</a>
                 <span class="text-slate-700">•</span>
                 <a href="{{ route('terms') }}" class="hover:text-emerald-400 transition">Terms of Service</a>

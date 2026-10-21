@@ -8,6 +8,7 @@ use App\Models\PhotoAccessGrant;
 use App\Models\Profile;
 use App\Models\User;
 use App\Models\VerificationRequest;
+use App\Services\SavedSearchAlertService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -120,6 +121,7 @@ class ProfileController extends Controller
         $profile->save();
 
         $profile->updateCompleteness();
+        app(SavedSearchAlertService::class)->notifyFor($user);
 
         AuditLog::record($user->id, 'profile_updated', 'Profile', $profile->id);
 

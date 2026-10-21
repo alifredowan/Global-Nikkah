@@ -36,6 +36,13 @@ class InterestController extends Controller
             ->latest()
             ->get();
 
+        $received = $received->reject(
+            fn (Interest $interest): bool => $user->hasBlockedRelationshipWith($interest->sender)
+        )->values();
+        $sent = $sent->reject(
+            fn (Interest $interest): bool => $user->hasBlockedRelationshipWith($interest->recipient)
+        )->values();
+
         return view('interests.index', compact('received', 'sent'));
     }
 
@@ -51,6 +58,10 @@ class InterestController extends Controller
 
         if ($recipient->role !== 'seeker' || ! $recipient->is_active) {
             return back()->with('error', 'This user is not accepting matrimonial interest requests.');
+        }
+
+        if ($sender->hasBlockedRelationshipWith($recipient)) {
+            return back()->with('error', 'This interaction is unavailable because one of the profiles has been blocked.');
         }
 
         if ($sender->isMarried()) {
@@ -137,6 +148,10 @@ class InterestController extends Controller
 
         $user = Auth::user();
         $interest = Interest::with(['sender', 'recipient'])->where('recipient_id', $user->id)->findOrFail($interestId);
+
+        if ($user->hasBlockedRelationshipWith($interest->sender)) {
+            return back()->with('error', 'This interaction is unavailable because one of the profiles has been blocked.');
+        }
 
         // Guard: Prevent multiple responses on an already accepted or declined interest
         if ($interest->status !== 'pending') {

@@ -622,6 +622,11 @@
 
                         <!-- Public Controls -->
                         <div class="flex items-center gap-3">
+                            <a href="{{ route('how-it-works') }}"
+                               class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 px-2 py-2 transition {{ request()->routeIs('how-it-works') ? 'text-emerald-700 dark:text-emerald-400' : '' }}">
+                                <span class="text-emerald-500">✦</span>
+                                How it works
+                            </a>
                             <button type="button"
                                     id="theme-toggle"
                                     aria-label="Toggle Dark / Light Mode"

@@ -39,6 +39,8 @@ class DiscoveryController extends Controller
 
         $query = Profile::with(['user.activeSubscription', 'primaryPhoto', 'photos'])
             ->where('user_id', '!=', $currentUser->id)
+            ->whereNotIn('user_id', $currentUser->blockedUsers()->pluck('users.id'))
+            ->whereNotIn('user_id', $currentUser->blockedByUsers()->pluck('users.id'))
             ->whereHas('user', function ($q) use ($targetGender) {
                 $q->where('is_active', true)
                     ->where('role', 'seeker')
@@ -87,12 +89,29 @@ class DiscoveryController extends Controller
             $query->where('wali_required', true);
         }
 
+        $sort = in_array($request->input('sort'), ['newest', 'verified', 'complete'], true)
+            ? $request->input('sort')
+            : 'newest';
+
+        if ($sort === 'verified') {
+            $query->join('users as sort_users', 'sort_users.id', '=', 'profiles.user_id')
+                ->select('profiles.*')
+                ->orderByDesc('sort_users.is_verified')
+                ->orderByDesc('profiles.created_at');
+        } elseif ($sort === 'complete') {
+            $query->orderByDesc('profiles.completeness_percentage')
+                ->orderByDesc('profiles.created_at');
+        } else {
+            $query->orderByDesc('profiles.created_at');
+        }
+
         $profiles = $query->paginate(12)->withQueryString();
 
         // Calculate compatibility score for each result
         if ($userProfile) {
             $profiles->getCollection()->transform(function ($profile) use ($userProfile) {
                 $profile->compatibility_score = $this->matchingEngine->computeCompatibility($userProfile, $profile);
+                $profile->compatibility_highlights = $this->matchingEngine->getCompatibilityHighlights($userProfile, $profile);
 
                 return $profile;
             });
@@ -105,8 +124,9 @@ class DiscoveryController extends Controller
         $quotaStats = $this->quotaService->getUsageStats($currentUser);
 
         $bookmarkedUserIds = $currentUser->bookmarks()->pluck('bookmarked_user_id')->all();
+        $savedSearches = $currentUser->savedSearches()->latest()->get();
 
-        return view('discovery.index', compact('profiles', 'dailyRecommendations', 'quotaStats', 'bookmarkedUserIds'));
+        return view('discovery.index', compact('profiles', 'dailyRecommendations', 'quotaStats', 'bookmarkedUserIds', 'savedSearches', 'userProfile', 'sort'));
     }
 
     public function show(int $userId): View|RedirectResponse
@@ -115,6 +135,10 @@ class DiscoveryController extends Controller
 
         $targetUser = User::with(['profile.photos', 'profile.primaryPhoto'])->findOrFail($userId);
         $profile = $targetUser->profile;
+
+        if ($currentUser->hasBlockedRelationshipWith($targetUser)) {
+            return redirect()->route('discovery.index')->with('error', 'This profile is blocked from your discovery experience.');
+        }
 
         if (! $profile || ! $targetUser->is_active || $targetUser->role !== 'seeker' || $targetUser->id === $currentUser->id) {
             return redirect()->route('discovery.index')->with('error', 'Profile not found or not available for matrimonial matching.');
@@ -139,6 +163,9 @@ class DiscoveryController extends Controller
         if ($currentUser->profile) {
             $compatibilityScore = $this->matchingEngine->computeCompatibility($currentUser->profile, $profile);
         }
+        $compatibilityHighlights = $currentUser->profile
+            ? $this->matchingEngine->getCompatibilityHighlights($currentUser->profile, $profile)
+            : [];
 
         // Check photo visibility permission (blurred vs visible)
         $isPhotoVisible = $profile->isPhotoVisibleTo($currentUser);
@@ -156,7 +183,7 @@ class DiscoveryController extends Controller
         // Check if shortlisted by current user
         $isBookmarked = $currentUser->hasBookmarked($targetUser->id);
 
-        return view('discovery.show', compact('targetUser', 'profile', 'compatibilityScore', 'isPhotoVisible', 'existingInterest', 'activeWaliLink', 'isBookmarked'));
+        return view('discovery.show', compact('targetUser', 'profile', 'compatibilityScore', 'compatibilityHighlights', 'isPhotoVisible', 'existingInterest', 'activeWaliLink', 'isBookmarked'));
     }
 
     public function saveSearch(Request $request): RedirectResponse
@@ -165,7 +192,20 @@ class DiscoveryController extends Controller
             'title' => ['required', 'string', 'max:100'],
         ]);
 
-        $filters = $request->except(['_token', 'title']);
+        $filters = array_filter(
+            $request->only([
+                'age_min',
+                'age_max',
+                'country',
+                'city',
+                'marital_status',
+                'sect',
+                'prayer_frequency',
+                'education_level',
+                'wali_required',
+            ]),
+            fn ($value): bool => filled($value)
+        );
 
         SavedSearch::create([
             'user_id' => Auth::id(),
@@ -175,5 +215,22 @@ class DiscoveryController extends Controller
         ]);
 
         return back()->with('success', 'Search criteria saved! You will receive alerts when matching candidates join (FR-3.3).');
+    }
+
+    public function toggleSavedSearchAlerts(int $savedSearchId): RedirectResponse
+    {
+        $savedSearch = Auth::user()->savedSearches()->findOrFail($savedSearchId);
+        $savedSearch->update(['alerts_enabled' => ! $savedSearch->alerts_enabled]);
+
+        return back()->with('success', $savedSearch->alerts_enabled
+            ? 'Alerts enabled for this saved search.'
+            : 'Alerts paused for this saved search.');
+    }
+
+    public function destroySavedSearch(int $savedSearchId): RedirectResponse
+    {
+        Auth::user()->savedSearches()->findOrFail($savedSearchId)->delete();
+
+        return back()->with('success', 'Saved search removed.');
     }
 }

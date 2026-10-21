@@ -24,6 +24,8 @@ class DiscoveryApiController extends Controller
 
         $query = Profile::with(['user', 'primaryPhoto'])
             ->where('user_id', '!=', $user->id)
+            ->whereNotIn('user_id', $user->blockedUsers()->pluck('users.id'))
+            ->whereNotIn('user_id', $user->blockedByUsers()->pluck('users.id'))
             ->whereHas('user', function ($q) use ($targetGender) {
                 $q->where('is_active', true)
                     ->where('role', 'seeker')
@@ -68,6 +70,13 @@ class DiscoveryApiController extends Controller
     {
         $user = $request->user();
         $targetUser = User::with(['profile.photos', 'profile.primaryPhoto'])->findOrFail($userId);
+
+        if ($user->hasBlockedRelationshipWith($targetUser)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'This profile is unavailable because one of the profiles has been blocked.',
+            ], 403);
+        }
 
         if (! $this->quotaService->canViewProfile($user, $targetUser->id)) {
             return response()->json([

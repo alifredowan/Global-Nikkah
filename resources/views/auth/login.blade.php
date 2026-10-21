@@ -60,6 +60,12 @@
                     </label>
                 </div>
 
+                @if($turnstileEnabled)
+                    <div class="flex justify-center pt-1">
+                        <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
+                    </div>
+                @endif
+
                 <button type="submit" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-900/15 transition mt-2">
                     Sign In
                 </button>
@@ -71,4 +77,8 @@
         </div>
     </div>
 </div>
+
+@if($turnstileEnabled)
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endif
 @endsection

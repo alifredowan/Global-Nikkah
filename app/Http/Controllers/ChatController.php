@@ -9,6 +9,7 @@ use App\Models\ConversationParticipant;
 use App\Models\Marriage;
 use App\Models\Message;
 use App\Models\Report;
+use App\Models\User;
 use App\Models\WaliLink;
 use App\Notifications\NewChatMessageNotification;
 use App\Services\MessageModerationService;
@@ -60,6 +61,10 @@ class ChatController extends Controller
             ->latest('updated_at')
             ->get();
 
+        $conversations = $conversations->reject(
+            fn (Conversation $conversation): bool => $this->hasBlockedParticipant($conversation, $user)
+        )->values();
+
         return view('chat.index', compact('conversations'));
     }
 
@@ -103,6 +108,10 @@ class ChatController extends Controller
 
         if (! $isParticipant && ! $user->isAdmin() && ! $user->isModerator()) {
             return redirect()->route('chat.index')->with('error', 'You are not a participant in this conversation.');
+        }
+
+        if ($this->hasBlockedParticipant($conversation, $user)) {
+            return redirect()->route('chat.index')->with('error', 'This conversation is unavailable because one of the profiles has been blocked.');
         }
 
         // Mark messages as read for this participant
@@ -169,6 +178,15 @@ class ChatController extends Controller
             }
 
             return redirect()->route('chat.index')->with('error', 'You are not a participant in this conversation.');
+        }
+
+        if ($this->hasBlockedParticipant($conversation, $user)) {
+            $message = 'This conversation is unavailable because one of the profiles has been blocked.';
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['error' => $message], 403);
+            }
+
+            return redirect()->route('chat.index')->with('error', $message);
         }
 
         // Prevent sending messages in locked/archived conversations
@@ -280,6 +298,13 @@ class ChatController extends Controller
         }
 
         return back();
+    }
+
+    private function hasBlockedParticipant(Conversation $conversation, User $user): bool
+    {
+        return $conversation->participants
+            ->filter(fn (User $participant): bool => $participant->isSeeker() && $participant->id !== $user->id)
+            ->contains(fn (User $participant): bool => $user->hasBlockedRelationshipWith($participant));
     }
 
     public function reportUser(Request $request): RedirectResponse

@@ -31,6 +31,13 @@ class InterestApiController extends Controller
             ->latest()
             ->get();
 
+        $received = $received->reject(
+            fn (Interest $interest): bool => $user->hasBlockedRelationshipWith($interest->sender)
+        )->values();
+        $sent = $sent->reject(
+            fn (Interest $interest): bool => $user->hasBlockedRelationshipWith($interest->recipient)
+        )->values();
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -48,11 +55,15 @@ class InterestApiController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Cannot send interest to yourself'], 422);
         }
 
+        $recipient = User::findOrFail($recipientId);
+        if ($user->hasBlockedRelationshipWith($recipient)) {
+            return response()->json(['status' => 'error', 'message' => 'This interaction is unavailable because one of the profiles has been blocked.'], 403);
+        }
+
         if (! $this->quotaService->canSendInterest($user)) {
             return response()->json(['status' => 'error', 'message' => 'Daily interest quota exceeded'], 429);
         }
 
-        $recipient = User::findOrFail($recipientId);
         $requiresWali = $this->waliService->requiresWaliApproval($recipient);
 
         $interest = Interest::firstOrCreate([
@@ -77,6 +88,10 @@ class InterestApiController extends Controller
         $user = $request->user();
 
         $interest = Interest::where('recipient_id', $user->id)->findOrFail($interestId);
+
+        if ($user->hasBlockedRelationshipWith($interest->sender)) {
+            return response()->json(['status' => 'error', 'message' => 'This interaction is unavailable because one of the profiles has been blocked.'], 403);
+        }
 
         if ($request->action === 'accept') {
             $interest->update(['status' => 'accepted', 'responded_at' => now()]);

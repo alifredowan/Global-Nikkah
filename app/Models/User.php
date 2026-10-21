@@ -168,6 +168,37 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(SavedSearch::class);
     }
 
+    public function blockedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, 'blocked_users', 'blocker_user_id', 'blocked_user_id')
+            ->withTimestamps();
+    }
+
+    public function blockedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, 'blocked_users', 'blocked_user_id', 'blocker_user_id')
+            ->withTimestamps();
+    }
+
+    public function hasBlockedRelationshipWith(self $otherUser): bool
+    {
+        return $this->blockedUsers()->whereKey($otherUser->id)->exists()
+            || $this->blockedByUsers()->whereKey($otherUser->id)->exists();
+    }
+
+    public function unreadMessagesCount(): int
+    {
+        return Message::query()
+            ->join('conversation_participants', 'conversation_participants.conversation_id', '=', 'messages.conversation_id')
+            ->where('conversation_participants.user_id', $this->id)
+            ->where('messages.sender_id', '!=', $this->id)
+            ->where(function ($query) {
+                $query->whereNull('conversation_participants.last_read_at')
+                    ->orWhereColumn('messages.created_at', '>', 'conversation_participants.last_read_at');
+            })
+            ->count('messages.id');
+    }
+
     public function profileViewsGiven(): HasMany
     {
         return $this->hasMany(ProfileView::class, 'viewer_id');

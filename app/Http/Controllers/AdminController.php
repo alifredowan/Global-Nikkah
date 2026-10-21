@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\VerificationRequest;
 use App\Services\Payment\PayPalPaymentService;
 use App\Services\Payment\StripePaymentService;
+use App\Services\TurnstileService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -379,12 +380,19 @@ class AdminController extends Controller
         return back()->with('success', "Promo code '{$name}' deleted successfully.");
     }
 
-    public function settings(): View
+    public function settings(TurnstileService $turnstileService): View
     {
         $settings = PlatformSetting::all();
         $discountCodes = DiscountCode::with('plan')->latest('created_at')->get();
 
-        return view('admin.settings', compact('settings', 'discountCodes'));
+        $captchaSettings = [
+            'enabled' => $turnstileService->isEnabled(),
+            'site_key' => PlatformSetting::get('turnstile_site_key', config('services.turnstile.site_key', '')),
+            'secret_key' => PlatformSetting::get('turnstile_secret_key', config('services.turnstile.secret_key', '')),
+            'is_configured' => $turnstileService->isConfigured(),
+        ];
+
+        return view('admin.settings', compact('settings', 'discountCodes', 'captchaSettings'));
     }
 
     public function updateSettings(Request $request): RedirectResponse
@@ -398,6 +406,23 @@ class AdminController extends Controller
         AuditLog::record(Auth::id(), 'platform_settings_updated');
 
         return back()->with('success', 'Platform policy parameters updated successfully (FR-7.3).');
+    }
+
+    public function updateCaptchaSettings(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'turnstile_enabled' => ['nullable', 'boolean'],
+            'turnstile_site_key' => ['nullable', 'string', 'max:255'],
+            'turnstile_secret_key' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        PlatformSetting::set('turnstile_enabled', $request->boolean('turnstile_enabled'), 'boolean', 'security', 'Activate Cloudflare Turnstile CAPTCHA on registration and login');
+        PlatformSetting::set('turnstile_site_key', $request->input('turnstile_site_key', ''), 'string', 'security', 'Cloudflare Turnstile Site Key (public)');
+        PlatformSetting::set('turnstile_secret_key', $request->input('turnstile_secret_key', ''), 'string', 'security', 'Cloudflare Turnstile Secret Key (private)');
+
+        AuditLog::record(Auth::id(), 'captcha_settings_updated');
+
+        return back()->with('success', 'Cloudflare Turnstile CAPTCHA settings updated successfully.');
     }
 
     public function paymentSettings(

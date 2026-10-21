@@ -82,9 +82,20 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Phone Number</label>
-                        <input type="tel" name="phone" value="{{ old('phone') }}"
-                               class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                               placeholder="+1 555 123 4567">
+                        <div class="flex gap-2">
+                            <select name="phone_country" class="w-28 px-2 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+                                <option value="">Country</option>
+                                @foreach ($countries as $code => $country)
+                                    <option value="{{ $code }}" {{ old('phone_country') === $code ? 'selected' : '' }}>
+                                        {{ $country['name'] }} (+{{ $country['dial_code'] }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <input type="tel" name="phone" value="{{ old('phone') }}"
+                                   class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                                   placeholder="e.g. 555 123 4567">
+                        </div>
+                        <span class="text-[10px] text-slate-400 block mt-0.5">Select your country, then enter your local number.</span>
                     </div>
                 </div>
 
@@ -101,10 +112,13 @@
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                             Date of Birth (18+ Enforced)
                         </label>
-                        <input type="date" name="dob" value="{{ old('dob') }}" required
-                               max="{{ \Carbon\Carbon::now()->subYears(18)->toDateString() }}"
+                        <input type="text" name="dob" value="{{ old('dob') }}" required
+                               inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10"
+                               pattern="\d{2}/\d{2}/\d{4}"
+                               x-data
+                               x-on:input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3').slice(0, 10)"
                                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
-                        <span class="text-[10px] text-slate-400 block mt-0.5">Must be at least 18 years old.</span>
+                        <span class="text-[10px] text-slate-400 block mt-0.5">Format: dd/mm/yyyy. Must be at least 18 years old.</span>
                     </div>
                 </div>
 
@@ -176,6 +190,12 @@
                     </div>
                 </div>
 
+                @if($turnstileEnabled)
+                    <div class="flex justify-center pt-2">
+                        <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
+                    </div>
+                @endif
+
                 <div class="pt-2">
                     <label class="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
                         <input type="checkbox" name="terms" required class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 dark:bg-slate-800 dark:border-slate-700">
@@ -199,4 +219,8 @@
         </div>
     </div>
 </div>
+
+@if($turnstileEnabled)
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endif
 @endsection

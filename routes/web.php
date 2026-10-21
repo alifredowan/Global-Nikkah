@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlockedUserController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscoveryController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\LandingController;
@@ -24,6 +26,7 @@ Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscr
 Route::get('/privacy', [LandingController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [LandingController::class, 'terms'])->name('terms');
 Route::get('/about', [LandingController::class, 'about'])->name('about');
+Route::get('/how-it-works', [LandingController::class, 'howItWorks'])->name('how-it-works');
 Route::get('/photos/{photo}/view', [PhotoController::class, 'show'])->name('photos.view');
 
 // Email Verification (Public Signed & Notice)
@@ -62,6 +65,12 @@ Route::middleware('auth')->group(function () {
 // Authenticated & Email Verified Protected Routes (FR-4.1)
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/account/deactivate', [AuthController::class, 'deactivate'])->name('account.deactivate');
+    Route::get('/blocked-users', [BlockedUserController::class, 'index'])->name('blocked-users.index');
+    Route::post('/blocked-users/{userId}', [BlockedUserController::class, 'store'])->name('blocked-users.store');
+    Route::delete('/blocked-users/{userId}', [BlockedUserController::class, 'destroy'])->name('blocked-users.destroy');
+
+    // Authenticated seeker home
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Account & Security Settings (Super Admin, Moderator, and Normal Users)
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -93,6 +102,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile/{id}', [DiscoveryController::class, 'show'])->name('discovery.show');
     Route::get('/discover/{id}', [DiscoveryController::class, 'show']);
     Route::post('/saved-searches', [DiscoveryController::class, 'saveSearch'])->name('discovery.save-search');
+    Route::post('/saved-searches/{id}/toggle-alerts', [DiscoveryController::class, 'toggleSavedSearchAlerts'])->name('discovery.saved-searches.toggle-alerts');
+    Route::delete('/saved-searches/{id}', [DiscoveryController::class, 'destroySavedSearch'])->name('discovery.saved-searches.destroy');
 
     // Interests & Requests
     Route::get('/interests', [InterestController::class, 'index'])->name('interests.index');
@@ -187,6 +198,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/payment-settings', [AdminController::class, 'updatePaymentSettings'])->name('payment-settings.update');
             Route::post('/payment-settings/toggle', [AdminController::class, 'togglePaymentGateway'])->name('payment-settings.toggle');
             Route::post('/payment-settings/test', [AdminController::class, 'testPaymentGateway'])->name('payment-settings.test');
+
+            // Cloudflare Turnstile CAPTCHA Configuration
+            Route::post('/settings/captcha', [AdminController::class, 'updateCaptchaSettings'])->name('settings.captcha.update');
         });
     });
 });
