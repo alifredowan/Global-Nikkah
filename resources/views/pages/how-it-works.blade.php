@@ -45,6 +45,30 @@
         .how-it-works-beacon { animation: how-it-works-beacon 2.8s ease-out infinite; }
         .how-it-works-draw-line { stroke-dasharray: 420; animation: how-it-works-draw-line 2.8s ease-out both; }
 
+        .how-it-works-map-card {
+            box-shadow: 0 18px 45px rgba(2, 44, 34, .28), inset 0 1px 0 rgba(255, 255, 255, .08);
+            transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+        }
+
+        .how-it-works-map-card:hover {
+            border-color: rgba(110, 231, 183, .5);
+            box-shadow: 0 24px 55px rgba(2, 44, 34, .38), inset 0 1px 0 rgba(255, 255, 255, .12);
+            transform: translateY(-5px);
+        }
+
+        .how-it-works-map-node {
+            box-shadow: 0 0 0 1px rgba(110, 231, 183, .2), 0 0 0 14px rgba(16, 185, 129, .06), 0 22px 55px rgba(2, 44, 34, .42);
+        }
+
+        .how-it-works-map-spark {
+            animation: how-it-works-map-spark 3s ease-in-out infinite;
+        }
+
+        @keyframes how-it-works-map-spark {
+            0%, 100% { transform: scale(.96) rotate(0deg); opacity: .85; }
+            50% { transform: scale(1.08) rotate(8deg); opacity: 1; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .how-it-works-orbit,
             .how-it-works-packet,
@@ -106,9 +130,12 @@
 
             <!-- Animated relationship map -->
             <div class="relative lg:col-span-7" aria-label="Animated diagram showing two seekers and a Wali connected through Global Nikkah">
-                <div class="relative mx-auto aspect-[1.25] max-w-2xl rounded-[2rem] border border-white/10 bg-white/[.045] p-4 shadow-2xl shadow-emerald-950/40 backdrop-blur sm:p-8">
-                    <div class="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
-                    <svg class="absolute inset-0 h-full w-full" viewBox="0 0 700 560" fill="none" role="img" aria-labelledby="relationship-map-title">
+                <div class="relative mx-auto aspect-[1.08] max-w-2xl overflow-hidden rounded-[2rem] border border-emerald-200/15 bg-gradient-to-br from-emerald-900/70 via-slate-950/35 to-amber-950/30 p-4 shadow-2xl shadow-emerald-950/50 ring-1 ring-white/5 backdrop-blur sm:aspect-[1.25] sm:p-8">
+                    <div class="absolute inset-0 opacity-50 [background-image:linear-gradient(rgba(110,231,183,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(110,231,183,.08)_1px,transparent_1px)] [background-size:32px_32px]"></div>
+                    <div class="absolute -left-24 top-1/3 h-72 w-72 rounded-full bg-emerald-400/10 blur-3xl"></div>
+                    <div class="absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-amber-400/10 blur-3xl"></div>
+                    <div class="absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
+                    <svg class="pointer-events-none absolute inset-0 z-0 h-full w-full" viewBox="0 0 700 560" fill="none" role="img" aria-labelledby="relationship-map-title">
                         <title id="relationship-map-title">Two seekers and their Wali connected through a trusted matrimonial process</title>
                         <path d="M153 166 C235 210 270 238 325 274" stroke="rgba(110,231,183,.36)" stroke-width="2" stroke-linecap="round" />
                         <path d="M547 166 C465 210 430 238 375 274" stroke="rgba(110,231,183,.36)" stroke-width="2" stroke-linecap="round" />
@@ -117,11 +144,9 @@
                         <path class="how-it-works-packet delay-1" d="M547 166 C465 210 430 238 375 274" stroke="#6ee7b7" stroke-width="4" stroke-linecap="round" />
                         <path class="how-it-works-packet delay-2" d="M350 450 C350 393 350 362 350 318" stroke="#fbbf24" stroke-width="4" stroke-linecap="round" />
                         <circle class="how-it-works-orbit" cx="350" cy="295" r="76" stroke="rgba(110,231,183,.26)" stroke-width="1" stroke-dasharray="3 9" />
-                        <circle cx="350" cy="295" r="58" fill="#064e3b" stroke="#6ee7b7" stroke-opacity=".45" />
-                        <path d="M350 260l7.8 15.8 17.4 2.5-12.6 12.3 3 17.4-15.6-8.2-15.6 8.2 3-17.4-12.6-12.3 17.4-2.5L350 260Z" fill="#fcd34d" />
                     </svg>
 
-                    <div class="how-it-works-float absolute left-[4%] top-[8%] w-40 rounded-2xl border border-emerald-300/20 bg-slate-950/70 p-3 shadow-xl backdrop-blur sm:left-[8%] sm:w-48 sm:p-4">
+                    <div class="how-it-works-float how-it-works-map-card absolute left-[3%] top-[10%] z-10 w-[43%] max-w-52 rounded-2xl border border-emerald-300/25 bg-slate-950/80 p-3 backdrop-blur-xl sm:left-[8%] sm:top-[8%] sm:w-48 sm:p-4">
                         <div class="flex items-center gap-3">
                             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-400/15 text-emerald-200">{!! $hiwIcon('user', 'h-5 w-5') !!}</div>
                             <div><p class="text-xs font-extrabold text-white">Seeker A</p><p class="mt-0.5 text-[10px] text-emerald-200/60">Verified intention</p></div>
@@ -129,7 +154,7 @@
                         <div class="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-emerald-300"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span> Profile ready</div>
                     </div>
 
-                    <div class="how-it-works-float delay-1 absolute right-[4%] top-[8%] w-40 rounded-2xl border border-emerald-300/20 bg-slate-950/70 p-3 shadow-xl backdrop-blur sm:right-[8%] sm:w-48 sm:p-4">
+                    <div class="how-it-works-float delay-1 how-it-works-map-card absolute right-[3%] top-[10%] z-10 w-[43%] max-w-52 rounded-2xl border border-amber-300/25 bg-slate-950/80 p-3 backdrop-blur-xl sm:right-[8%] sm:top-[8%] sm:w-48 sm:p-4">
                         <div class="flex items-center gap-3">
                             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-400/15 text-amber-200">{!! $hiwIcon('user', 'h-5 w-5') !!}</div>
                             <div><p class="text-xs font-extrabold text-white">Seeker B</p><p class="mt-0.5 text-[10px] text-emerald-200/60">Values aligned</p></div>
@@ -137,12 +162,19 @@
                         <div class="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-amber-300"><span class="h-1.5 w-1.5 rounded-full bg-amber-300"></span> Mutual interest</div>
                     </div>
 
-                    <div class="absolute left-1/2 top-1/2 w-36 -translate-x-1/2 -translate-y-1/2 text-center sm:w-44">
-                        <p class="text-[10px] font-extrabold uppercase tracking-[.22em] text-emerald-200/60">Global Nikkah</p>
+                    <div class="absolute left-1/2 top-[49%] z-10 flex w-40 -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center sm:w-48">
+                        <div class="how-it-works-map-node relative flex h-24 w-24 items-center justify-center rounded-full border border-emerald-300/60 bg-emerald-950/90 sm:h-28 sm:w-28">
+                            <div class="absolute inset-2 rounded-full border border-dashed border-emerald-300/35"></div>
+                            <svg class="how-it-works-map-spark relative h-10 w-10 text-amber-300 sm:h-12 sm:w-12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="m12 2 2.45 6.55L21 11l-6.55 2.45L12 20l-2.45-6.55L3 11l6.55-2.45L12 2Z" />
+                            </svg>
+                        </div>
+                        <p class="mt-4 text-[9px] font-extrabold uppercase tracking-[.22em] text-emerald-200/70">Global Nikkah</p>
                         <p class="mt-1 text-sm font-extrabold text-white sm:text-base">Trusted introduction</p>
+                        <span class="mt-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-200">Clarity before closeness</span>
                     </div>
 
-                    <div class="how-it-works-float delay-2 absolute bottom-[5%] left-1/2 w-48 -translate-x-1/2 rounded-2xl border border-amber-300/25 bg-slate-950/75 p-3 shadow-xl backdrop-blur sm:bottom-[7%] sm:w-56 sm:p-4">
+                    <div class="how-it-works-float delay-2 how-it-works-map-card absolute bottom-[4%] left-1/2 z-10 w-[58%] max-w-56 -translate-x-1/2 rounded-2xl border border-amber-300/30 bg-slate-950/85 p-3 backdrop-blur-xl sm:bottom-[7%] sm:w-56 sm:p-4">
                         <div class="flex items-center gap-3">
                             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-400/15 text-amber-200">{!! $hiwIcon('shield-check', 'h-5 w-5') !!}</div>
                             <div><p class="text-xs font-extrabold text-white">Wali / Family</p><p class="mt-0.5 text-[10px] text-emerald-200/60">Visible when it matters</p></div>
@@ -150,7 +182,7 @@
                         <div class="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-amber-300"><span class="h-1.5 w-1.5 rounded-full bg-amber-300"></span> Chaperoned clarity</div>
                     </div>
 
-                    <div class="absolute left-1/2 top-3 -translate-x-1/2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-emerald-100/70 sm:top-5">Intent &amp; trust layer</div>
+                    <div class="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-emerald-200/20 bg-emerald-950/70 px-3.5 py-1.5 text-[9px] font-extrabold uppercase tracking-[.18em] text-emerald-100/80 shadow-lg shadow-emerald-950/20 sm:top-5">Intent &amp; trust layer</div>
                 </div>
             </div>
         </div>

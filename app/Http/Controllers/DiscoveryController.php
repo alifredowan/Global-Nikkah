@@ -51,7 +51,7 @@ class DiscoveryController extends Controller
             $targetGender = $request->input('gender', 'female');
         }
 
-        $query = Profile::with(['user.activeSubscription', 'primaryPhoto', 'photos'])
+        $query = Profile::with(['user.activeSubscription', 'primaryPhoto'])
             ->where('user_id', '!=', $currentUser->id)
             ->whereNotIn('user_id', $currentUser->blockedUsers()->pluck('users.id'))
             ->whereNotIn('user_id', $currentUser->blockedByUsers()->pluck('users.id'))

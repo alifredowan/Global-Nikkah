@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -685,7 +686,7 @@ class AdminController extends Controller
             ],
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', 'in:super_admin,moderator'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', Password::defaults()],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['string', 'in:manage_verifications,manage_reports,view_audit_logs,manage_settings'],
         ], [

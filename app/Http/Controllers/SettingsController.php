@@ -132,11 +132,10 @@ class SettingsController extends Controller
 
         $request->validate([
             'current_password' => ['required', 'string', 'current_password'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ], [
             'current_password.current_password' => 'The provided current password does not match our records.',
             'password.confirmed' => 'The new password confirmation does not match.',
-            'password.min' => 'The new password must be at least 8 characters long.',
         ]);
 
         $user->update([
