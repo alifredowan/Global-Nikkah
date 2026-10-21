@@ -110,7 +110,11 @@ fi
 
 # Signals existing workers; Supervisor/systemd must already manage them.
 "$PHP_BIN" artisan queue:restart --no-interaction
-systemctl reload "$PHP_FPM_SERVICE"
+# A reload (SIGUSR2) respawns workers but does NOT reliably clear OPcache's shared-memory
+# bytecode cache when opcache.validate_timestamps=0, leaving stale compiled views/classes
+# served after deploy. Use a full restart instead; this happens while the app is already
+# in maintenance mode, so it costs no extra downtime.
+systemctl restart "$PHP_FPM_SERVICE"
 nginx -t
 systemctl reload nginx
 "$PHP_BIN" artisan up --no-interaction

@@ -7,18 +7,13 @@ use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class LandingController extends Controller
 {
     public function index(): View
     {
-        $landingData = app()->environment('testing')
-            ? $this->landingData()
-            : Cache::remember('landing.page.data', now()->addMinutes(5), fn (): array => $this->landingData());
-
-        return view('landing', $landingData);
+        return view('landing', $this->landingData());
     }
 
     /**
