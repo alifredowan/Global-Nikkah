@@ -62,8 +62,8 @@
                              x-data="{ editingNotes: false, notesVal: '{{ addslashes($b->notes ?? '') }}' }">
                             <div>
                                 <!-- Top Card Header -->
-                                <div class="flex items-start justify-between gap-2 mb-3">
-                                    <div class="flex items-center gap-3">
+                                <div class="flex items-start justify-between gap-2.5 mb-3">
+                                    <div class="flex items-center gap-3 min-w-0">
                                         <div class="relative w-14 h-14 rounded-2xl overflow-hidden bg-slate-800 shrink-0">
                                             @if($profile && $profile->primaryPhoto)
                                                 <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $candidate->name }}" loading="lazy" decoding="async"
@@ -77,29 +77,36 @@
                                                 <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-[9px] text-white font-bold">🔒 Blurred</span>
                                             @endif
                                         </div>
-                                        <div>
-                                            <div class="flex items-center gap-1.5">
-                                                <h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ $candidate->name }}</h3>
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-1.5 min-w-0">
+                                                <h3 class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ $candidate->name }}</h3>
                                                 @if($candidate->is_verified)
                                                     <svg class="w-3.5 h-3.5 text-blue-500 fill-current shrink-0" viewBox="0 0 20 20">
                                                         <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
                                                     </svg>
                                                 @endif
                                             </div>
-                                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
                                                 {{ $candidate->age }} yrs • {{ $profile?->city ?? 'Location not specified' }}
                                             </p>
-                                            <p class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
+                                            <p class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold truncate">
                                                 {{ $profile?->sect_madhhab ?? 'Muslim' }}
                                             </p>
                                         </div>
                                     </div>
 
-                                    @if($b->compatibility_score)
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap">
-                                            {{ $b->compatibility_score }}% Match
-                                        </span>
-                                    @endif
+                                    <div class="shrink-0 flex flex-col items-end gap-1.5">
+                                        @if($b->compatibility_score)
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap">
+                                                {{ $b->compatibility_score }}% Match
+                                            </span>
+                                        @endif
+                                        @if($candidate->isPro())
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-slate-950 shadow-xs flex items-center gap-1 whitespace-nowrap" title="Pro Matrimonial Member">
+                                                👑 PRO
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 <!-- Private Family Consultation Notes -->

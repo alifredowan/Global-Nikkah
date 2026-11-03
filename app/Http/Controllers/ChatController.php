@@ -6,6 +6,7 @@ use App\Events\MessageSentEvent;
 use App\Models\AuditLog;
 use App\Models\Conversation;
 use App\Models\ConversationParticipant;
+use App\Models\Interest;
 use App\Models\Marriage;
 use App\Models\Message;
 use App\Models\Report;
@@ -67,6 +68,50 @@ class ChatController extends Controller
         )->values();
 
         return view('chat.index', compact('conversations'));
+    }
+
+    public function openWithUser(int $userId): RedirectResponse
+    {
+        $currentUser = Auth::user();
+        $targetUser = User::findOrFail($userId);
+
+        if ($currentUser->id === $targetUser->id) {
+            return redirect()->route('dashboard');
+        }
+
+        if ($currentUser->hasBlockedRelationshipWith($targetUser)) {
+            return redirect()->route('discovery.index')->with('error', 'Communication is unavailable because of a block.');
+        }
+
+        // Check if an existing conversation exists between these two users
+        $conversation = Conversation::whereHas('participants', function ($q) use ($currentUser) {
+            $q->where('conversation_participants.user_id', $currentUser->id);
+        })->whereHas('participants', function ($q) use ($targetUser) {
+            $q->where('conversation_participants.user_id', $targetUser->id);
+        })->first();
+
+        if (! $conversation) {
+            // Find accepted mutual interest
+            $interest = Interest::where('status', 'accepted')
+                ->where(function ($q) use ($currentUser, $targetUser) {
+                    $q->where(function ($sub) use ($currentUser, $targetUser) {
+                        $sub->where('sender_id', $currentUser->id)->where('recipient_id', $targetUser->id);
+                    })->orWhere(function ($sub) use ($currentUser, $targetUser) {
+                        $sub->where('sender_id', $targetUser->id)->where('recipient_id', $currentUser->id);
+                    });
+                })->first();
+
+            if ($interest) {
+                $conversation = $this->waliService->createOrUnlockConversation($interest);
+            }
+        }
+
+        if ($conversation) {
+            return redirect()->route('chat.show', $conversation->id);
+        }
+
+        return redirect()->route('discovery.show', $targetUser->id)
+            ->with('info', 'Halal messaging unlocks once an Interest request is mutually accepted.');
     }
 
     public function show(int $conversationId): View|RedirectResponse

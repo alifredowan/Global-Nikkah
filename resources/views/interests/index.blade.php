@@ -89,11 +89,9 @@
                                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
                                     Accepted
                                 </span>
-                                @if($interest->conversation)
-                                    <a href="{{ route('chat.show', $interest->conversation->id) }}" class="block text-xs text-emerald-700 dark:text-emerald-400 font-bold hover:underline mt-1">
-                                        Open Chat &rarr;
-                                    </a>
-                                @endif
+                                <a href="{{ $interest->conversation ? route('chat.show', $interest->conversation->id) : route('chat.user', $interest->sender_id) }}" class="block text-xs text-emerald-700 dark:text-emerald-400 font-bold hover:underline mt-1">
+                                    Open Chat &rarr;
+                                </a>
                             </div>
                         @elseif($interest->status === 'closed_married')
                             <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
@@ -157,11 +155,9 @@
                                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
                                     ✓ Accepted & Unlocked
                                 </span>
-                                @if($interest->conversation)
-                                    <a href="{{ route('chat.show', $interest->conversation->id) }}" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
-                                        Open Chat
-                                    </a>
-                                @endif
+                                <a href="{{ $interest->conversation ? route('chat.show', $interest->conversation->id) : route('chat.user', $interest->recipient_id) }}" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                                    Open Chat
+                                </a>
                             @endif
                         @elseif($interest->status === 'pending')
                             <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300">

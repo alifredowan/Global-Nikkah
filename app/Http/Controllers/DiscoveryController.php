@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Conversation;
 use App\Models\Interest;
 use App\Models\Profile;
 use App\Models\SavedSearch;
 use App\Models\User;
 use App\Services\MatchingEngineService;
 use App\Services\QuotaService;
+use App\Services\WaliWorkflowService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +20,8 @@ class DiscoveryController extends Controller
 {
     public function __construct(
         protected MatchingEngineService $matchingEngine,
-        protected QuotaService $quotaService
+        protected QuotaService $quotaService,
+        protected WaliWorkflowService $waliWorkflowService
     ) {}
 
     public function index(Request $request): View
@@ -195,13 +198,41 @@ class DiscoveryController extends Controller
             $q->where('sender_id', $targetUser->id)->where('recipient_id', $currentUser->id);
         })->first();
 
+        // Resolve conversation if interest was accepted or conversation already exists
+        $conversation = null;
+        if ($existingInterest && $existingInterest->status === 'accepted') {
+            $conversation = $existingInterest->conversation;
+            if (! $conversation) {
+                $conversation = $this->waliWorkflowService->createOrUnlockConversation($existingInterest);
+            }
+        }
+
+        if (! $conversation) {
+            $conversation = Conversation::whereHas('participants', function ($q) use ($currentUser) {
+                $q->where('conversation_participants.user_id', $currentUser->id);
+            })->whereHas('participants', function ($q) use ($targetUser) {
+                $q->where('conversation_participants.user_id', $targetUser->id);
+            })->first();
+        }
+
         // Check active linked Wali
         $activeWaliLink = $targetUser->waliLinksAsSeeker()->where('status', 'active')->first();
 
         // Check if shortlisted by current user
         $isBookmarked = $currentUser->hasBookmarked($targetUser->id);
 
-        return view('discovery.show', compact('targetUser', 'profile', 'compatibilityScore', 'compatibilityHighlights', 'isPhotoVisible', 'hasGrantedPhotoAccess', 'existingInterest', 'activeWaliLink', 'isBookmarked'));
+        return view('discovery.show', compact(
+            'targetUser',
+            'profile',
+            'compatibilityScore',
+            'compatibilityHighlights',
+            'isPhotoVisible',
+            'hasGrantedPhotoAccess',
+            'existingInterest',
+            'activeWaliLink',
+            'isBookmarked',
+            'conversation'
+        ));
     }
 
     public function saveSearch(Request $request): RedirectResponse

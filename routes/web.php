@@ -199,6 +199,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Halal Chaperoned Messaging
     Route::get('/messages', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/messages/user/{id}', [ChatController::class, 'openWithUser'])->name('chat.user');
     Route::get('/messages/{id}', [ChatController::class, 'show'])->name('chat.show');
     Route::post('/messages/{id}', [ChatController::class, 'sendMessage'])
         ->middleware('throttle:30,1')

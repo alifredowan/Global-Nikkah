@@ -97,43 +97,50 @@
                             </a>
                         </div>
 
-                        <div>
-                            @if($existingInterest)
-                                @if($existingInterest->status === 'accepted')
-                                    <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                                        ✓ Interest Accepted
-                                        @if($existingInterest->conversation)
-                                            <a href="{{ route('chat.show', $existingInterest->conversation->id) }}" class="underline ml-2 text-emerald-900 dark:text-emerald-200">Open Messages &rarr;</a>
-                                        @endif
+                        <div class="w-full sm:w-auto">
+                            @if($conversation || ($existingInterest && $existingInterest->status === 'accepted'))
+                                <div class="flex items-center gap-2 flex-wrap justify-start sm:justify-end">
+                                    <span class="px-3 py-2 rounded-xl text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5">
+                                        <span>✓</span> Interest Accepted
+                                    </span>
+                                    <a href="{{ $conversation ? route('chat.show', $conversation->id) : route('chat.user', $targetUser->id) }}" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/15 transition flex items-center gap-2 cursor-pointer">
+                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                            <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4-4-4H4a2 2 0 01-2-2V5z"/>
+                                        </svg>
+                                        <span>Send Message</span>
+                                    </a>
+                                </div>
+                            @elseif($existingInterest && $existingInterest->status === 'pending')
+                                @if($existingInterest->recipient_id === Auth::id())
+                                    <div class="flex items-center gap-2">
+                                        <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="action" value="accept">
+                                            <button type="submit" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/15 transition flex items-center gap-1.5 cursor-pointer">
+                                                <span>✓</span> Accept Interest
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="action" value="decline">
+                                            <button type="submit" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition flex items-center gap-1.5 border border-slate-300 dark:border-slate-700 cursor-pointer">
+                                                <span>✕</span> Decline
+                                            </button>
+                                        </form>
                                     </div>
-                                @elseif($existingInterest->status === 'pending')
-                                    @if($existingInterest->recipient_id === Auth::id())
-                                        <div class="flex items-center gap-2">
-                                            <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="action" value="accept">
-                                                <button type="submit" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/15 transition flex items-center gap-1.5 cursor-pointer">
-                                                    <span>✓</span> Accept Interest
-                                                </button>
-                                            </form>
-                                            <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="action" value="decline">
-                                                <button type="submit" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition flex items-center gap-1.5 border border-slate-300 dark:border-slate-700 cursor-pointer">
-                                                    <span>✕</span> Decline
-                                                </button>
-                                            </form>
-                                        </div>
-                                    @else
-                                        <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
-                                            <span>⏳</span> Interest Sent (Pending)
-                                        </div>
-                                    @endif
                                 @else
-                                    <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 capitalize border border-slate-200 dark:border-slate-700">
-                                        Status: {{ ucfirst($existingInterest->status) }}
+                                    <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+                                        <span>⏳</span> Interest Sent (Pending)
                                     </div>
                                 @endif
+                            @elseif($existingInterest && $existingInterest->status === 'pending_wali')
+                                <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/60 text-purple-800 dark:text-purple-300 flex items-center gap-1.5">
+                                    <span>🛡️</span> Awaiting Guardian (Wali) Approval
+                                </div>
+                            @elseif($existingInterest)
+                                <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 capitalize border border-slate-200 dark:border-slate-700">
+                                    Status: {{ ucfirst(str_replace('_', ' ', $existingInterest->status)) }}
+                                </div>
                             @else
                                 <button type="button" onclick="document.getElementById('sendInterestModal').classList.remove('hidden')" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/15 transition flex items-center justify-center gap-2 cursor-pointer">
                                     <span>💌</span> Express Halal Interest
@@ -232,6 +239,30 @@
                         </button>
                     </form>
                 </div>
+            </div>
+        @endif
+
+        @if($conversation || ($existingInterest && $existingInterest->status === 'accepted'))
+            <!-- Mutual Match & Messaging Active Card -->
+            <div class="bg-gradient-to-r from-emerald-50 via-white to-emerald-50 dark:from-emerald-950/50 dark:via-slate-900 dark:to-emerald-950/30 border-2 border-emerald-300 dark:border-emerald-800 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">
+                        💬
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white">Mutual Halal Interest Confirmed!</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">Messaging Unlocked</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">You and {{ $targetUser->name }} have mutually accepted interest. You can converse directly in your protected chat.</p>
+                    </div>
+                </div>
+                <a href="{{ $conversation ? route('chat.show', $conversation->id) : route('chat.user', $targetUser->id) }}" class="w-full md:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/20 transition flex items-center justify-center gap-2 shrink-0">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4-4-4H4a2 2 0 01-2-2V5z"/>
+                    </svg>
+                    <span>Message {{ $targetUser->name }}</span> &rarr;
+                </a>
             </div>
         @endif
 

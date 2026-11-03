@@ -53,43 +53,46 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     @foreach($dailyRecommendations as $match)
-                        <div class="bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900/60 p-5 shadow-xs hover:shadow-md transition relative flex flex-col justify-between">
-                            <div class="absolute top-4 right-4 z-10 flex items-center gap-1.5">
-                                @if($match->user->isPro())
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-slate-950 shadow-xs flex items-center gap-1" title="Pro Matrimonial Member">
-                                        👑 PRO
-                                    </span>
-                                @endif
-                                <span class="px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                                    {{ $match->compatibility_score }}% Match
-                                </span>
-                            </div>
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900/60 p-5 shadow-xs hover:shadow-md transition flex flex-col justify-between">
                             <div>
-                                <div class="flex items-center gap-3.5 mb-4">
-                                    <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-800 shrink-0">
-                                        @if($match->primaryPhoto)
-                                            <img src="{{ $match->primaryPhoto->displayUrl() }}" alt="{{ $match->user->name }}" class="w-full h-full object-cover photo-blur" loading="lazy" decoding="async">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center bg-emerald-900 text-white font-bold text-xl">
-                                                {{ substr($match->user->name, 0, 1) }}
-                                            </div>
-                                        @endif
-                                        <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-[9px] text-white font-bold">🔒 Blurred</span>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-1.5">
-                                            <h3 class="font-bold text-sm text-slate-900 dark:text-white truncate max-w-[140px]">{{ $match->user->name }}</h3>
-                                            @if($match->user->is_verified)
-                                                <svg class="w-3.5 h-3.5 text-blue-500 fill-current shrink-0" viewBox="0 0 20 20">
-                                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
-                                                </svg>
+                                <!-- Top Card Header with Avatar, Info & Badges in Normal Flow -->
+                                <div class="flex items-start justify-between gap-2.5 mb-3.5">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-800 shrink-0">
+                                            @if($match->primaryPhoto)
+                                                <img src="{{ $match->primaryPhoto->displayUrl() }}" alt="{{ $match->user->name }}" class="w-full h-full object-cover photo-blur" loading="lazy" decoding="async">
+                                            @else
+                                                <div class="w-full h-full flex items-center justify-center bg-emerald-900 text-white font-bold text-xl">
+                                                    {{ substr($match->user->name, 0, 1) }}
+                                                </div>
                                             @endif
+                                            <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-[9px] text-white font-bold">🔒 Blurred</span>
                                         </div>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ $match->user->age }} yrs • {{ $match->city }}, {{ $match->country }}</p>
-                                        <p class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">{{ $match->sect_madhhab }}</p>
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-1.5 min-w-0">
+                                                <h3 class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ $match->user->name }}</h3>
+                                                @if($match->user->is_verified)
+                                                    <svg class="w-3.5 h-3.5 text-blue-500 fill-current shrink-0" viewBox="0 0 20 20" title="Verified Member">
+                                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                                                    </svg>
+                                                @endif
+                                            </div>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ $match->user->age }} yrs • {{ $match->city }}, {{ $match->country }}</p>
+                                            <p class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold truncate">{{ $match->sect_madhhab }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="shrink-0 flex flex-col items-end gap-1.5">
+                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap">
+                                            {{ $match->compatibility_score }}% Match
+                                        </span>
+                                        @if($match->user->isPro())
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-slate-950 shadow-xs flex items-center gap-1 whitespace-nowrap" title="Pro Matrimonial Member">
+                                                👑 PRO
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-4">
+                                <div class="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl text-xs leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-2 overflow-hidden mb-3">
                                     {{ $match->bio ?? 'Committed to deen and building a righteous family.' }}
                                 </div>
                                 @if(!empty($match->compatibility_highlights))
