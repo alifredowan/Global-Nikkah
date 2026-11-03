@@ -20,6 +20,11 @@ if (reverbKey) {
             forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
             enabledTransports: ['ws', 'wss'],
         });
+
+        // Notify any page scripts that Echo instance is initialized and available
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('echo:ready', { detail: { echo: window.Echo } }));
+        }
     } catch (error) {
         console.warn('Laravel Echo / Reverb initialization error:', error);
         window.Echo = null;

@@ -442,18 +442,41 @@
                             unreadCount: {{ Auth::user()->unreadNotifications->count() }},
                             notifications: [],
                             loading: false,
-                            fetchNotifications() {
-                                this.loading = true;
+                            fetchNotifications(silent = false) {
+                                if (!silent) this.loading = true;
                                 fetch('{{ route('notifications.index') }}', {
                                     headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
                                 })
                                 .then(res => res.json())
                                 .then(data => {
+                                    const previousCount = this.unreadCount;
                                     this.notifications = data.notifications;
                                     this.unreadCount = data.unread_count;
-                                    this.loading = false;
+                                    if (!silent) this.loading = false;
+
+                                    if (typeof data.unread_messages_count !== 'undefined' && window.updateSidebarMessageBadge) {
+                                        window.updateSidebarMessageBadge(data.unread_messages_count);
+                                    }
+
+                                    // If silent background poll detected a new unread notification (e.g. when Echo is offline),
+                                    // only show toast if it hasn't already been displayed
+                                    if (silent && data.notifications && data.notifications.length > 0) {
+                                        const newest = data.notifications[0];
+                                        const newestId = newest.id;
+                                        if (newest && !newest.read_at && (!window.processedNotificationIds || !window.processedNotificationIds.has(newestId))) {
+                                            if (window.handleReverbNotification) {
+                                                window.handleReverbNotification({
+                                                    id: newest.id,
+                                                    title: newest.data?.title || 'New Notification',
+                                                    message: newest.data?.message || '',
+                                                    icon: newest.data?.icon || '🔔',
+                                                    action_url: newest.data?.action_url || ''
+                                                });
+                                            }
+                                        }
+                                    }
                                 })
-                                .catch(() => { this.loading = false; });
+                                .catch(() => { if (!silent) this.loading = false; });
                             },
                             markAsRead(id, url) {
                                 fetch('/notifications/' + id + '/read', {
@@ -488,8 +511,8 @@
                                 });
                             }
                         }"
-                        x-init="fetchNotifications()"
-                        @new-notification-received.window="unreadCount++; notifications.unshift($event.detail); if(notifications.length > 20) notifications.pop();">
+                        x-init="fetchNotifications(); setInterval(() => fetchNotifications(true), 4000);"
+                        @new-notification-received.window="unreadCount = Math.max(unreadCount + 1, 1); notifications.unshift($event.detail); if(notifications.length > 20) notifications.pop();">
                             <button type="button"
                                     @click="notifOpen = !notifOpen; if(notifOpen) { fetchNotifications(); if(unreadCount > 0) markAllRead(); }"
                                     id="notification-bell-btn"
@@ -897,10 +920,19 @@
             }
         }
 
-        // Show toast notification
+        // Show toast notification with strict duplicate guard
+        const recentToastSignatures = new Set();
         function showHalalNotificationToast(data) {
             const container = document.getElementById('reverb-toast-container');
-            if (!container) return;
+            if (!container || !data) return;
+
+            // Strict deduplication signature: ID + Title + Message
+            const toastKey = (data.id ? String(data.id) : '') + '::' + (data.title || '') + '::' + (data.message || '');
+            if (recentToastSignatures.has(toastKey)) {
+                return;
+            }
+            recentToastSignatures.add(toastKey);
+            setTimeout(() => recentToastSignatures.delete(toastKey), 4000);
 
             const toast = document.createElement('div');
             toast.className = 'pointer-events-auto p-4 rounded-2xl bg-white dark:bg-slate-900 border border-emerald-400 dark:border-emerald-700 shadow-2xl flex items-start gap-3 transition-all duration-300 transform translate-y-3 opacity-0';
@@ -973,37 +1005,88 @@
             });
 
             @auth
-                if (window.Echo) {
-                    const userId = {{ Auth::id() }};
-                    const processedNotificationIds = new Set();
+                const currentUserId = {{ Auth::id() }};
+                window.processedNotificationIds = new Set();
 
-                    function handleReverbNotification(notification) {
-                        const notifId = notification.id || (notification.data && notification.data.id);
-                        if (notifId && processedNotificationIds.has(notifId)) {
-                            return;
+                window.updateSidebarMessageBadge = function(count) {
+                    document.querySelectorAll('.sidebar-unread-messages-badge').forEach(badge => {
+                        const num = parseInt(count) || 0;
+                        if (num > 0) {
+                            badge.textContent = num > 99 ? '99+' : num;
+                            badge.classList.remove('hidden');
+                        } else {
+                            badge.classList.add('hidden');
                         }
-                        if (notifId) {
-                            processedNotificationIds.add(notifId);
-                        }
+                    });
+                };
 
-                        playHalalNotificationSound();
-                        showHalalNotificationToast(notification);
+                window.handleReverbNotification = function(notification) {
+                    const data = notification.data || notification;
+                    const notifId = notification.id || data.id || (data.message_id ? 'msg-' + data.message_id : null);
 
-                        window.dispatchEvent(new CustomEvent('new-notification-received', {
-                            detail: {
-                                id: notifId || 'notif-' + Date.now(),
-                                data: notification,
-                                read_at: null,
-                                created_at: 'Just now'
-                            }
-                        }));
+                    if (notifId && window.processedNotificationIds.has(notifId)) {
+                        return;
+                    }
+                    if (notifId) {
+                        window.processedNotificationIds.add(notifId);
                     }
 
-                    window.Echo.private('App.Models.User.' + userId)
-                        .notification(handleReverbNotification);
+                    playHalalNotificationSound();
+                    showHalalNotificationToast({
+                        id: notifId,
+                        title: data.title || 'New Notification',
+                        message: data.message || '',
+                        icon: data.icon || '🔔',
+                        action_url: data.action_url || ''
+                    });
 
-                    window.Echo.private('user.' + userId)
-                        .notification(handleReverbNotification);
+                    // If incoming notification is a chat message, dynamically update sidebar message badge
+                    if (data.type === 'chat_message' || data.type === 'wali_chaperoned_message' || data.conversation_id) {
+                        document.querySelectorAll('.sidebar-unread-messages-badge').forEach(badge => {
+                            let cur = parseInt(badge.textContent) || 0;
+                            badge.textContent = (cur + 1) > 99 ? '99+' : (cur + 1);
+                            badge.classList.remove('hidden');
+                        });
+                    }
+
+                    window.dispatchEvent(new CustomEvent('new-notification-received', {
+                        detail: {
+                            id: notifId || 'notif-' + Date.now(),
+                            data: data,
+                            read_at: null,
+                            created_at: 'Just now'
+                        }
+                    }));
+                };
+
+                let echoSubscribed = false;
+                function setupEchoListeners() {
+                    if (echoSubscribed || !window.Echo) return;
+                    echoSubscribed = true;
+
+                    try {
+                        // Subscribe exclusively to the user's private notification channel
+                        window.Echo.private('App.Models.User.' + currentUserId)
+                            .notification(window.handleReverbNotification);
+                    } catch (err) {
+                        console.warn('Echo subscription setup error:', err);
+                    }
+                }
+
+                if (window.Echo) {
+                    setupEchoListeners();
+                } else {
+                    window.addEventListener('echo:ready', setupEchoListeners);
+                    let checkCount = 0;
+                    const echoTimer = setInterval(() => {
+                        checkCount++;
+                        if (window.Echo) {
+                            clearInterval(echoTimer);
+                            setupEchoListeners();
+                        } else if (checkCount > 50) {
+                            clearInterval(echoTimer);
+                        }
+                    }, 200);
                 }
             @endauth
         });

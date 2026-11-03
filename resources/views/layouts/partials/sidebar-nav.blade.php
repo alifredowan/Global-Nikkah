@@ -163,9 +163,9 @@
                 <a href="{{ route('chat.index') }}"
                    class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('chat.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
                     <span class="flex items-center gap-3"><span class="text-base">💬</span><span>Messages</span></span>
-                    @if($unreadMessages > 0)
-                        <span class="rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-extrabold text-slate-950">{{ $unreadMessages > 99 ? '99+' : $unreadMessages }}</span>
-                    @endif
+                    <span class="sidebar-unread-messages-badge rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-extrabold text-slate-950 {{ $unreadMessages > 0 ? '' : 'hidden' }}">
+                        {{ $unreadMessages > 99 ? '99+' : $unreadMessages }}
+                    </span>
                 </a>
 
                 <a href="{{ route('bookmarks.index') }}"

@@ -385,7 +385,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Reverb WebSocket listener for live chat messages
-    if (window.Echo) {
+    function setupConversationEcho() {
+        if (!window.Echo) return;
         const handleIncoming = function(e) {
             if (!e) return;
             // Only render if sent by another participant
@@ -396,7 +397,20 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         window.Echo.private('conversation.' + conversationId)
-            .listen('.MessageSentEvent', handleIncoming);
+            .listen('.MessageSentEvent', handleIncoming)
+            .listen('MessageSentEvent', handleIncoming);
+    }
+
+    if (window.Echo) {
+        setupConversationEcho();
+    } else {
+        window.addEventListener('echo:ready', setupConversationEcho);
+        let echoTimer = setInterval(() => {
+            if (window.Echo) {
+                clearInterval(echoTimer);
+                setupConversationEcho();
+            }
+        }, 200);
     }
 });
 </script>

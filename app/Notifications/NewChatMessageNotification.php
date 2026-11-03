@@ -47,6 +47,7 @@ class NewChatMessageNotification extends Notification implements ShouldBroadcast
             'title' => $this->isWali ? 'Chaperoned Message Sent' : "Message from {$sender->name}",
             'message' => Str::limit($this->message->body, 80),
             'conversation_id' => $this->message->conversation_id,
+            'message_id' => $this->message->id,
             'sender_id' => $sender->id,
             'sender_name' => $sender->name,
             'action_url' => route('chat.show', $this->message->conversation_id),
