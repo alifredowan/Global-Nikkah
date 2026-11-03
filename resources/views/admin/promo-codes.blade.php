@@ -138,8 +138,11 @@
                             <input type="number" name="max_uses" required value="100" min="1" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Expiry Date (Opt.)</label>
-                            <input type="date" name="expires_at" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Expiry Date (Opt. dd/mm/yyyy)</label>
+                            <input type="text" name="expires_at" inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10"
+                                   pattern="\d{2}/\d{2}/\d{4}" x-data
+                                   x-on:input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3').slice(0, 10)"
+                                   class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                     </div>
 
@@ -228,7 +231,7 @@
                                         <td class="py-3.5 px-3 font-medium">
                                             <span>{{ $code->times_used }} / {{ $code->max_uses }}</span>
                                             @if($code->expires_at)
-                                                <span class="text-[10px] text-slate-400 block">Exp: {{ $code->expires_at->format('M d, Y') }}</span>
+                                                <span class="text-[10px] text-slate-400 block">Exp: {{ $code->expires_at->format('d/m/Y') }}</span>
                                             @endif
                                         </td>
 

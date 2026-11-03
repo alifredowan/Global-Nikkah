@@ -35,6 +35,12 @@
 
                 @php
                     $targetEmail = session('registered_email') ?? session('unverified_email') ?? (Auth::check() ? Auth::user()->email : null);
+                    $devUser = Auth::user() ?? ($targetEmail ? \App\Models\User::where('email', $targetEmail)->first() : null);
+                    $devVerifyUrl = ($devUser && app()->environment('local')) ? URL::temporarySignedRoute(
+                        'verification.verify',
+                        now()->addMinutes(2880),
+                        ['id' => $devUser->getKey(), 'hash' => sha1($devUser->getEmailForVerification())]
+                    ) : null;
                 @endphp
 
                 <div class="mt-4">
@@ -67,7 +73,7 @@
                     Didn't receive the email? We can dispatch a new link.
                 </p>
 
-                <form action="{{ route('verification.send') }}" method="POST" class="space-y-3">
+                <form action="{{ route('verification.send') }}" method="POST" class="space-y-3" x-data="{ submitting: false }" @submit="submitting = true">
                     @csrf
                     @if(! $targetEmail)
                         <div>
@@ -78,10 +84,29 @@
                         <input type="hidden" name="email" value="{{ $targetEmail }}">
                     @endif
 
-                    <button type="submit" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-2 cursor-pointer">
-                        <span>🔄</span> Resend Verification Email
+                    <button type="submit"
+                            :disabled="submitting"
+                            class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-2 cursor-pointer">
+                        <span x-show="!submitting">🔄 Resend Verification Email</span>
+                        <span x-show="submitting" x-cloak>⏳ Sending fresh link...</span>
                     </button>
                 </form>
+
+                @if($devVerifyUrl)
+                    <div class="mt-4 p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-center space-y-2">
+                        <div class="flex items-center justify-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300">
+                            <span>⚡</span>
+                            <span>Local Development Shortcut</span>
+                        </div>
+                        <p class="text-[11px] text-amber-700 dark:text-amber-400">
+                            Local SMTP/Brevo delivery may be delayed or blocked by email providers. Click below to verify instantly:
+                        </p>
+                        <a href="{{ $devVerifyUrl }}"
+                           class="inline-flex items-center justify-center w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition">
+                            🚀 Verify Account Instantly (Local Dev)
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <!-- Back to Sign in link -->

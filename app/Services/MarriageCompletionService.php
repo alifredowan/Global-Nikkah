@@ -10,6 +10,7 @@ use App\Models\PhotoAccessGrant;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Notifications\NikahMilestoneNotification;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -50,12 +51,23 @@ class MarriageCompletionService
             throw new InvalidArgumentException('This marriage milestone has already been confirmed.');
         }
 
+        $normalizedDate = now()->toDateString();
+        if ($marriageDate) {
+            try {
+                $normalizedDate = str_contains($marriageDate, '/')
+                    ? Carbon::createFromFormat('d/m/Y', $marriageDate)->toDateString()
+                    : Carbon::parse($marriageDate)->toDateString();
+            } catch (\Throwable) {
+                $normalizedDate = now()->toDateString();
+            }
+        }
+
         $marriage = Marriage::updateOrCreate(
             ['groom_id' => $groomId, 'bride_id' => $brideId],
             [
                 'initiated_by_user_id' => $initiator->id,
                 'status' => 'pending_confirmation',
-                'marriage_date' => $marriageDate ?: now()->toDateString(),
+                'marriage_date' => $normalizedDate,
                 'confirmation_notes' => $notes,
             ]
         );

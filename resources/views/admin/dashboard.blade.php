@@ -200,7 +200,7 @@
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                         @foreach($recentAuditLogs as $log)
                             <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
-                                <td class="p-3 font-mono text-slate-400">{{ $log->created_at->format('Y-m-d H:i') }}</td>
+                                <td class="p-3 font-mono text-slate-400">{{ $log->created_at->format('d/m/Y H:i') }}</td>
                                 <td class="p-3 font-bold text-slate-900 dark:text-white">{{ $log->user?->name ?? 'System' }}</td>
                                 <td class="p-3">
                                     <span class="px-2 py-0.5 rounded-md font-mono text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">

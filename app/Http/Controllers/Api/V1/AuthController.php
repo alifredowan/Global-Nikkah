@@ -40,7 +40,26 @@ class AuthController extends Controller
             ],
             'phone' => ['nullable', 'string', (new Phone)->international(), 'unique:users,phone'],
             'gender' => ['required', 'in:male,female'],
-            'dob' => ['required', 'date', "before_or_equal:{$maxBirthDate}"],
+            'dob' => ['required', function (string $attribute, mixed $value, \Closure $fail): void {
+                if (! $value) {
+                    $fail('The date of birth field is required.');
+
+                    return;
+                }
+                try {
+                    $parsed = str_contains((string) $value, '/')
+                        ? Carbon::createFromFormat('d/m/Y', (string) $value)->startOfDay()
+                        : Carbon::parse((string) $value)->startOfDay();
+                } catch (\Throwable) {
+                    $fail('Please enter the date of birth in dd/mm/yyyy format.');
+
+                    return;
+                }
+
+                if ($parsed->gt(Carbon::now()->subYears(18)->startOfDay())) {
+                    $fail('You must be at least 18 years old to register.');
+                }
+            }],
             'marital_status' => ['required', 'in:never_married,divorced,widowed,annulled'],
             'password' => ['required', Password::defaults()],
         ], [
@@ -54,7 +73,9 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'phone' => $normalizedPhoneNumber,
             'gender' => $validated['gender'],
-            'dob' => $validated['dob'],
+            'dob' => str_contains((string) $validated['dob'], '/')
+                ? Carbon::createFromFormat('d/m/Y', (string) $validated['dob'])->toDateString()
+                : Carbon::parse((string) $validated['dob'])->toDateString(),
             'marital_status' => $validated['marital_status'],
             'password' => Hash::make($validated['password']),
             'role' => 'seeker',

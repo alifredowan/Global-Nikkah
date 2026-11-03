@@ -41,7 +41,7 @@
                                 </div>
                             </td>
                             <td class="p-4 text-slate-400 dark:text-slate-500">
-                                {{ $v->created_at->format('M d, Y H:i') }}
+                                {{ $v->created_at->format('d/m/Y H:i') }}
                             </td>
                             <td class="p-4">
                                 <span class="px-2.5 py-1 rounded-full font-bold text-[10px] {{ $v->status === 'approved' ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60' : ($v->status === 'rejected' ? 'bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60' : 'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60') }}">

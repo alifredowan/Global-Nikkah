@@ -17,9 +17,14 @@ use Illuminate\View\View;
 
 class SubscriptionController extends Controller
 {
-    public function pricing(): View
+    public function pricing(): View|RedirectResponse
     {
         $user = Auth::user();
+
+        if ($user?->isWali()) {
+            return redirect()->route('wali.dashboard')->with('info', 'Guardian (Wali) accounts are 100% free on Global Nikkah. You do not require a paid subscription.');
+        }
+
         $plans = SubscriptionPlan::where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('monthly_price')
@@ -43,6 +48,12 @@ class SubscriptionController extends Controller
         StripePaymentService $stripeService,
         PayPalPaymentService $paypalService
     ): View|RedirectResponse {
+        $user = Auth::user();
+
+        if ($user?->isWali()) {
+            return redirect()->route('wali.dashboard')->with('info', 'Guardian (Wali) accounts are 100% free on Global Nikkah. You do not require a paid subscription.');
+        }
+
         $planModel = SubscriptionPlan::where('slug', $plan)
             ->where('is_active', true)
             ->first();
@@ -136,6 +147,10 @@ class SubscriptionController extends Controller
 
         $billingCycle = $request->input('billing_cycle', 'one_time_marriage') ?: 'one_time_marriage';
         $user = Auth::user();
+
+        if ($user?->isWali()) {
+            return redirect()->route('wali.dashboard')->with('info', 'Guardian (Wali) accounts are 100% free on Global Nikkah. You do not require a paid subscription.');
+        }
 
         $planModel = SubscriptionPlan::where('slug', $request->plan)
             ->where('is_active', true)

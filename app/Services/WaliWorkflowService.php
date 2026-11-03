@@ -11,7 +11,6 @@ use App\Notifications\InterestRespondedNotification;
 use App\Notifications\WaliConnectionApprovedNotification;
 use App\Notifications\WaliConnectionRequestNotification;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
 
 class WaliWorkflowService
 {
@@ -28,35 +27,35 @@ class WaliWorkflowService
     ): WaliLink {
         $normalizedEmail = $waliEmail ? strtolower(trim($waliEmail)) : null;
 
-        // If an existing user matches the email, link directly
-        $waliUser = null;
-        if ($normalizedEmail) {
-            $waliUser = User::where('email', $normalizedEmail)->first();
+        if (! $normalizedEmail) {
+            throw new InvalidArgumentException('Guardian email address is required.');
+        }
+
+        $waliUser = User::whereRaw('LOWER(email) = ?', [$normalizedEmail])->first();
+        if (! $waliUser) {
+            throw new InvalidArgumentException('No account found with this email in the system. The guardian must be registered before being linked.');
+        }
+
+        if ($waliUser->id === $seeker->id) {
+            throw new InvalidArgumentException('You cannot link yourself as your own Guardian (Wali).');
         }
 
         $link = WaliLink::create([
             'seeker_user_id' => $seeker->id,
-            'wali_user_id' => $waliUser?->id,
-            'wali_name' => $waliName,
+            'wali_user_id' => $waliUser->id,
+            'wali_name' => $waliName ?: $waliUser->name,
             'wali_email' => $normalizedEmail,
-            'wali_phone' => $waliPhone,
+            'wali_phone' => $waliPhone ?: $waliUser->phone,
             'relationship_type' => $relationshipType,
             'permission_level' => $permissionLevel,
             'status' => 'pending',
             'invite_token' => bin2hex(random_bytes(24)),
         ]);
 
-        if ($normalizedEmail) {
-            try {
-                if ($waliUser) {
-                    $waliUser->notify(new WaliConnectionRequestNotification($link, $seeker));
-                } else {
-                    Notification::route('mail', $normalizedEmail)
-                        ->notify(new WaliConnectionRequestNotification($link, $seeker));
-                }
-            } catch (\Throwable $e) {
-                Log::warning('Failed to dispatch Wali connection request email: '.$e->getMessage());
-            }
+        try {
+            $waliUser->notify(new WaliConnectionRequestNotification($link, $seeker));
+        } catch (\Throwable $e) {
+            Log::warning('Failed to dispatch Wali connection request email: '.$e->getMessage());
         }
 
         return $link;

@@ -272,7 +272,7 @@
                 &ldquo;And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy.&rdquo; (Surah Ar-Rum: 21)
             </p>
             <p class="text-[10px] text-slate-400 pt-2 font-mono">
-                Generated via Global Nikkah • Halal Islamic Matrimonial Platform • {{ now()->toFormattedDateString() }}
+                Generated via Global Nikkah • Halal Islamic Matrimonial Platform • {{ now()->format('d/m/Y') }}
             </p>
         </div>
 

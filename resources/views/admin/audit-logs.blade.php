@@ -26,7 +26,7 @@
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono text-[11px]">
                     @forelse($logs as $log)
                         <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition">
-                            <td class="p-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">{{ $log->created_at->format('Y-m-d H:i:s') }}</td>
+                            <td class="p-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">{{ $log->created_at->format('d/m/Y H:i:s') }}</td>
                             <td class="p-4 font-sans font-bold text-slate-900 dark:text-white">{{ $log->user?->name ?? 'Guest / System' }}</td>
                             <td class="p-4">
                                 <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold">

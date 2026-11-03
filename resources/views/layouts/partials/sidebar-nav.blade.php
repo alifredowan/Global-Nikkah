@@ -224,8 +224,9 @@
     {{-- ========================================================= --}}
     @if($isSuperAdmin || (!$isAdminOrStaff && ($user->isWali() || $user->waliLinksAsWali()->exists())))
         <div>
-            <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                <span>🛡️</span> Guardian Console
+            <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 flex items-center justify-between">
+                <span class="flex items-center gap-1.5"><span>🛡️</span> Guardian Console</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300">ALWAYS FREE</span>
             </div>
             <div class="space-y-1">
                 <a href="{{ route('wali.dashboard') }}"
@@ -245,9 +246,9 @@
 
     {{-- ========================================================= --}}
     {{-- 5. PLANS & PRO MEMBERSHIP                                 --}}
-    {{-- (Visible to Seekers and Super Admin)                      --}}
+    {{-- (Visible to Seekers and Super Admin only, NEVER Walis)    --}}
     {{-- ========================================================= --}}
-    @if($isSuperAdmin || (!$isAdminOrStaff && $user->isSeeker()))
+    @if(($isSuperAdmin || (!$isAdminOrStaff && $user->isSeeker())) && ! $user->isWali())
         <div>
             <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Pro & Plans

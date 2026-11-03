@@ -138,7 +138,7 @@
                             <p class="text-xs text-slate-500 dark:text-slate-400">
                                 {{ $interest->recipient->age }} yrs • {{ $interest->recipient->profile?->city ?? 'Location not specified' }}, {{ $interest->recipient->profile?->country ?? '' }}
                             </p>
-                            <span class="text-[11px] text-slate-400 dark:text-slate-500 block mt-1">Sent on {{ $interest->created_at->format('M d, Y') }}</span>
+                            <span class="text-[11px] text-slate-400 dark:text-slate-500 block mt-1">Sent on {{ $interest->created_at->format('d/m/Y') }}</span>
                         </div>
                     </div>
 

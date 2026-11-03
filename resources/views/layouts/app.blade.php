@@ -788,7 +788,7 @@
                              { name: 'Platform Policies & Security Rules', cat: 'Settings', icon: '⚙️', url: '{{ route('admin.settings') }}' },
                          @endif
 
-                         @if(Auth::user()->isSeeker())
+                         @if(Auth::user()->isSeeker() && !Auth::user()->isWali())
                              { name: 'Find Matches / Matrimonial Discovery', cat: 'Matches', icon: '✨', url: '{{ route('discovery.index') }}' },
                              { name: 'Interests & Requests', cat: 'Matches', icon: '💌', url: '{{ route('interests.index') }}' },
                              { name: 'Shortlisted Biodatas', cat: 'Matches', icon: '⭐', url: '{{ route('bookmarks.index') }}' },

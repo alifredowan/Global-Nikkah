@@ -116,11 +116,17 @@
 
                                 <div>
                                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                        Date of Birth
+                                        Date of Birth (dd/mm/yyyy)
                                     </label>
-                                    <input type="date"
+                                    <input type="text"
                                            name="dob"
-                                           value="{{ old('dob', $user->dob ? $user->dob->format('Y-m-d') : '') }}"
+                                           value="{{ old('dob', $user->dob ? $user->dob->format('d/m/Y') : '') }}"
+                                           inputmode="numeric"
+                                           placeholder="dd/mm/yyyy"
+                                           maxlength="10"
+                                           pattern="\d{2}/\d{2}/\d{4}"
+                                           x-data
+                                           x-on:input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3').slice(0, 10)"
                                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
                                 </div>
 
@@ -311,7 +317,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-xs text-slate-400">Member Since</p>
-                        <p class="text-sm font-bold text-slate-200">{{ $user->created_at->format('M Y') }}</p>
+                        <p class="text-sm font-bold text-slate-200">{{ $user->created_at->format('d/m/Y') }}</p>
                     </div>
                 </div>
                 <div class="pt-3 border-t border-slate-800/80 text-[11px] text-slate-400">

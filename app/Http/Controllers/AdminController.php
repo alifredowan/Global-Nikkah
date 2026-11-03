@@ -366,7 +366,20 @@ class AdminController extends Controller
             'allowed_emails' => ['nullable', 'string'],
             'description' => ['nullable', 'string', 'max:255'],
             'max_uses' => ['required', 'integer', 'min:1'],
-            'expires_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', function (string $attribute, mixed $value, \Closure $fail): void {
+                if (! $value) {
+                    return;
+                }
+                try {
+                    if (str_contains((string) $value, '/')) {
+                        Carbon::createFromFormat('d/m/Y', (string) $value);
+                    } else {
+                        Carbon::parse((string) $value);
+                    }
+                } catch (\Throwable) {
+                    $fail('Please enter the expiration date in dd/mm/yyyy format.');
+                }
+            }],
         ]);
 
         $planSlug = $request->plan_slug === 'all' || empty($request->plan_slug) ? null : $request->plan_slug;
@@ -380,7 +393,11 @@ class AdminController extends Controller
             'max_uses' => (int) $request->max_uses,
             'times_used' => 0,
             'is_active' => true,
-            'expires_at' => $request->expires_at ? Carbon::parse($request->expires_at) : null,
+            'expires_at' => $request->expires_at
+                ? (str_contains((string) $request->expires_at, '/')
+                    ? Carbon::createFromFormat('d/m/Y', (string) $request->expires_at)->endOfDay()
+                    : Carbon::parse((string) $request->expires_at)->endOfDay())
+                : null,
         ]);
 
         AuditLog::record(Auth::id(), 'promo_code_created', 'DiscountCode', $promo->id, [

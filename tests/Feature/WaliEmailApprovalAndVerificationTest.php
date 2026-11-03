@@ -144,6 +144,37 @@ class WaliEmailApprovalAndVerificationTest extends TestCase
         Notification::assertSentTo($waliUser, WaliConnectionRequestNotification::class);
     }
 
+    public function test_seeker_cannot_link_wali_if_account_does_not_exist_in_system(): void
+    {
+        $seeker = User::factory()->create(['gender' => 'female']);
+
+        $response = $this->actingAs($seeker)->post('/wali/link', [
+            'wali_name' => 'Non Existent Person',
+            'relationship_type' => 'father',
+            'permission_level' => 'approve_required',
+            'wali_email' => 'doesnt.exist.guardian@example.com',
+            'wali_phone' => '+15559998888',
+        ]);
+
+        $response->assertSessionHasErrors('wali_email');
+        $this->assertEquals(0, WaliLink::where('seeker_user_id', $seeker->id)->count());
+    }
+
+    public function test_seeker_cannot_link_themselves_as_own_wali(): void
+    {
+        $seeker = User::factory()->create(['gender' => 'female', 'email' => 'seeker.sister@example.com']);
+
+        $response = $this->actingAs($seeker)->post('/wali/link', [
+            'wali_name' => 'Self',
+            'relationship_type' => 'father',
+            'permission_level' => 'approve_required',
+            'wali_email' => 'seeker.sister@example.com',
+        ]);
+
+        $response->assertSessionHasErrors('wali_email');
+        $this->assertEquals(0, WaliLink::where('seeker_user_id', $seeker->id)->count());
+    }
+
     public function test_wali_can_view_invitation_page_via_token(): void
     {
         $seeker = User::factory()->create(['gender' => 'female', 'name' => 'Amina Seeker']);

@@ -55,15 +55,53 @@ class WaliController extends Controller
 
     public function linkStore(Request $request): RedirectResponse
     {
+        $seeker = Auth::user();
+
+        $request->merge([
+            'wali_email' => strtolower(trim((string) $request->input('wali_email'))),
+        ]);
+
         $request->validate([
             'relationship_type' => ['required', 'string', 'in:father,brother,uncle,grandfather,other_mahram'],
             'permission_level' => ['required', 'in:view_only,approve_required,full_proxy'],
             'wali_name' => ['required', 'string', 'max:100'],
-            'wali_email' => ['nullable', 'email'],
-            'wali_phone' => ['nullable', 'string', 'max:20'],
-        ]);
+            'wali_email' => [
+                'required',
+                'email',
+                'exists:users,email',
+                function (string $attribute, mixed $value, \Closure $fail) use ($seeker): void {
+                    $normalizedEmail = strtolower(trim((string) $value));
+                    if ($normalizedEmail === strtolower($seeker->email)) {
+                        $fail('You cannot link yourself as your own Guardian (Wali).');
 
-        $seeker = Auth::user();
+                        return;
+                    }
+
+                    $wali = User::whereRaw('LOWER(email) = ?', [$normalizedEmail])->first();
+                    if (! $wali) {
+                        $fail('No account found with this email. Your guardian must register an account on Global Nikkah first before being linked.');
+
+                        return;
+                    }
+
+                    $alreadyLinked = WaliLink::where('seeker_user_id', $seeker->id)
+                        ->where(function ($q) use ($wali, $normalizedEmail) {
+                            $q->where('wali_user_id', $wali->id)
+                                ->orWhere('wali_email', $normalizedEmail);
+                        })
+                        ->whereIn('status', ['pending', 'active'])
+                        ->exists();
+
+                    if ($alreadyLinked) {
+                        $fail('This guardian is already linked or has a pending invitation with your account.');
+                    }
+                },
+            ],
+            'wali_phone' => ['nullable', 'string', 'max:20'],
+        ], [
+            'wali_email.required' => 'Guardian\'s registered email address is required.',
+            'wali_email.exists' => 'No account found with this email. The guardian must register an account on Global Nikkah first before being linked as a Wali.',
+        ]);
 
         $this->waliService->linkWali(
             $seeker,

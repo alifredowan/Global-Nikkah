@@ -89,6 +89,20 @@ class QuotaService
      */
     public function getUsageStats(User $user): array
     {
+        if ($user->isWali()) {
+            return [
+                'plan' => 'free',
+                'plan_name' => 'Guardian (Always Free)',
+                'views_used' => 0,
+                'views_limit' => 'Unlimited',
+                'views_remaining' => 'Unlimited',
+                'interests_used' => 0,
+                'interests_limit' => 'N/A',
+                'interests_remaining' => 'N/A',
+                'can_use_advanced_filters' => true,
+            ];
+        }
+
         $limits = Subscription::getPlanDetails($user->plan);
 
         if ($user->isPremium()) {

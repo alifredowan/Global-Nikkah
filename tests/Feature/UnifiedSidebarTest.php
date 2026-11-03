@@ -136,6 +136,11 @@ class UnifiedSidebarTest extends TestCase
         $response->assertSee('Link Ward');
         $response->assertSee('Account Settings');
 
+        // Subscription & Pro links MUST NOT be present for Wali
+        $response->assertDontSee('Plans &amp; Pricing', false);
+        $response->assertDontSee('Pro &amp; Plans', false);
+        $response->assertDontSee('Who Viewed You', false);
+
         // Admin links MUST NOT be present
         $response->assertDontSee('Dashboard Overview');
         $response->assertDontSee('KYC Queue');
@@ -164,5 +169,15 @@ class UnifiedSidebarTest extends TestCase
         $responseSeeker->assertSee('Personal & Account Information', false);
         $responseSeeker->assertSee('Password & Security', false);
         $responseSeeker->assertSee('Privacy & Haya Preferences', false);
+    }
+
+    public function test_wali_accessing_subscription_pricing_is_redirected_to_wali_dashboard(): void
+    {
+        $wali = $this->createWali();
+
+        $response = $this->actingAs($wali)->get(route('subscription.pricing'));
+
+        $response->assertRedirect(route('wali.dashboard'));
+        $response->assertSessionHas('info');
     }
 }

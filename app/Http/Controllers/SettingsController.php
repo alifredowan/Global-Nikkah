@@ -8,6 +8,7 @@ use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -59,7 +60,24 @@ class SettingsController extends Controller
 
         if ($user->isSeeker()) {
             $rules['gender'] = ['nullable', 'in:male,female'];
-            $rules['dob'] = ['nullable', 'date', 'before:-18 years'];
+            $rules['dob'] = ['nullable', function (string $attribute, mixed $value, \Closure $fail): void {
+                if (! $value) {
+                    return;
+                }
+                try {
+                    $parsed = str_contains((string) $value, '/')
+                        ? Carbon::createFromFormat('d/m/Y', (string) $value)->startOfDay()
+                        : Carbon::parse((string) $value)->startOfDay();
+                } catch (\Throwable) {
+                    $fail('Please enter the date of birth in dd/mm/yyyy format.');
+
+                    return;
+                }
+
+                if ($parsed->gt(Carbon::now()->subYears(18)->startOfDay())) {
+                    $fail('You must be at least 18 years old to use this platform.');
+                }
+            }];
             $rules['marital_status'] = ['nullable', 'string', 'in:never_married,divorced,widowed,annulled'];
             $rules['bio'] = ['nullable', 'string', 'max:1000'];
             $rules['city'] = ['nullable', 'string', 'max:100'];
@@ -67,7 +85,6 @@ class SettingsController extends Controller
         }
 
         $validated = $request->validate($rules, [
-            'dob.before' => 'You must be at least 18 years old to use this platform.',
             'email.unique' => 'This email address is already in use by another account.',
         ]);
 
@@ -86,8 +103,14 @@ class SettingsController extends Controller
             if (isset($validated['gender'])) {
                 $userData['gender'] = $validated['gender'];
             }
-            if (isset($validated['dob'])) {
-                $userData['dob'] = $validated['dob'];
+            if (array_key_exists('dob', $validated)) {
+                if ($validated['dob']) {
+                    $userData['dob'] = str_contains((string) $validated['dob'], '/')
+                        ? Carbon::createFromFormat('d/m/Y', (string) $validated['dob'])->toDateString()
+                        : Carbon::parse((string) $validated['dob'])->toDateString();
+                } else {
+                    $userData['dob'] = null;
+                }
             }
             if (isset($validated['marital_status'])) {
                 $userData['marital_status'] = $validated['marital_status'];

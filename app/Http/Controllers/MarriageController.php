@@ -6,6 +6,7 @@ use App\Models\Marriage;
 use App\Services\MarriageCompletionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -36,7 +37,20 @@ class MarriageController extends Controller
     {
         $request->validate([
             'spouse_id' => ['required', 'exists:users,id'],
-            'marriage_date' => ['nullable', 'date'],
+            'marriage_date' => ['nullable', function (string $attribute, mixed $value, \Closure $fail): void {
+                if (! $value) {
+                    return;
+                }
+                try {
+                    if (str_contains((string) $value, '/')) {
+                        Carbon::createFromFormat('d/m/Y', (string) $value);
+                    } else {
+                        Carbon::parse((string) $value);
+                    }
+                } catch (\Throwable) {
+                    $fail('The marriage date must be a valid date in dd/mm/yyyy format.');
+                }
+            }],
             'confirmation_notes' => ['nullable', 'string', 'max:1000'],
         ]);
 

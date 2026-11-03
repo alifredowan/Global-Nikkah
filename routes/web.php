@@ -38,8 +38,9 @@ Route::get('/photos/{photo}/view', [PhotoController::class, 'show'])
 // Email Verification (Public Signed & Notice)
 Route::get('/email/verify', [AuthController::class, 'showVerificationNotice'])->name('verification.notice');
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+Route::get('/email/resend', fn () => redirect()->route('verification.notice'));
 Route::post('/email/resend', [AuthController::class, 'resendVerification'])
-    ->middleware('throttle:5,10')
+    ->middleware('throttle:10,1')
     ->name('verification.send');
 
 // Wali (Guardian) Email Invitation Approval (Public Token)
