@@ -20,13 +20,14 @@ BRANCH="${BRANCH:-main}"
 PHP_BIN="${PHP_BIN:-php}"
 COMPOSER_BIN="${COMPOSER_BIN:-composer}"
 PHP_FPM_SERVICE="${PHP_FPM_SERVICE:-}"
-QUEUE_SERVICE="${QUEUE_SERVICE:-}"
-REVERB_SERVICE="${REVERB_SERVICE:-}"
+QUEUE_SERVICE="${QUEUE_SERVICE:-globalnikkah-queue-worker}"
+REVERB_SERVICE="${REVERB_SERVICE:-globalnikkah-reverb}"
 WEB_USER="${WEB_USER:-www-data}"
 WEB_GROUP="${WEB_GROUP:-www-data}"
 HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
 HEALTHCHECK_IP="${HEALTHCHECK_IP:-127.0.0.1}"
 DOWN_RETRY="${DOWN_RETRY:-60}"
+SYSTEMD_UNIT_DIR="${SYSTEMD_UNIT_DIR:-deploy}"
 RUN_BUILD=true
 RUN_MIGRATE=true
 RUN_SERVICES=true
@@ -66,6 +67,15 @@ detect_php_fpm() {
             return
         fi
     done
+}
+
+install_unit() {
+    local service="$1"
+    local source="$SYSTEMD_UNIT_DIR/$service.service"
+    local target="/etc/systemd/system/$service.service"
+
+    [[ -f "$source" ]] || return 1
+    install -m 0644 "$source" "$target"
 }
 
 cd "$APP_DIR" || fail "Application directory does not exist: $APP_DIR"
@@ -174,12 +184,23 @@ chown -R "$WEB_USER:$WEB_GROUP" storage bootstrap/cache
 chmod -R ug+rwX storage bootstrap/cache
 
 if [[ "$RUN_SERVICES" == true ]] && have systemctl; then
-    for service in "$QUEUE_SERVICE" "$REVERB_SERVICE"; do
-        if [[ -n "$service" ]]; then
-            echo "Restarting $service..."
-            systemctl restart "$service"
+    if [[ -n "$QUEUE_SERVICE" ]]; then
+        if install_unit "$QUEUE_SERVICE"; then
+            systemctl daemon-reload
+            systemctl enable --now "$QUEUE_SERVICE"
+        else
+            systemctl restart "$QUEUE_SERVICE"
         fi
-    done
+        systemctl is-active --quiet "$QUEUE_SERVICE" \
+            || fail "Queue service '$QUEUE_SERVICE' is not running."
+    fi
+
+    if [[ -n "$REVERB_SERVICE" ]]; then
+        echo "Restarting $REVERB_SERVICE..."
+        systemctl restart "$REVERB_SERVICE"
+        systemctl is-active --quiet "$REVERB_SERVICE" \
+            || fail "Reverb service '$REVERB_SERVICE' is not running."
+    fi
 
     if [[ -n "$PHP_FPM_SERVICE" ]]; then
         echo "Restarting $PHP_FPM_SERVICE..."

@@ -1,0 +1,17 @@
+[Unit]
+Description=Global Nikkah Laravel Queue Worker
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/nikah
+ExecStart=/usr/bin/php artisan queue:work database --sleep=3 --tries=3 --timeout=90
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
