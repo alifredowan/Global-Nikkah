@@ -6,20 +6,26 @@
 <div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        <!-- Top Welcome Card -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 flex items-center justify-center text-2xl shadow-xs shrink-0 border border-purple-200 dark:border-purple-800/60">
-                    🛡️
-                </div>
+        <!-- Top Atmospheric Banner (Vivah Style) -->
+        <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-950 rounded-3xl p-6 sm:p-8 text-white shadow-md border border-emerald-900/40 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Wali (Guardian) Console</h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Overseeing matrimonial introductions, interest approvals, and chaperoned discussions (FR-4.3, 6.2).</p>
+                    <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2">
+                        <span>🛡️</span>
+                        <span>Wali Guardian Governance Console</span>
+                    </div>
+                    <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-white">
+                        Family Oversight & Matrimonial Approval Center
+                    </h1>
+                    <p class="text-xs text-emerald-100/80 mt-1 max-w-2xl leading-relaxed">
+                        Shariah matrimonial facilitation empowering trusted guardians to review introductions, grant parental approvals, and guide serious marriage inquiries with dignity.
+                    </p>
                 </div>
+                <span class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-emerald-200 border border-white/15 self-start md:self-center shrink-0">
+                    ✓ Guardian Oversight Active
+                </span>
             </div>
-            <span class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-900 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
-                Guardian Oversight Active
-            </span>
         </div>
 
         <!-- Pending Interest Approvals (FR-4.3) -->

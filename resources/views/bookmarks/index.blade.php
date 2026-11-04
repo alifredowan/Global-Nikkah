@@ -58,23 +58,23 @@
                             $candidate = $b->bookmarkedUser;
                             $profile = $candidate->profile;
                         @endphp
-                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:shadow-md transition flex flex-col justify-between"
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-xs hover:border-emerald-500/50 smooth-card transition-all duration-300 flex flex-col justify-between"
                              x-data="{ editingNotes: false, notesVal: '{{ addslashes($b->notes ?? '') }}' }">
                             <div>
                                 <!-- Top Card Header -->
                                 <div class="flex items-start justify-between gap-2.5 mb-3">
                                     <div class="flex items-center gap-3 min-w-0">
-                                        <div class="relative w-14 h-14 rounded-2xl overflow-hidden bg-slate-800 shrink-0">
+                                        <div class="relative w-14 h-14 rounded-2xl overflow-hidden bg-slate-800 shrink-0 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
                                             @if($profile && $profile->primaryPhoto)
                                                 <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $candidate->name }}" loading="lazy" decoding="async"
                                                      class="w-full h-full object-cover {{ $b->is_photo_visible ? '' : 'photo-blur' }}">
                                             @else
-                                                <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-xl">
+                                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-950 to-slate-900 text-white font-bold text-xl">
                                                     {{ substr($candidate->name, 0, 1) }}
                                                 </div>
                                             @endif
                                             @if(!$b->is_photo_visible)
-                                                <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-[9px] text-white font-bold">🔒 Blurred</span>
+                                                <span class="absolute inset-0 flex items-center justify-center bg-black/50 text-[9px] text-white font-bold">🔒 Shielded</span>
                                             @endif
                                         </div>
                                         <div class="min-w-0">

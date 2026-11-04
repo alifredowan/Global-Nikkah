@@ -14,8 +14,9 @@
         </div>
 
         <!-- Top Profile Banner Card -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="h-32 bg-emerald-gradient relative">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden">
+            <div class="h-36 sm:h-40 bg-emerald-gradient relative">
+                <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
                 @if($compatibilityScore)
                     <div class="absolute top-4 right-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-sm flex items-center gap-2 text-xs font-bold text-emerald-950 dark:text-emerald-200 border border-white/20 dark:border-slate-700/50">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
@@ -24,9 +25,9 @@
                 @endif
             </div>
             <div class="px-6 pb-6 pt-0 relative">
-                <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 -mt-16 mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-6">
                     <div class="flex items-end gap-4">
-                        <div class="w-28 h-28 rounded-2xl overflow-hidden border-4 border-white dark:border-slate-900 bg-slate-800 shadow-lg relative shrink-0">
+                        <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-4 border-white dark:border-slate-900 bg-slate-800 shadow-xl relative shrink-0">
                             @if($profile->primaryPhoto)
                                 <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $targetUser->name }}"
                                      class="w-full h-full object-cover {{ $isPhotoVisible ? '' : 'photo-blur' }}">

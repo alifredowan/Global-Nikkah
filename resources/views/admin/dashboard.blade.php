@@ -6,17 +6,28 @@
 @section('content')
 <div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
 
-        <!-- Header -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-colors">
-            <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Administrative & Moderation Console</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Platform governance, KYC verification queue, reports, and immutable audit logs (FR-7.1 - 7.5).</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    System Operational
-                </span>
+        <!-- Top Atmospheric Banner (Vivah Style) -->
+        <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-950 rounded-3xl p-6 sm:p-8 text-white shadow-md border border-emerald-900/40 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2">
+                        <span>🛡️</span>
+                        <span>Trust & Operations Center</span>
+                    </div>
+                    <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-white">
+                        Administrative & Safety Operations
+                    </h1>
+                    <p class="text-xs text-emerald-100/80 mt-1 max-w-2xl">
+                        Platform governance, KYC verification queue, reports handling, and immutable audit logs (FR-7.1 - 7.5).
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 self-start sm:self-center shrink-0">
+                    <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-md text-emerald-200 border border-white/15">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        System Operational
+                    </span>
+                </div>
             </div>
         </div>
 

@@ -1,195 +1,299 @@
-# Nikah Connect - User & Administrator Manual
-**Islamic Matrimonial Platform User Guide & Database Configuration Handbook**
+# 💍 Nikah Connect — Official User Manual & Feature Guide
 
-Welcome to **Nikah Connect**! This platform is purpose-built to facilitate Islamic marriage (*Nikah*) under strict adherence to Islamic Shariah, modesty (*Haya*), family involvement (*Wali* / Guardian oversight), and deen-centric compatibility. Unlike conventional dating apps, Nikah Connect emphasizes privacy, character, and religious commitment.
-
----
-
-## Table of Contents
-1. [User Roles & Demo Logins](#1-user-roles--demo-logins)
-2. [Step-by-Step Feature Walkthrough](#2-step-by-step-feature-walkthrough)
-   - [A. Account Registration & Mandatory 18+ Verification](#a-account-registration--mandatory-18-verification)
-   - [B. Deen & Islamic Profile Setup](#b-deen--islamic-profile-setup)
-   - [C. Photo Upload & Server-Side Modesty Protection (FR-2.2)](#c-photo-upload--server-side-modesty-protection-fr-22)
-   - [D. KYC & Government ID Verification](#d-kyc--government-id-verification)
-   - [E. Candidate Discovery & Deen Compatibility Scoring](#e-candidate-discovery--deen-compatibility-scoring)
-   - [F. Expressing Halal Interest & Guardian (Wali) Workflow](#f-expressing-halal-interest--guardian-wali-workflow)
-   - [G. Chaperoned Halal Messaging & Safety Scanner](#g-chaperoned-halal-messaging--safety-scanner)
-   - [H. Membership Tiers & Promotional Coupons](#h-membership-tiers--promotional-coupons)
-   - [I. Administration & Moderation Console](#i-administration--moderation-console)
-   - [J. REST API V1 for Mobile Applications](#j-rest-api-v1-for-mobile-applications)
-3. [Database Configuration & Switching Guide (Postgres to MySQL)](#3-database-configuration--switching-guide-postgres-to-mysql)
-4. [Essential CLI Commands](#4-essential-cli-commands)
+Welcome to **Nikah Connect** (also known as **Global Nikkah**). This guide is a complete, non-technical handbook designed for marriage seekers, parents, and guardians. It explains step-by-step how the platform works, how your modesty and privacy are protected, and how to navigate every feature from initial sign-up to your wedding day (*Nikah*).
 
 ---
 
-## 1. User Roles & Demo Logins
-
-For immediate demonstration and end-to-end evaluation, a quick-access **Demo Role Switcher** bar is fixed at the top of the interface. You can switch between any persona with a single click:
-
-| Role | Demo Credentials | Password | Permissions & Capabilities |
-|---|---|---|---|
-| **🧔 Groom (Seeker)** | `seeker.groom@nikahconnect.test` | `password` | Search candidate brides, send halal interest, initiate chaperoned chat upon mutual acceptance |
-| **🧕 Bride (Seeker)** | `seeker.bride@nikahconnect.test` | `password` | Search candidates, review received interest, link father/wali, configure chaperone level |
-| **🛡️ Guardian (Wali / Father)** | `wali.father@nikahconnect.test` | `password` | Review pending suitor requests, approve/reject introductions, observe conversations as chaperone |
-| **⚖️ Moderation Staff** | `moderator@nikahconnect.test` | `password` | Review KYC identity submissions, handle reported candidate flags, enforce platform safety |
-| **👑 Platform Administrator** | `admin@nikahconnect.test` | `password` | Full system control: live metrics, fee configuration, discount coupons, immutable audit logs |
-
----
-
-## 2. Step-by-Step Feature Walkthrough
-
-### A. Account Registration & Mandatory 18+ Verification
-1. Navigate to **"Create Profile"** (`/register`) from the navigation bar.
-2. Provide your legal name, email, phone number, and gender (Brother / Sister).
-3. **Date of Birth Validation**: The platform strictly enforces an **18+ age requirement**. Registrations with an age under 18 are rejected automatically with a clear validation error.
-4. Select marital status (*Never Married, Divorced, Widowed*), agree to the Islamic Code of Conduct, and complete registration.
-
-### B. Deen & Islamic Profile Setup
-After signing in, visit **Profile -> Edit Deen & Preferences** (`/profile/edit`) to complete your matrimonial biodata:
-- **Sect & Madhhab**: Sunni (Hanafi, Shafi'i, Maliki, Hanbali), Salafi, etc.
-- **Prayer Frequency**: Always 5 daily prayers on time, usually on time, striving to improve.
-- **Modesty & Sunnah**: Hijab/Niqab practice for sisters; Sunnah beard practice for brothers.
-- **Quran Literacy**: Hafiz/Hafiza, fluent Tajweed reciter, basic reading, or beginner student.
-- **Halal Dietary Adherence**: Strict Zabiha Halal, Halal only, or striving.
-- **Family Structure**: Living preference (*Independent residence vs. Joint/Extended family*), number of siblings, and family religiosity.
-- **Partner Preferences**: Desired age range, preferred education level, acceptable madhhabs, and relocation flexibility.
-
-### C. Photo Upload & Server-Side Modesty Protection (FR-2.2)
-1. Go to your **Profile** page and upload up to 6 photos.
-2. **Server-Side Modesty Security**:
-   - By default, candidate photos are **blurred on the server side** across public search, discovery, and showcase feeds.
-   - Unlike basic client-side CSS blur filters that can be bypassed by inspecting HTML devtools or hovering over image tags, Nikah Connect passes protected images through a secure server-side GD transformation (`IMG_FILTER_PIXELATE` and multi-pass `IMG_FILTER_GAUSSIAN_BLUR`).
-   - The original raw image file path is strictly hidden from unapproved visitors. Even if an inspector extracts the image URL, the server streams only the blurred byte stream or an encrypted privacy silhouette until **mutual consent** or an explicit **Photo Access Grant** is issued.
-
-### D. KYC & Government ID Verification
-1. Access the **Government ID & KYC Verification** module from your profile dashboard.
-2. Upload an official identification document (National ID card, Passport, or Driver's License) along with an optional selfie.
-3. Moderation staff review the document in the administrative queue (`/admin/verifications`).
-4. Once verified, a blue **"Verified Candidate"** badge (`✓ Verified`) is displayed on your public profile, increasing trust and match response rates.
-
-### E. Candidate Discovery & Deen Compatibility Scoring
-1. Visit **"Find Matches"** (`/discover`) from the top navigation.
-2. **Deen-Weighted Compatibility Algorithm**:
-   - The matching engine dynamically calculates a personalized compatibility percentage (e.g., **94% Match**) based on multi-dimensional criteria:
-     - **Deen & Religious Practice (45% Weight)**: Madhhab harmony, prayer consistency, halal dietary commitment, and Quranic knowledge.
-     - **Family & Lifestyle (30% Weight)**: Desired living arrangement (independent vs. joint), family values, and children preferences.
-     - **Demographics (25% Weight)**: Age alignment, educational background, and location.
-3. Filter by age range, madhhab, location, prayer frequency, and Wali requirement.
-4. Save your preferred filter sets for one-click access via **"Save this Search"**.
-
-### F. Expressing Halal Interest & Guardian (Wali) Workflow
-1. When you identify a prospective match, click **"Express Halal Interest"** and compose an introductory note.
-2. **The Islamic Wali Safeguard**:
-   - If the sister has registered a linked Guardian (Wali), her acceptance alone does not immediately unlock private communication.
-   - An introductory notification is routed to the Wali's dedicated dashboard (`/wali/dashboard`).
-   - The Wali reviews the suitor's biodata, religious credentials, and background, and makes an informed decision (**Approve** or **Decline**).
-   - Only after the Wali approves the proposal does the secure messaging channel unlock!
-
-### G. Chaperoned Halal Messaging & Safety Scanner
-1. Once mutual consent and Wali clearance are obtained, access the conversation from **Messages** (`/messages`).
-2. **Chaperone Banner**: If a Wali is assigned, a prominent notice reminds both parties: **"🛡️ Islamic Chaperone (Wali) Active"**—the guardian has live oversight of the discussion.
-3. **Automated Safety Scanner**:
-   - The chat engine actively monitors incoming messages for unauthorized external contact disclosures before verified clearance.
-   - Sharing raw phone numbers, private email addresses, or off-platform handles (*WhatsApp, Telegram, Snapchat, Instagram*) triggers an instant warning notice.
-4. If either party observes disrespectful conduct, they can tap **"Report"** to flag the chat directly to the moderation team.
-
-### H. Membership Tiers & Promotional Coupons
-1. Visit **Plans & Pricing** (`/pricing`) to view available subscriptions:
-   - **Free Seeker**: 5 interest requests per day, standard discovery filters.
-   - **Premium Believer ($19.99/mo)**: Unlimited daily interests, full deen compatibility breakdown, advanced search filters.
-   - **VIP Family Pack ($39.99/mo)**: Priority profile ranking, up to 3 linked guardian accounts, and fast-track KYC verification.
-2. Test the coupon engine by applying promotional codes during checkout:
-   - **`HALAL20`**: 20% discount on any plan.
-   - **`BARAKAH50`**: 50% discount on any plan.
-
-### I. Administration & Moderation Console
-Authorized staff can sign in to the Administrative Suite (`/admin`) to oversee platform health:
-- **System Dashboard**: View total candidates, verified percentage, active conversations, and platform revenue.
-- **KYC Verification Queue** (`/admin/verifications`): Inspect submitted documents, approve verified badges, or request resubmission.
-- **Reports & Safety Center** (`/admin/reports`): Review reported profiles/messages, issue formal warnings, suspend accounts, or ban violators.
-- **Policy Settings** (`/admin/settings`): Dynamically modify subscription fees, daily limits, and coupon codes without editing source code.
-- **Immutable Audit Logs** (`/admin/audit-logs`): Maintain a complete chronological trail of all critical system actions for regulatory compliance.
-
-### J. REST API V1 for Mobile Applications
-Nikah Connect provides a complete, versioned RESTful API under `/api/v1/` for native iOS (Swift), Android (Kotlin), or cross-platform Flutter / React Native clients:
-- `POST /api/v1/auth/register`: Create candidate account with age validation.
-- `POST /api/v1/auth/login`: Sanctum Bearer token authentication.
-- `GET /api/v1/profile`: Retrieve authenticated candidate profile with deen attributes.
-- `GET /api/v1/discover`: Retrieve candidate profiles with compatibility scores and search filters.
-- `POST /api/v1/interests/{userId}`: Dispatch halal interest request.
-- `POST /api/v1/conversations/{id}/messages`: Send real-time chaperoned messages through the safety scanner.
+## 📑 Table of Contents
+1. [What is Nikah Connect?](#1-what-is-nikah-connect)
+2. [User Roles: Who Uses the Platform](#2-user-roles-who-uses-the-platform)
+3. [Creating an Account & Getting Started](#3-creating-an-account--getting-started)
+4. [Building Your Matrimonial Profile (Biodata)](#4-building-your-matrimonial-profile-biodata)
+5. [Photo Privacy & The Modesty (Haya) Shield](#5-photo-privacy--the-modesty-haya-shield)
+6. [The Guardian (Wali) System: Involving Family](#6-the-guardian-wali-system-involving-family)
+7. [Discovering Potential Matches](#7-discovering-potential-matches)
+8. [Sending & Receiving Halal Interests (Proposals)](#8-sending--receiving-halal-interests-proposals)
+9. [Halal Chaperoned Messaging (Chat)](#9-halal-chaperoned-messaging-chat)
+10. [Pro Features & Membership (Single Nikah Pass)](#10-pro-features--membership-single-nikah-pass)
+11. [Identity Verification & Trust Badges](#11-identity-verification--trust-badges)
+12. [Safety, Reporting & Blocking](#12-safety-reporting--blocking)
+13. [Nikah Mubarak: Celebrating Your Marriage](#13-nikah-mubarak-celebrating-your-marriage)
+14. [Account Management & Privacy Controls](#14-account-management--privacy-controls)
+15. [Frequently Asked Questions (FAQ)](#15-frequently-asked-questions-faq)
 
 ---
 
-## 3. Database Configuration & Switching Guide (Postgres to MySQL)
+## 1. What is Nikah Connect?
 
-The platform currently operates on **PostgreSQL 16**. However, all migrations, query builders, and models adhere strictly to **ANSI SQL / Database-Agnostic** design patterns. You can transition the entire database from PostgreSQL to MySQL in less than 60 seconds without modifying a single line of application code.
+Unlike modern casual dating apps that focus on superficial swiping and casual encounters, **Nikah Connect** is built exclusively for Muslims who have serious matrimonial intentions. 
 
-### Step 1: Open the Environment Configuration File
-Open the [`.env`](file:///e:/Alif/OWN/Muslim%20Matrimonial/.env) file located in the project root directory.
-
-### Step 2: Update the Database Driver & Connection Parameters
-Locate the database section. The current PostgreSQL configuration is:
-```env
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=nikah_connect
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-```
-
-**To switch to MySQL, update the block as follows:**
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=nikah_connect
-DB_USERNAME=root
-DB_PASSWORD=your_mysql_password
-```
-
-*(Note: For rapid unit testing or local zero-setup environments, SQLite can also be enabled simply by specifying `DB_CONNECTION=sqlite`)*.
-
-### Step 3: Run Database Migrations & Seeders
-After updating your `.env` credentials, execute the following command in your terminal:
-```bash
-php artisan migrate:fresh --seed
-```
-
-This single command will:
-1. Provision all 13 core database tables with proper indexing, foreign keys, and unique constraints.
-2. Initialize default administrative policies, fee tiers, and discount coupons.
-3. Populate realistic demonstration profiles (grooms, brides, wali guardians, administrators).
+### Core Values:
+* **Islamic Modesty (*Haya*)**: Candidate photos are blurred by default. Strangers cannot simply browse photos without mutual permission.
+* **Family Involvement (*Wali* System)**: Recognizes the essential role of parents and guardians in protecting their daughters and guiding matrimonial decisions.
+* **Deen Compatibility**: Profiles prioritize religious practice—such as daily prayers, Quranic recitation, halal dietary adherence, and Islamic family values—over vanity.
+* **No Endless Subscriptions**: Paid plans operate under a **"Single Marriage Pass"** model—your access remains active until you are happily married, rather than charging you monthly forever.
 
 ---
 
-## 4. Essential CLI Commands
+## 2. User Roles: Who Uses the Platform
 
-- **Start Local Web Server**:
-  ```bash
-  php artisan serve --port=8000
-  ```
-  *Open `http://127.0.0.1:8000` in your web browser.*
+There are three primary types of everyday users on Nikah Connect:
 
-- **Execute Test Suite**:
-  ```bash
-  php vendor/phpunit/phpunit/phpunit tests/Unit
-  php vendor/phpunit/phpunit/phpunit tests/Feature/MatrimonialFeatureTest.php
-  ```
+| Role | Who It Is | What They Can Do |
+|---|---|---|
+| **🧔 Groom (Seeker)** | Unmarried Muslim Brother | Browse candidate sisters, send respectful interest proposals, chat once approved, shortlist candidates. |
+| **🧕 Bride (Seeker)** | Unmarried Muslim Sister | Create a detailed biodata, link her father/guardian (Wali), review incoming proposals, grant photo access to vetted suitors. |
+| **🛡️ Guardian (Wali)** | Father, Brother, Uncle, or Mahram | Inspect suitor biodatas, accept or decline proposals on behalf of their ward, supervise conversations. Guardian accounts are **100% Free Forever**. |
 
-- **Enforce PSR-12 / Laravel Pint Code Style**:
-  ```bash
-  php vendor/bin/pint --format agent
-  ```
+---
 
-- **Rebuild Frontend Assets (Tailwind CSS & JavaScript)**:
-  ```bash
-  npm run build
-  ```
+## 3. Creating an Account & Getting Started
 
-- **Clear System Caches (Config, Routes, Views)**:
-  ```bash
-  php artisan optimize:clear
-  ```
+### Step 1: Sign Up
+1. Visit the **Register** page.
+2. Select your role: **Candidate (Seeker)** or **Guardian (Wali)**.
+3. Enter your legal name, email address, and mobile phone number.
+4. Provide your **Date of Birth**:
+   > ⚠️ **Strict Age Requirement**: You must be at least **18 years old** to join. Underage registrations are strictly prohibited and automatically declined.
+5. Choose a secure password, check the terms agreement, and complete the anti-bot verification challenge.
+6. Click **Create Account**.
+
+### Step 2: Email Verification
+* Immediately after signing up, a verification email is sent to your inbox.
+* Open the email from Nikah Connect and click the **Verify Email** button.
+* Once verified, your account is activated and ready for use.
+
+---
+
+## 4. Building Your Matrimonial Profile (Biodata)
+
+Your profile is your digital marriage biodata. A complete profile gives prospective partners and their families a clear, honest understanding of your values.
+
+### Profile Sections You Can Fill Out:
+* **Basic Information**: Height, native language (mother tongue), citizenship, current city, and country of residence.
+* **Education & Career**: Highest education degree, profession/job title, employment type (full-time, part-time, self-employed), and approximate income range.
+* **Religious Practice (Deen)**:
+  * **Sect / Madhhab**: Hanafi, Shafi'i, Maliki, Hanbali, Ja'fari, or General Muslim.
+  * **Daily Prayer Frequency**: Prays all 5 daily prayers on time, occasional, or striving.
+  * **Modesty / Appearance**: Full Sunnah beard or clean shaven (for brothers); Hijab, Niqab, or modest attire (for sisters).
+  * **Quran Knowledge**: Hafiz of Quran, fluent reciter, basic reader, or beginner learner.
+  * **Mosque Attendance**: Daily, weekly for Jummah, or occasional.
+  * **Dietary Standard**: Strictly Halal, Halal meat only, or flexible.
+* **Family & Lifestyle**:
+  * Parents' status and occupations.
+  * Number of siblings.
+  * Preferred living structure (*independent home vs. joint family living*).
+  * Views on future family life and religiosity.
+* **Personal Bio**: A warm, respectful personal statement introducing your character and what you hope to build in a Muslim household.
+* **Partner Preferences**: The ideal age range, height range, preferred education level, and country you are seeking in a spouse.
+
+### Profile Completeness Score
+At the top of your dashboard, you will see a **Profile Completeness Percentage** (0% to 100%). Completing each section increases your score and ranks your profile higher in search results.
+
+---
+
+## 5. Photo Privacy & The Modesty (Haya) Shield
+
+Nikah Connect prioritizes privacy and modesty above all else. Photos are treated with the highest confidentiality.
+
+### How Photos Work:
+1. **Upload Limit**: You can upload up to **6 photos** to your profile.
+2. **Automatic Blurring**: All photos are automatically blurred on the server. When other candidates view your profile in the discovery feed, your photo appears softly obscured.
+3. **Who Can See Your Clear Photo?**
+   * **You** (always visible in your own profile preview).
+   * **Matched Candidates**: Only after both parties have accepted an expression of interest and the guardian (Wali) has approved.
+   * **Explicit Grants**: You can manually grant temporary or permanent photo viewing permission to a specific suitor with one click, and revoke it whenever you choose.
+4. **Primary Photo**: You can pick which photo serves as your primary card thumbnail.
+
+---
+
+## 6. The Guardian (Wali) System: Involving Family
+
+In traditional Islamic practice, marriage involves the guidance and blessing of the family. Nikah Connect incorporates this directly into the digital workflow.
+
+### For Sisters: Connecting Your Wali
+1. Go to the **Guardian (Wali)** menu from your dashboard.
+2. Enter your guardian’s full name, his relationship to you (*Father, Brother, Paternal Uncle, Grandfather*), and his registered email address.
+3. Choose the **Guardian Permission Level**:
+   * **Approve Required (Recommended)**: Any brother who sends you an interest proposal must be approved by your guardian before any chat opens.
+   * **View Only**: Your guardian can see incoming suitors and read conversations, but you make the decision to accept or decline.
+   * **Full Proxy**: Your guardian manages incoming proposals directly on your behalf.
+4. Click **Link Guardian**. Your Wali will receive an invitation link to confirm the relationship.
+
+### For Guardians: The Wali Dashboard
+When a guardian logs in, he accesses a dedicated, distraction-free **Wali Dashboard**:
+* **Wards List**: View your linked daughters or sisters.
+* **Incoming Proposals**: Review suitors who have expressed interest in your ward. You can inspect the suitor’s verified age, career, prayer consistency, education, and family background.
+* **Approve or Decline**: Click **Approve** to authorize the match, or **Decline** with a respectful response.
+* **Chaperone Oversight**: Oversee conversations to ensure communications remain respectful and aligned with Islamic etiquette.
+
+---
+
+## 7. Discovering Potential Matches
+
+Click **Discover** in the top navigation to search for potential spouses.
+
+### Search Capabilities:
+* **Strict Gender Separation**: Brothers only see candidate sisters; sisters only see candidate brothers.
+* **Basic Filters**: Search by Age (e.g. 24–30), Country, City, and Marital Status (*Never Married, Divorced, Widowed*).
+* **Advanced Religious Filters** *(Pro Feature)*: Filter candidates by prayer frequency (e.g., *Only candidates who pray 5x daily*), madhhab/sect, Quran knowledge, and educational level.
+* **Compatibility Percentage**: Every profile card displays an automatic **Deen Compatibility Score** (0%–100%) showing how closely your religious practice, location, and lifestyle align.
+* **Daily Recommended Matches**: A curated set of high-compatibility profiles updated on your dashboard each morning.
+* **Saved Searches & Instant Match Alerts**: Save your ideal search criteria (e.g., *"Pharmacist in the UK aged 22-28"*). Whenever a new candidate matching this criteria signs up, you receive an instant alert.
+
+---
+
+## 8. Sending & Receiving Halal Interests (Proposals)
+
+When you discover a profile that aligns with what you are looking for:
+
+### Sending an Interest:
+1. Open the candidate’s profile.
+2. Click **Express Interest**.
+3. Write a polite, respectful introductory note outlining why you feel your background and values align.
+4. Click **Send Proposal**.
+
+### What Happens Next?
+* **If the Sister has an Active Wali**: The proposal is routed directly to her Wali's dashboard. Both she and her guardian receive an instant notification.
+* **If the Candidate is Independent**: The candidate reviews your biodata and introductory note directly.
+
+### Responses:
+* **Accept**: Both candidates are now matched! Chaperoned chat is unlocked, and photos become clearly visible.
+* **Decline**: The proposal is closed politely without awkwardness or confrontation.
+
+---
+
+## 9. Halal Chaperoned Messaging (Chat)
+
+Once a mutual proposal is accepted (and approved by the Wali), a private communication channel opens.
+
+### Features of the Chat Room:
+* **Real-Time Live Chat**: Messages arrive instantly without refreshing your web browser.
+* **Guardian (Wali) Presence Banner**: A reminder at the top of the chat window reminds both participants that the discussion is monitored for modesty and family involvement.
+* **Automatic Contact Shield**:
+  * To protect candidates from off-platform scams, premature privacy exposure, or inappropriate pressure, the system automatically detects and masks personal phone numbers, email addresses, and social media links (such as WhatsApp, Instagram, Telegram, or Snapchat).
+  * Contact information should only be exchanged through official family and guardian channels once both parties are satisfied.
+* **Inappropriate Content Blocker**: Vulgar, explicit, or disrespectful terms are automatically flagged and blocked.
+* **Reporting within Chat**: At any time, you can click **Report User** if a conversation becomes uncomfortable or violates Islamic etiquette.
+
+---
+
+## 10. Pro Features & Membership (Single Nikah Pass)
+
+Nikah Connect offers a generous free tier as well as an upgraded **Single Nikah Pass** for members who desire enhanced discovery tools.
+
+### Membership Comparison:
+
+| Feature | Free Explorer | Pro Nikah Pass |
+|---|:---:|:---:|
+| **Daily Profile Views** | 10 Profiles / Day | **Unlimited** |
+| **Daily Proposals (Interests)** | 5 Proposals / Day | **Unlimited** |
+| **Basic Search Filters** | ✅ Yes | ✅ Yes |
+| **Advanced Religious Filters** | ❌ No | ✅ **Yes** |
+| **See Who Viewed My Profile** | ❌ No | ✅ **Yes** |
+| **Shortlist Candidates & Add Private Notes** | ❌ No | ✅ **Yes** |
+| **Incognito (Discreet) Browsing Mode** | ❌ No | ✅ **Yes** |
+| **Validity Period** | Lifetime | **Active Until Confirmed Nikah** |
+
+### Exclusive Pro Tools Explained:
+* **Who Viewed My Profile**: See a detailed list of every opposite-gender candidate who visited your profile, when they visited, and your compatibility percentage with them.
+* **Incognito Mode**: Turn on Incognito to explore profiles completely discreetly. Your visits will not appear in the other candidate’s visitor logs.
+* **Candidate Shortlisting & Notes**: Bookmark profiles you are reviewing with your family and attach private notes (e.g., *"Spoke with father, will follow up after Jummah"*).
+* **Promo Codes**: If you have a discount code (e.g., `HALAL20`), enter it on the checkout screen for an instant discount.
+
+---
+
+## 11. Identity Verification & Trust Badges
+
+To build trust and eliminate fake profiles, Nikah Connect provides an official identity verification program.
+
+### How to Get the Blue Verified Badge (✓ Verified):
+1. Navigate to your **Profile** and click **Get Verified**.
+2. Upload a clear photo of your official government ID (National ID Card, Passport, or Driver's License).
+3. Upload a quick verification selfie.
+4. Submit the request.
+5. Our moderation team reviews the document within 24–48 hours to confirm name and birthdate accuracy.
+6. Once approved, your profile receives the prestigious **✓ Verified Candidate** badge, signaling honesty and sincerity to all suitors and families.
+7. *Note*: Your submitted identity documents are stored in encrypted private storage and are **never** shown to other users.
+
+---
+
+## 12. Safety, Reporting & Blocking
+
+Your emotional and personal safety is paramount. Nikah Connect provides simple tools to keep your experience secure:
+
+### Blocking a Candidate
+* If someone makes you uncomfortable or you simply do not wish to encounter them again, click **Block User** on their profile or in chat.
+* **What happens**:
+  * You will never see their profile in search results again.
+  * They will never see your profile in search results.
+  * All active chat channels and photo permissions are immediately revoked.
+  * The blocked user is not notified.
+
+### Reporting Misconduct
+* You can report any user for: impersonation, inappropriate language, harassment, commercial advertising, or dishonesty.
+* When you submit a report, our staff investigates the account, inspects the chat context, and takes swift action (issuing official warnings, temporary suspensions, or permanent platform bans).
+
+---
+
+## 13. Nikah Mubarak: Celebrating Your Marriage
+
+The ultimate goal of Nikah Connect is to help you complete half your deen through a blessed marriage. When you and your suitor finalize your wedding, you celebrate it directly on the platform!
+
+### How the Nikah Milestone Works:
+1. Go to the **Nikah Mubarak** section from your profile or chat.
+2. Select your spouse and enter your wedding date.
+3. Submit the **Nikah Declaration**.
+4. Your spouse (or her Wali) confirms the declaration.
+
+### What Happens Automatically Upon Confirmation:
+* 🎉 **Congratulations Celebration**: Both of you unlock the **Nikah Mubarak Celebration Page**, featuring your commemorative digital marriage milestone certificate.
+* 🔒 **Automatic Privacy Cleanup**:
+  * Both of your profiles are immediately marked as **Married** and removed from public search feeds.
+  * Any other pending interest requests from other candidates are automatically and politely closed with the status *"Candidate Married"*.
+  * Third-party chat channels with other people are locked into read-only archives.
+  * All third-party photo viewing permissions are permanently revoked.
+  * Your private chat with your new spouse remains open.
+* ✍️ **Success Story Submission**: You can optionally submit your marriage story and words of encouragement to inspire other brothers and sisters in the Muslim community.
+
+---
+
+## 14. Account Management & Privacy Controls
+
+From your **Settings** page, you have full control over your digital footprint:
+
+* **Update Details**: Change your display name, contact phone number, city, or bio at any time.
+* **Notification Preferences**: Toggle email and browser push notifications for:
+  * New interest requests.
+  * Chat messages.
+  * Guardian approvals.
+  * Saved search alerts.
+* **Security & Password**: Change your password or invalidate all active login sessions across devices.
+* **Account Deactivation**: Need a temporary break? Deactivate your account to hide your profile from search results while preserving your biodata for when you return.
+* **Permanent Account Deletion (GDPR Right to be Forgotten)**: Want all your data removed? Click **Delete Account**. The system will permanently delete your biodata, photos, verification documents, and messages from the platform.
+
+---
+
+## 15. Frequently Asked Questions (FAQ)
+
+#### Q1: Is Nikah Connect free to use?
+**A:** Yes! You can register, build a 100% complete biodata, discover matches, receive proposals, connect a guardian, and chat for free. Upgrading to the Pro Nikah Pass is completely optional for users who want unlimited daily discovery and visitor insights.
+
+#### Q2: Can brothers see sisters' photos immediately?
+**A:** No. All photos are blurred by default. A sister’s photo only becomes clear when there is mutual agreement between both parties and her guardian (Wali) approves the proposal.
+
+#### Q3: Does a Wali have to pay for an account?
+**A:** No. Guardian (Wali) accounts are **100% Free Forever**. We believe family participation should never be gated behind a paywall.
+
+#### Q4: What if a sister does not have a living father or male guardian?
+**A:** If a sister does not have a father or mahram guardian available, she can designate an elder relative or choose to manage her matrimonial journey independently with full respect and dignity.
+
+#### Q5: Can married people look for a second wife on this platform?
+**A:** The platform is configured for single marriage seekers (never married, widowed, or divorced). Users with a status of "Married" are excluded from discovery feeds to ensure single candidates connect with other serious seekers.
+
+#### Q6: Are my national ID cards and selfies safe?
+**A:** Absolutely. Identity documents submitted for verification are stored in secure, private storage. No other member, candidate, or guardian can ever view your uploaded documents; they are seen exclusively by authorized staff for verification purposes.
+
+---
+
+*May Allah (SWT) bless your matrimonial journey, grant you a righteous spouse who brings peace and barakah to your life, and make your path to marriage smooth and joyful.*

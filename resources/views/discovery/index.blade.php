@@ -285,81 +285,94 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @forelse($profiles as $p)
-                    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-lg transition flex flex-col justify-between">
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:border-emerald-500/50 smooth-card overflow-hidden flex flex-col justify-between transition-all duration-300">
                         <div>
-                            <!-- Photo Container with Blurred Default (FR-2.2) -->
-                            <div class="relative h-56 bg-slate-900 overflow-hidden">
+                            <!-- Photo Header & Badges with Gradient Overlay -->
+                            <div class="relative h-56 bg-slate-900 overflow-hidden group">
                                 @if($p->primaryPhoto)
-                                    <img src="{{ $p->primaryPhoto->displayUrl() }}" alt="{{ $p->user->name }}" class="w-full h-full object-cover photo-blur" loading="lazy" decoding="async">
+                                    <img src="{{ $p->primaryPhoto->displayUrl() }}" alt="{{ $p->user->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-out photo-blur" loading="lazy" decoding="async">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-4xl">
+                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-950 to-slate-900 text-white font-bold text-4xl group-hover:scale-105 transition duration-500 ease-out">
                                         {{ substr($p->user->name, 0, 1) }}
                                     </div>
                                 @endif
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
 
-                                <!-- Badges -->
-                                <div class="absolute top-3 left-3 right-3 flex items-center justify-between">
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/50 text-white backdrop-blur-xs flex items-center gap-1">
-                                        🔒 Blurred (FR-2.2)
-                                    </span>
-                                    <div class="flex items-center gap-1">
+                                <!-- Top Floating Badges -->
+                                <div class="absolute top-2.5 inset-x-2.5 flex items-center justify-between pointer-events-none">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/60 text-white/90 backdrop-blur-xs border border-white/10 flex items-center gap-1 shadow-xs">
+                                            🔒 Shielded
+                                        </span>
+                                        @if($p->user->is_verified)
+                                            <span class="bg-emerald-900/90 backdrop-blur-xs text-emerald-200 px-2 py-0.5 rounded-full border border-emerald-400/40 text-[10px] font-bold shadow-xs flex items-center gap-1">
+                                                <span>✓</span> Verified
+                                            </span>
+                                        @endif
                                         @if($p->user->isPro())
-                                            <span class="bg-amber-500 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                                            <span class="bg-amber-950/90 backdrop-blur-xs text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/40 text-[10px] font-extrabold shadow-xs flex items-center gap-1">
                                                 👑 PRO
                                             </span>
                                         @endif
-                                        @if($p->user->is_verified)
-                                            <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
-                                                ✓ Verified
-                                            </span>
-                                        @endif
                                     </div>
+                                    @if(isset($p->compatibility_score))
+                                        <span class="bg-emerald-950/90 backdrop-blur-xs text-emerald-200 px-2.5 py-0.5 rounded-full border border-emerald-400/40 text-[10px] font-extrabold shadow-xs">
+                                            ✨ {{ $p->compatibility_score }}% Match
+                                        </span>
+                                    @endif
                                 </div>
 
-                                <!-- Overlay text -->
-                                <div class="absolute bottom-3 left-3 right-3 text-white">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-xs text-amber-300 font-semibold">{{ $p->sect_madhhab ?? 'Muslim' }}</span>
-                                        @if(isset($p->compatibility_score))
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500 text-white">
-                                                {{ $p->compatibility_score }}% Match
-                                            </span>
-                                        @endif
+                                <!-- Photo Bottom Overlay: Name, Age, Marital Status & Location -->
+                                <div class="absolute bottom-2.5 inset-x-3 text-white">
+                                    <div class="flex items-center justify-between gap-1.5">
+                                        <h3 class="font-heading font-bold text-base text-white tracking-wide truncate drop-shadow-sm">
+                                            {{ $p->user->name }}
+                                        </h3>
+                                        <span class="text-[9px] px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-emerald-100 font-semibold border border-white/20 shrink-0 whitespace-nowrap">
+                                            {{ ucfirst(str_replace('_', ' ', $p->marital_status ?? $p->user->marital_status ?? 'Single')) }}
+                                        </span>
                                     </div>
-                                    <h3 class="font-bold text-base text-white truncate">{{ $p->user->name }}</h3>
-                                    <p class="text-xs text-slate-300">{{ $p->user->age }} yrs • {{ $p->city }}, {{ $p->country }}</p>
+                                    <p class="text-[11px] text-amber-200/95 font-medium truncate mt-0.5 drop-shadow-xs">
+                                        {{ $p->user->age }} yrs • {{ $p->height ? round($p->height / 30.48, 1) . ' ft • ' : '' }}{{ $p->city ?? 'Location flexible' }}, {{ $p->country ?? '' }}
+                                    </p>
                                 </div>
                             </div>
 
-                            <!-- Body Info -->
-                            <div class="p-4 space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
-                                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                                    <span class="text-slate-500 dark:text-slate-400">Prayer:</span>
-                                    <span class="font-semibold text-slate-800 dark:text-slate-200">{{ str_replace('_', ' ', $p->prayer_frequency ?? 'Practicing') }}</span>
-                                </div>
-                                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                                    <span class="text-slate-500 dark:text-slate-400">Education:</span>
-                                    <span class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[140px]">{{ $p->education_level ?? 'Graduate' }}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-slate-500 dark:text-slate-400">Wali:</span>
-                                    <span class="font-semibold {{ $p->wali_required ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400' }}">
-                                        {{ $p->wali_required ? '🛡️ Linked' : 'Self-managed' }}
-                                    </span>
+                            <!-- Card Body: Structured 2x2 Specs Grid -->
+                            <div class="p-3.5 space-y-2.5">
+                                <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <div class="min-w-0">
+                                        <span class="text-slate-400 dark:text-slate-500 block text-[9px] uppercase font-bold tracking-wider">Sect / Madhhab</span>
+                                        <span class="font-semibold text-slate-800 dark:text-slate-200 truncate block">{{ $p->sect_madhhab ?? 'Muslim' }}</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <span class="text-slate-400 dark:text-slate-500 block text-[9px] uppercase font-bold tracking-wider">Prayer</span>
+                                        <span class="font-semibold text-slate-800 dark:text-slate-200 truncate block">{{ str_replace('_', ' ', $p->prayer_frequency ?? 'Practicing') }}</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <span class="text-slate-400 dark:text-slate-500 block text-[9px] uppercase font-bold tracking-wider">Education</span>
+                                        <span class="font-semibold text-slate-800 dark:text-slate-200 truncate block">{{ $p->education_level ?? 'Graduate' }}</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <span class="text-slate-400 dark:text-slate-500 block text-[9px] uppercase font-bold tracking-wider">Guardian (Wali)</span>
+                                        <span class="font-semibold truncate block {{ $p->wali_required ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">
+                                            {{ $p->wali_required ? '🛡️ Linked' : 'Self-managed' }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-4 pt-0 flex items-center gap-2">
-                            <a href="{{ route('discovery.show', $p->user_id) }}" class="flex-1 text-center py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white text-xs font-bold transition shadow-xs">
-                                View Profile
+                        <div class="p-3.5 pt-0 flex items-center gap-2">
+                            <a href="{{ route('discovery.show', $p->user_id) }}" class="flex-1 text-center py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white text-xs font-bold transition shadow-xs hover:shadow-md flex items-center justify-center gap-1.5">
+                                <span>View Profile</span>
+                                <span class="text-[10px]">&rarr;</span>
                             </a>
                             @php $isBookmarkedGrid = in_array($p->user_id, $bookmarkedUserIds ?? [], true); @endphp
                             <form action="{{ route('bookmarks.toggle', $p->user_id) }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" title="{{ $isBookmarkedGrid ? 'Remove from shortlist' : 'Shortlist candidate for family (Pro)' }}"
-                                        class="p-2.5 rounded-xl border {{ $isBookmarkedGrid ? 'bg-amber-100 border-amber-300 text-amber-700 dark:bg-amber-950 dark:border-amber-700 dark:text-amber-300' : 'border-slate-200 dark:border-slate-700 text-slate-400 hover:text-amber-600 hover:bg-slate-50 dark:hover:bg-slate-800' }} transition cursor-pointer text-xs">
+                                        class="p-2.5 rounded-xl border {{ $isBookmarkedGrid ? 'bg-amber-100 border-amber-300 text-amber-700 dark:bg-amber-950 dark:border-amber-700 dark:text-amber-300' : 'border-slate-200 dark:border-slate-700 text-slate-400 hover:text-amber-600 hover:bg-slate-50 dark:hover:bg-slate-800' }} transition cursor-pointer text-xs shadow-xs hover:border-amber-400">
                                     ⭐
                                 </button>
                             </form>

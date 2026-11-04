@@ -25,14 +25,14 @@
             </div>
             <div class="space-y-1">
                 <a href="{{ route('admin.dashboard') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.dashboard') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.dashboard') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">📊</span>
                     <span class="flex-1">Dashboard Overview</span>
                 </a>
 
                 @if($isSuperAdmin || $user->hasPermission('manage_verifications'))
                     <a href="{{ route('admin.verifications') }}"
-                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.verifications') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.verifications') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <div class="flex items-center gap-3">
                             <span class="text-base">🪪</span>
                             <span>KYC Queue</span>
@@ -47,7 +47,7 @@
 
                 @if($isSuperAdmin || $user->hasPermission('manage_reports'))
                     <a href="{{ route('admin.reports') }}"
-                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.reports') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.reports') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <div class="flex items-center gap-3">
                             <span class="text-base">🚩</span>
                             <span>User Reports</span>
@@ -70,19 +70,19 @@
                 </div>
                 <div class="space-y-1">
                     <a href="{{ route('admin.packages.index') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.packages.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.packages.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <span class="text-base">💳</span>
                         <span class="flex-1">Dynamic Packages</span>
                     </a>
 
                     <a href="{{ route('admin.promo-codes.index') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.promo-codes.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.promo-codes.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <span class="text-base">🏷️</span>
                         <span class="flex-1">Promo Codes</span>
                     </a>
 
                     <a href="{{ route('admin.payment-settings') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.payment-settings*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.payment-settings*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <span class="text-base">💰</span>
                         <span class="flex-1">Payment Gateways</span>
                     </a>
@@ -98,7 +98,7 @@
             <div class="space-y-1">
                 @if($isSuperAdmin)
                     <a href="{{ route('admin.staff') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.staff') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.staff') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <span class="text-base">👥</span>
                         <span class="flex-1">Staff & Permissions</span>
                     </a>
@@ -106,7 +106,7 @@
 
                 @if($isSuperAdmin || $user->hasPermission('view_audit_logs'))
                     <a href="{{ route('admin.audit-logs') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.audit-logs') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.audit-logs') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <span class="text-base">📋</span>
                         <span class="flex-1">Audit Logs</span>
                     </a>
@@ -114,7 +114,7 @@
 
                 @if($isSuperAdmin || $user->hasPermission('manage_settings'))
                     <a href="{{ route('admin.settings') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.settings') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('admin.settings') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <span class="text-base">⚙️</span>
                         <span class="flex-1">Platform Policies</span>
                     </a>
@@ -135,20 +135,20 @@
             <div class="space-y-1">
                 @if(!$isAdminOrStaff)
                     <a href="{{ route('dashboard') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('dashboard') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <span class="text-base">⌂</span>
                         <span class="flex-1">My Dashboard</span>
                     </a>
                 @endif
 
                 <a href="{{ route('discovery.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('discovery.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('discovery.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">🔍</span>
                     <span class="flex-1">Find Matches</span>
                 </a>
 
                 <a href="{{ route('interests.index') }}"
-                   class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('interests.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('interests.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <div class="flex items-center gap-3">
                         <span class="text-base">💌</span>
                         <span>Interests & Requests</span>
@@ -161,7 +161,7 @@
                 </a>
 
                 <a href="{{ route('chat.index') }}"
-                   class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('chat.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('chat.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="flex items-center gap-3"><span class="text-base">💬</span><span>Messages</span></span>
                     <span class="sidebar-unread-messages-badge rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-extrabold text-slate-950 {{ $unreadMessages > 0 ? '' : 'hidden' }}">
                         {{ $unreadMessages > 99 ? '99+' : $unreadMessages }}
@@ -169,7 +169,7 @@
                 </a>
 
                 <a href="{{ route('bookmarks.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('bookmarks.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('bookmarks.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">⭐</span>
                     <span class="flex-1">Shortlist</span>
                 </a>
@@ -188,20 +188,20 @@
             </div>
             <div class="space-y-1">
                 <a href="{{ route('profile.show') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('profile.show') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('profile.show') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">👤</span>
                     <span class="flex-1">View Profile & Photos</span>
                 </a>
 
                 <a href="{{ route('profile.edit') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('profile.edit') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('profile.edit') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">✏️</span>
                     <span class="flex-1">Edit Deen & Preferences</span>
                 </a>
 
                 <a href="{{ route('profile.biodata') }}"
                    target="_blank"
-                   class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                   class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
                     <div class="flex items-center gap-3">
                         <span class="text-base">🖨️</span>
                         <span>Printable Biodata</span>
@@ -210,7 +210,7 @@
                 </a>
 
                 <a href="{{ route('wali.link') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('wali.link') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('wali.link') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">🛡️</span>
                     <span class="flex-1">Link Guardian (Wali)</span>
                 </a>
@@ -230,13 +230,13 @@
             </div>
             <div class="space-y-1">
                 <a href="{{ route('wali.dashboard') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('wali.dashboard') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('wali.dashboard') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">🛡️</span>
                     <span class="flex-1">Wali Dashboard</span>
                 </a>
 
                 <a href="{{ route('wali.link') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('wali.link') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('wali.link') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">🔗</span>
                     <span class="flex-1">Link Ward</span>
                 </a>
@@ -256,7 +256,7 @@
             <div class="space-y-1">
                 @if(!$isAdminOrStaff && $user->isSeeker())
                     <a href="{{ route('profile.visitors') }}"
-                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('profile.visitors') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('profile.visitors') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                         <div class="flex items-center gap-3">
                             <span class="text-base">👁️</span>
                             <span>Who Viewed You</span>
@@ -266,14 +266,14 @@
                 @endif
 
                 <a href="{{ route('subscription.pricing') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('subscription.pricing') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('subscription.pricing') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">💎</span>
                     <span class="flex-1">Plans & Pricing</span>
                 </a>
 
                 @if($user->isMarried() || $pendingMarriage)
                     <a href="{{ route('marriages.celebration') }}"
-                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('marriages.*') ? 'bg-emerald-600 text-white' : 'text-emerald-300 hover:bg-slate-800' }}">
+                       class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('marriages.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-emerald-300 hover:bg-slate-800/60' }}">
                         <div class="flex items-center gap-3">
                             <span class="text-base">💍</span>
                             <span>Nikah Milestone</span>
@@ -296,21 +296,21 @@
         </div>
         <div class="space-y-1">
             <a href="{{ route('settings.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('settings.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('settings.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                 <span class="text-base">⚙️</span>
                 <span class="flex-1">Account Settings</span>
             </a>
 
             @if(!$isAdminOrStaff && $user->isSeeker())
                 <a href="{{ route('blocked-users.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('blocked-users.*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('blocked-users.*') ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-emerald-100 shadow-md shadow-emerald-950/40 border-l-4 border-amber-400' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <span class="text-base">⛔</span>
                     <span class="flex-1">Blocked Profiles</span>
                 </a>
             @endif
 
             <a href="{{ route('landing') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-emerald-300 transition">
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-emerald-300 transition">
                 <span class="text-base">🌐</span>
                 <span class="flex-1">Public Home</span>
             </a>
