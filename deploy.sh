@@ -174,6 +174,10 @@ artisan route:cache --no-interaction
 artisan event:cache --no-interaction
 artisan view:cache --no-interaction
 
+queue_connection="$(awk -F= '$1 == "QUEUE_CONNECTION" { gsub(/[[:space:]\"]/, "", $2); print $2; exit }' .env)"
+if [[ "$RUN_SERVICES" == true && -n "$QUEUE_SERVICE" && "$queue_connection" != database ]]; then
+    fail "QUEUE_SERVICE is enabled, but .env must set QUEUE_CONNECTION=database."
+fi
 artisan queue:restart --no-interaction
 
 if [[ -d public/build ]]; then
