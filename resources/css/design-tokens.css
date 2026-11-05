@@ -1,0 +1,106 @@
+/**
+ * Design Tokens (Portable & Framework-Agnostic)
+ * All visual decisions as strict CSS variables.
+ * Can be reused directly across other projects.
+ */
+:root {
+  /* 1. Neutral Scale (Fine-tuned, non-sterile slate-graphite) */
+  --neutral-25: #fdfdfc;
+  --neutral-50: #fbfaf8;
+  --neutral-100: #f4f2ed;
+  --neutral-200: #e8e5dc;
+  --neutral-300: #d6d2c4;
+  --neutral-400: #a8a293;
+  --neutral-500: #7a7567;
+  --neutral-600: #575246;
+  --neutral-700: #3e3a31;
+  --neutral-800: #2a2721;
+  --neutral-900: #1b1915;
+  --neutral-950: #100f0d;
+
+  /* 2. Semantic Signals (Calm, WCAG AA compliant) */
+  --color-success: #1b6848;
+  --color-success-bg: #edf7f2;
+  --color-success-border: #b8e0ce;
+
+  --color-warning: #945307;
+  --color-warning-bg: #fdf8ed;
+  --color-warning-border: #f0dcad;
+
+  --color-danger: #9f2424;
+  --color-danger-bg: #fdf2f2;
+  --color-danger-border: #f5c4c4;
+
+  --color-info: #1b5375;
+  --color-info-bg: #edf5fa;
+  --color-info-border: #b9d7eb;
+
+  /* 3. Typography Scale & Vertical Rhythm */
+  --font-sans: 'Inter', 'Noto Sans Bengali', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --text-2xs: 0.6875rem; /* 11px */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.8125rem;  /* 13px */
+  --text-base: 0.9375rem;/* 15px - optimal body size */
+  --text-md: 1.0625rem;  /* 17px */
+  --text-lg: 1.25rem;    /* 20px */
+  --text-xl: 1.5rem;     /* 24px */
+  --text-2xl: 1.875rem;  /* 30px */
+  --text-3xl: 2.25rem;   /* 36px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65; /* Bengali diacritics & editorial prose */
+  --leading-loose: 1.8;
+
+  /* 4. Spacing Scale (Strict 4px / 8px grid) */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* 5. Radii (Controlled, disciplined 4-6px human scale, NO bubbly oversized bubbles) */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* 6. Hairline Borders & Dividers */
+  --border-width-hairline: 1px;
+  --border-width-medium: 2px;
+
+  /* 7. Overlay & Surface Shadows (Restrained, grounded, non-AI glow) */
+  --shadow-none: none;
+  --shadow-xs: 0 1px 2px 0 rgba(20, 24, 21, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(20, 24, 21, 0.06), 0 1px 2px -1px rgba(20, 24, 21, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(20, 24, 21, 0.07), 0 2px 4px -2px rgba(20, 24, 21, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(20, 24, 21, 0.08), 0 4px 6px -4px rgba(20, 24, 21, 0.04);
+
+  /* 8. Transitions & Duration (120ms - 200ms max, responsive, no lingering float) */
+  --duration-fast: 120ms;
+  --duration-normal: 160ms;
+  --duration-slow: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* 9. Accessibility & Touch Targets */
+  --touch-target-min: 44px;
+}
+

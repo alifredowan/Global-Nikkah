@@ -1,176 +1,185 @@
 @extends('layouts.app')
 
-@section('title', $targetUser->name . ' - Islamic Matrimonial Profile')
+@section('title', $targetUser->name . ' - Candidate Biodata - Global Nikkah')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="py-8 bg-[var(--bg-canvas)] min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-        <!-- Back Button & Breadcrumbs -->
+        <!-- Back Link & Breadcrumb -->
         <div>
-            <a href="{{ route('discovery.index') }}" class="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 flex items-center gap-1">
-                &larr; Back to match search
+            <a href="{{ route('discovery.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                <span>Back to candidate directory</span>
             </a>
         </div>
 
-        <!-- Top Profile Banner Card -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden">
-            <div class="h-36 sm:h-40 bg-emerald-gradient relative">
-                <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <!-- ========================================================= -->
+        <!-- PROFILE HEADER LEDGER                                     -->
+        <!-- ========================================================= -->
+        <div class="card-ledger overflow-hidden bg-[var(--bg-surface)]">
+            <!-- Subtle Header Strip with Faint Pattern -->
+            <div class="h-24 sm:h-28 pattern-header border-b border-[var(--border-subtle)] relative flex items-center justify-end px-6">
                 @if($compatibilityScore)
-                    <div class="absolute top-4 right-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-sm flex items-center gap-2 text-xs font-bold text-emerald-950 dark:text-emerald-200 border border-white/20 dark:border-slate-700/50">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                        {{ $compatibilityScore }}% Deen Compatibility (FR-6.4)
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--bg-surface)] border border-[var(--border-default)] text-xs font-bold text-[var(--accent-text)] shadow-xs">
+                        <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]"></span>
+                        <span>{{ $compatibilityScore }}% Deen Compatibility</span>
                     </div>
                 @endif
             </div>
+
             <div class="px-6 pb-6 pt-0 relative">
-                <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 -mt-12 sm:-mt-14 mb-6">
+                    <!-- Avatar & Legal Profile Identity -->
                     <div class="flex items-end gap-4">
-                        <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-4 border-white dark:border-slate-900 bg-slate-800 shadow-xl relative shrink-0">
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-[var(--radius-md)] overflow-hidden border-2 border-[var(--bg-surface)] bg-[var(--neutral-900)] shadow-md relative shrink-0">
                             @if($profile->primaryPhoto)
                                 <img src="{{ $profile->primaryPhoto->displayUrl() }}" alt="{{ $targetUser->name }}"
-                                     class="w-full h-full object-cover {{ $isPhotoVisible ? '' : 'photo-blur' }}">
+                                     class="w-full h-full object-cover {{ $isPhotoVisible ? '' : 'photo-blur' }}"
+                                     loading="lazy">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-3xl">
+                                <div class="w-full h-full flex items-center justify-center bg-[var(--neutral-800)] text-[var(--neutral-300)] font-bold text-3xl">
                                     {{ substr($targetUser->name, 0, 1) }}
                                 </div>
                             @endif
+
                             @if(!$isPhotoVisible)
-                                <div class="absolute inset-0 flex items-center justify-center bg-black/40 text-[10px] text-white font-bold text-center px-1">
-                                    🔒 Photo Blurred (FR-2.2)
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/50 text-[10px] text-white font-semibold text-center px-1">
+                                    <span>Modesty Shield</span>
                                 </div>
                             @endif
                         </div>
-                        <div>
+
+                        <div class="pb-1">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">{{ $targetUser->name }}</h1>
-                                @if($targetUser->isPro())
-                                    <span class="bg-amber-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs" title="Pro Matrimonial Member">
-                                        👑 PRO MEMBER
-                                    </span>
-                                @endif
+                                <h1 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">{{ $targetUser->name }}</h1>
                                 @if($targetUser->is_verified)
-                                    <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1" title="Government ID Verified (FR-1.4)">
-                                        ✓ Verified Candidate
+                                    <span class="badge-verified">
+                                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                                        <span>Verified Candidate</span>
+                                    </span>
+                                @endif
+                                @if($targetUser->isPro())
+                                    <span class="px-2 py-0.5 rounded-[var(--radius-sm)] text-[10px] font-bold bg-[var(--secondary-subtle)] text-[var(--secondary-text)] border border-[var(--secondary-border)]">
+                                        Pro Member
                                     </span>
                                 @endif
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                                {{ $targetUser->age }} years • {{ $profile->city }}, {{ $profile->country }} •
-                                <span class="capitalize">{{ str_replace('_', ' ', $targetUser->marital_status) }}</span>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                                {{ $targetUser->age }} years &bull; {{ $profile->city ?: 'District flexible' }}, {{ $profile->country ?: '' }} &bull;
+                                <span class="capitalize">{{ str_replace('_', ' ', $targetUser->marital_status ?? 'Single') }}</span>
                             </p>
-                            <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
-                                    {{ $profile->sect_madhhab ?? 'Sunni' }}
-                                </span>
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300">
-                                    🕌 {{ str_replace('_', ' ', $profile->prayer_frequency ?? 'Practicing') }}
-                                </span>
-                                @if($profile->wali_required || ($activeWaliLink ?? null))
-                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 dark:purple-950/80 text-purple-800 dark:text-purple-300 flex items-center gap-1">
-                                        🛡️ Guardian (Wali): {{ ($activeWaliLink ?? null) ? ($activeWaliLink->wali_name . ' (' . ucfirst(str_replace('_', ' ', $activeWaliLink->relationship_type)) . ')') : 'Chaperone Required' }}
-                                    </span>
-                                @endif
-                            </div>
                         </div>
                     </div>
 
-                    <!-- Actions: Interest, Shortlist & Print Biodata -->
-                    <div class="w-full sm:w-auto flex flex-col sm:items-end gap-2.5">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <form action="{{ route('blocked-users.store', $targetUser->id) }}" method="POST" onsubmit="return confirm('Block this profile? You will no longer see or contact this person.')" class="inline">
-                                @csrf
-                                <button type="submit" class="px-3 py-2.5 rounded-xl border border-rose-200 bg-white text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:bg-slate-800 dark:text-rose-300 dark:hover:bg-rose-950/40 text-xs font-bold transition flex items-center gap-1 shadow-xs">
-                                    <span>⛔</span> Block
-                                </button>
-                            </form>
-                            <form action="{{ route('bookmarks.toggle', $targetUser->id) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="px-3 py-2.5 rounded-xl border {{ ($isBookmarked ?? false) ? 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-950 dark:border-amber-700 dark:text-amber-300' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700' }} text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-xs">
-                                    <span>⭐</span> {{ ($isBookmarked ?? false) ? 'Shortlisted' : 'Shortlist' }}
-                                </button>
-                            </form>
+                    <!-- Header Secondary Actions: Shortlist, Biodata, Block -->
+                    <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-start sm:justify-end">
+                        @php $isBookmarked = $isBookmarked ?? false; @endphp
+                        <form action="{{ route('bookmarks.toggle', $targetUser->id) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="btn-secondary text-xs h-9 py-0">
+                                <svg class="w-3.5 h-3.5 {{ $isBookmarked ? 'text-[var(--secondary-primary)] fill-current' : 'text-[var(--text-muted)]' }}" viewBox="0 0 24 24" fill="{{ $isBookmarked ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+                                <span>{{ $isBookmarked ? 'Shortlisted' : 'Shortlist' }}</span>
+                            </button>
+                        </form>
 
-                            <a href="{{ route('profile.biodata.show', $targetUser->id) }}" target="_blank"
-                               class="px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1 shadow-xs" title="Printable Shariah Biodata">
-                                <span>🖨️</span> Biodata
-                            </a>
-                        </div>
+                        <a href="{{ route('profile.biodata.show', $targetUser->id) }}" target="_blank"
+                           class="btn-secondary text-xs h-9 py-0" title="Printable Shariah Biodata">
+                            <svg class="w-3.5 h-3.5 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                            <span>Print Biodata</span>
+                        </a>
 
-                        <div class="w-full sm:w-auto">
-                            @if($conversation || ($existingInterest && $existingInterest->status === 'accepted'))
-                                <div class="flex items-center gap-2 flex-wrap justify-start sm:justify-end">
-                                    <span class="px-3 py-2 rounded-xl text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5">
-                                        <span>✓</span> Interest Accepted
-                                    </span>
-                                    <a href="{{ $conversation ? route('chat.show', $conversation->id) : route('chat.user', $targetUser->id) }}" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/15 transition flex items-center gap-2 cursor-pointer">
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                            <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4-4-4H4a2 2 0 01-2-2V5z"/>
-                                        </svg>
-                                        <span>Send Message</span>
-                                    </a>
-                                </div>
-                            @elseif($existingInterest && $existingInterest->status === 'pending')
-                                @if($existingInterest->recipient_id === Auth::id())
-                                    <div class="flex items-center gap-2">
-                                        <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="action" value="accept">
-                                            <button type="submit" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/15 transition flex items-center gap-1.5 cursor-pointer">
-                                                <span>✓</span> Accept Interest
-                                            </button>
-                                        </form>
-                                        <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="action" value="decline">
-                                            <button type="submit" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition flex items-center gap-1.5 border border-slate-300 dark:border-slate-700 cursor-pointer">
-                                                <span>✕</span> Decline
-                                            </button>
-                                        </form>
-                                    </div>
-                                @else
-                                    <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
-                                        <span>⏳</span> Interest Sent (Pending)
-                                    </div>
-                                @endif
-                            @elseif($existingInterest && $existingInterest->status === 'pending_wali')
-                                <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/60 text-purple-800 dark:text-purple-300 flex items-center gap-1.5">
-                                    <span>🛡️</span> Awaiting Guardian (Wali) Approval
-                                </div>
-                            @elseif($existingInterest)
-                                <div class="px-4 py-2.5 rounded-xl text-xs font-bold text-center bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 capitalize border border-slate-200 dark:border-slate-700">
-                                    Status: {{ ucfirst(str_replace('_', ' ', $existingInterest->status)) }}
-                                </div>
-                            @else
-                                <button type="button" onclick="document.getElementById('sendInterestModal').classList.remove('hidden')" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/15 transition flex items-center justify-center gap-2 cursor-pointer">
-                                    <span>💌</span> Express Halal Interest
-                                </button>
-                            @endif
-                        </div>
+                        <form action="{{ route('blocked-users.store', $targetUser->id) }}" method="POST" onsubmit="return confirm('Block this profile? You will no longer see or contact this candidate.')" class="inline">
+                            @csrf
+                            <button type="submit" class="btn-secondary text-xs h-9 py-0 text-[var(--color-danger)] hover:bg-[var(--color-danger-bg)]" title="Block candidate">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/></svg>
+                                <span>Block</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
 
-                <!-- Photo Privacy Notice -->
+                <!-- Primary Action Status Bar -->
+                <div class="border-t border-[var(--border-subtle)] pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                        <span class="text-xs font-semibold text-[var(--text-secondary)]">Guardian Status:</span>
+                        <span class="text-xs font-bold text-[var(--text-primary)] ml-1">
+                            {{ $profile->wali_required || ($activeWaliLink ?? null) ? 'Chaperoned by Guardian (Wali)' : 'Self-managed candidate' }}
+                        </span>
+                    </div>
+
+                    <div>
+                        @if($conversation || ($existingInterest && $existingInterest->status === 'accepted'))
+                            <div class="flex items-center gap-2">
+                                <span class="badge-status text-[var(--color-success)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)]">
+                                    Interest Accepted
+                                </span>
+                                <a href="{{ $conversation ? route('chat.show', $conversation->id) : route('chat.user', $targetUser->id) }}" class="btn-primary text-xs font-bold h-9 py-0">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    <span>Send Message</span>
+                                </a>
+                            </div>
+                        @elseif($existingInterest && $existingInterest->status === 'pending')
+                            @if($existingInterest->recipient_id === Auth::id())
+                                <div class="flex items-center gap-2">
+                                    <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <input type="hidden" name="action" value="accept">
+                                        <button type="submit" class="btn-primary text-xs font-bold h-9 py-0">
+                                            <span>Accept Interest</span>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <input type="hidden" name="action" value="decline">
+                                        <button type="submit" class="btn-secondary text-xs font-semibold h-9 py-0">
+                                            <span>Decline</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                <span class="badge-status text-[var(--secondary-text)] bg-[var(--secondary-subtle)] border border-[var(--secondary-border)]">
+                                    Interest Sent (Pending)
+                                </span>
+                            @endif
+                        @elseif($existingInterest && $existingInterest->status === 'pending_wali')
+                            <span class="badge-status text-[var(--color-info)] bg-[var(--color-info-bg)] border border-[var(--color-info-border)]">
+                                Awaiting Guardian (Wali) Approval
+                            </span>
+                        @elseif($existingInterest)
+                            <span class="badge-status text-[var(--text-muted)] bg-[var(--bg-subtle)] border border-[var(--border-default)] capitalize">
+                                Status: {{ str_replace('_', ' ', $existingInterest->status) }}
+                            </span>
+                        @else
+                            <button type="button" onclick="document.getElementById('sendInterestModal').classList.remove('hidden')" class="btn-primary text-xs font-bold h-9 py-0">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                <span>Express Halal Interest</span>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Photo Privacy Modesty Callout -->
                 @if(!$isPhotoVisible)
-                    <div class="bg-amber-50/80 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                        <div class="flex items-center gap-2.5 text-amber-900 dark:text-amber-200">
-                            <span class="text-xl">🔒</span>
+                    <div class="mt-4 p-3.5 rounded-[var(--radius-sm)] bg-[var(--bg-subtle)] border border-[var(--border-default)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                        <div class="flex items-start gap-2.5 text-[var(--text-secondary)]">
+                            <svg class="w-4 h-4 text-[var(--text-muted)] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             <div>
-                                <strong class="block text-amber-950 dark:text-amber-100 font-bold">Islamic Photo Privacy Controls Active (FR-2.2)</strong>
-                                <span>Photos are blurred by default until mutual interest is accepted or explicit reciprocal photo permission is granted.</span>
+                                <strong class="text-[var(--text-primary)]">Photo Privacy Active</strong>
+                                <p class="text-[11px] text-[var(--text-secondary)] mt-0.5">Photos are shielded until mutual interest is accepted or explicit reciprocal photo permission is granted.</p>
                             </div>
                         </div>
+
                         @if(Auth::user()->profile && ! $hasGrantedPhotoAccess)
                             <form action="{{ route('profile.photos.grant', $targetUser->id) }}" method="POST" class="shrink-0">
                                 @csrf
-                                <button type="submit" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition">
-                                    Grant them photo access
+                                <button type="submit" class="btn-secondary text-xs h-8 py-0 font-semibold">
+                                    <span>Grant them photo access</span>
                                 </button>
                             </form>
                         @elseif($hasGrantedPhotoAccess)
-                            <span class="shrink-0 rounded-xl border border-emerald-300 bg-emerald-100 px-4 py-2.5 text-center text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                                ✓ Photo access granted
+                            <span class="badge-status text-[var(--color-success)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)] shrink-0">
+                                Photo access granted
                             </span>
                         @endif
                     </div>
@@ -178,65 +187,41 @@
             </div>
         </div>
 
-        @if(!empty($compatibilityHighlights))
-            <section class="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-amber-50 p-5 shadow-xs dark:border-emerald-900/50 dark:from-emerald-950/40 dark:via-slate-900 dark:to-amber-950/20 sm:p-6">
-                <div class="flex items-start gap-3">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-lg text-white shadow-md shadow-emerald-900/15">✦</div>
-                    <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Why this may be a good fit</p>
-                        <h2 class="mt-1 font-heading text-lg font-extrabold text-slate-900 dark:text-white">Shared signals behind your {{ $compatibilityScore }}% match</h2>
-                        <p class="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">These are conversation starters, not a final decision. Take time to review the full biodata and involve your family.</p>
-                    </div>
-                </div>
-                <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                    @foreach($compatibilityHighlights as $highlight)
-                        <div class="flex items-start gap-3 rounded-2xl border border-white/80 bg-white/75 p-3 dark:border-slate-700/80 dark:bg-slate-900/70">
-                            <span class="text-lg">{{ $highlight['icon'] }}</span>
-                            <div><p class="text-xs font-bold text-slate-900 dark:text-white">{{ $highlight['label'] }}</p><p class="mt-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">{{ $highlight['detail'] }}</p></div>
-                        </div>
-                    @endforeach
-                </div>
-            </section>
-        @endif
-
-        <!-- Incoming Pending Interest Callout Banner -->
+        <!-- ========================================================= -->
+        <!-- INCOMING PENDING INTEREST CALLOUT (ASSERTED IN TESTS)     -->
+        <!-- ========================================================= -->
         @if($existingInterest && $existingInterest->status === 'pending' && $existingInterest->recipient_id === Auth::id())
-            <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 dark:from-emerald-950/60 dark:via-teal-950/40 dark:to-emerald-950/60 border-2 border-emerald-500/30 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-md">
-                        💌
-                    </div>
-                    <div>
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/60 px-2.5 py-0.5 rounded-full inline-block mb-1">
-                            Pending Interest Request Received
-                        </span>
-                        <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                            {{ $targetUser->name }} has expressed Halal Interest in you!
-                        </h2>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-xl leading-relaxed">
-                            Carefully review their biodata, religious practice (Deen), education, and lifestyle below. You can accept or decline this matrimonial introduction request right here.
+            <div class="card-ledger p-5 bg-[var(--accent-subtle)] border-[var(--accent-border)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <span class="badge-status text-[var(--accent-text)] bg-[var(--bg-surface)] border border-[var(--accent-border)] font-bold text-[10px] uppercase">
+                        Pending Interest Request Received
+                    </span>
+                    <h2 class="text-base font-bold text-[var(--text-primary)]">
+                        {{ $targetUser->name }} has expressed Halal Interest in you!
+                    </h2>
+                    <p class="text-xs text-[var(--text-secondary)] max-w-xl">
+                        Carefully review their biodata, religious practice, and expectations below. You can accept or decline this matrimonial request.
+                    </p>
+                    @if($existingInterest->message_note)
+                        <p class="text-xs text-[var(--text-primary)] italic mt-2 bg-[var(--bg-surface)] p-2.5 rounded-[var(--radius-sm)] border border-[var(--border-subtle)]">
+                            &ldquo;{{ $existingInterest->message_note }}&rdquo;
                         </p>
-                        @if($existingInterest->message_note)
-                            <div class="mt-3 text-xs bg-white/80 dark:bg-slate-900/80 p-3 rounded-xl border border-emerald-200 dark:border-emerald-800/80 text-slate-700 dark:text-slate-300 italic">
-                                &ldquo;{{ $existingInterest->message_note }}&rdquo;
-                            </div>
-                        @endif
-                    </div>
+                    @endif
                 </div>
 
-                <div class="flex items-center gap-2.5 w-full md:w-auto shrink-0 justify-end">
-                    <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline flex-1 md:flex-initial">
+                <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+                    <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
                         @csrf
                         <input type="hidden" name="action" value="accept">
-                        <button type="submit" class="w-full md:w-auto px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/20 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                            <span>✓</span> Accept Interest
+                        <button type="submit" class="btn-primary text-xs font-bold">
+                            <span>Accept Interest</span>
                         </button>
                     </form>
-                    <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline flex-1 md:flex-initial">
+                    <form action="{{ route('interests.respond', $existingInterest->id) }}" method="POST" class="inline">
                         @csrf
                         <input type="hidden" name="action" value="decline">
-                        <button type="submit" class="w-full md:w-auto px-4 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-700 cursor-pointer">
-                            <span>✕</span> Decline
+                        <button type="submit" class="btn-secondary text-xs font-semibold">
+                            <span>Decline</span>
                         </button>
                     </form>
                 </div>
@@ -244,231 +229,242 @@
         @endif
 
         @if($conversation || ($existingInterest && $existingInterest->status === 'accepted'))
-            <!-- Mutual Match & Messaging Active Card -->
-            <div class="bg-gradient-to-r from-emerald-50 via-white to-emerald-50 dark:from-emerald-950/50 dark:via-slate-900 dark:to-emerald-950/30 border-2 border-emerald-300 dark:border-emerald-800 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">
-                        💬
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-base font-bold text-slate-900 dark:text-white">Mutual Halal Interest Confirmed!</h2>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">Messaging Unlocked</span>
-                        </div>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">You and {{ $targetUser->name }} have mutually accepted interest. You can converse directly in your protected chat.</p>
-                    </div>
+            <div class="card-ledger p-4 bg-[var(--accent-subtle)] border-[var(--accent-border)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-sm font-bold text-[var(--text-primary)]">Mutual Halal Interest Confirmed!</h2>
+                    <p class="text-xs text-[var(--text-secondary)] mt-0.5">You and {{ $targetUser->name }} have mutually accepted interest. You can converse directly in protected chat.</p>
                 </div>
-                <a href="{{ $conversation ? route('chat.show', $conversation->id) : route('chat.user', $targetUser->id) }}" class="w-full md:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-900/20 transition flex items-center justify-center gap-2 shrink-0">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4-4-4H4a2 2 0 01-2-2V5z"/>
-                    </svg>
-                    <span>Message {{ $targetUser->name }}</span> &rarr;
+                <a href="{{ $conversation ? route('chat.show', $conversation->id) : route('chat.user', $targetUser->id) }}" class="btn-primary text-xs font-bold shrink-0">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>Send Message</span> &rarr;
                 </a>
             </div>
         @endif
 
-        <!-- Main Details Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left 2 Columns: Bio, Deen & Career -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Bio Card -->
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3">About Me & Intentions</h3>
-                    <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                        {{ $profile->bio ?? 'No biography provided yet.' }}
-                    </p>
-                </div>
+        <!-- ========================================================= -->
+        <!-- STRUCTURED DEFINITION-LIST ROWS (NOT NESTED CARDS)        -->
+        <!-- ========================================================= -->
+        <div class="card-ledger p-6 sm:p-8 bg-[var(--bg-surface)] space-y-6">
 
-                <!-- Religious Practice & Islamic Alignment (FR-2.1, 6.4) -->
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
-                    <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                        <span class="text-xl">🕌</span>
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Islamic Practice & Values</h3>
+            <!-- Section 1: Basic Information -->
+            <section class="def-section">
+                <h2 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3">
+                    1. Basic Candidate Information
+                </h2>
+                <dl class="divide-y divide-[var(--border-subtle)]">
+                    <div class="def-row">
+                        <dt class="def-term">Legal Name</dt>
+                        <dd class="def-desc">{{ $targetUser->name }}</dd>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Sect / School of Jurisprudence:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $profile->sect_madhhab ?? 'Sunni' }}</span>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Prayer Frequency:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ str_replace('_', ' ', $profile->prayer_frequency ?? 'Regularly') }}</span>
-                        </div>
-                        @if($targetUser->gender === 'female')
-                            <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                                <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Hijab / Modesty Practice:</span>
-                                <span class="font-bold text-slate-900 dark:text-white">{{ ucfirst($profile->hijab_niqab_practice ?? 'Observes Modesty') }}</span>
-                            </div>
-                        @else
-                            <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                                <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Sunnah Beard Practice:</span>
-                                <span class="font-bold text-slate-900 dark:text-white">{{ str_replace('_', ' ', $profile->beard_practice ?? 'Maintained') }}</span>
-                            </div>
-                        @endif
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Quran Knowledge:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $profile->quran_knowledge ?? 'Fluent Reader')) }}</span>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Halal Dietary Adherence:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ str_replace('_', ' ', $profile->halal_dietary_adherence ?? 'Strictly Halal') }}</span>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Mosque Attendance:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ str_replace('_', ' ', $profile->mosque_attendance ?? 'Weekly Jummah') }}</span>
-                        </div>
+                    <div class="def-row">
+                        <dt class="def-term">Age</dt>
+                        <dd class="def-desc">{{ $targetUser->age }} years</dd>
                     </div>
-                </div>
+                    <div class="def-row">
+                        <dt class="def-term">Marital Status</dt>
+                        <dd class="def-desc capitalize">{{ str_replace('_', ' ', $targetUser->marital_status ?? 'Single') }}</dd>
+                    </div>
+                    <div class="def-row">
+                        <dt class="def-term">Height</dt>
+                        <dd class="def-desc">{{ $profile->height ? round($profile->height / 30.48, 1) . ' ft (' . $profile->height . ' cm)' : 'Not specified' }}</dd>
+                    </div>
+                    <div class="def-row">
+                        <dt class="def-term">Current Location</dt>
+                        <dd class="def-desc">{{ $profile->city ?: 'District flexible' }}, {{ $profile->country ?: '' }}</dd>
+                    </div>
+                    @if($profile->bio)
+                        <div class="def-row">
+                            <dt class="def-term">Personal Bio</dt>
+                            <dd class="def-desc text-xs leading-relaxed text-[var(--text-secondary)] whitespace-pre-line">{{ $profile->bio }}</dd>
+                        </div>
+                    @endif
+                </dl>
+            </section>
 
-                <!-- Education & Professional Background -->
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
-                    <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                        <span class="text-xl">🎓</span>
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Education & Career</h3>
+            <!-- Section 2: Family Background -->
+            <section class="def-section">
+                <h2 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3">
+                    2. Family &amp; Guardian Oversight
+                </h2>
+                <dl class="divide-y divide-[var(--border-subtle)]">
+                    <div class="def-row">
+                        <dt class="def-term">Guardian Requirement</dt>
+                        <dd class="def-desc">{{ $profile->wali_required ? 'Required (Courtship chaperoned by Wali)' : 'Independent / Self-managed' }}</dd>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Highest Education:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $profile->education_level ?? 'Graduate' }}</span>
+                    @if($activeWaliLink ?? null)
+                        <div class="def-row">
+                            <dt class="def-term">Linked Guardian</dt>
+                            <dd class="def-desc">{{ $activeWaliLink->wali_name }} ({{ ucfirst(str_replace('_', ' ', $activeWaliLink->relationship_type)) }})</dd>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Profession / Job Title:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $profile->profession ?? 'Professional' }}</span>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Employment Type:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $profile->employment_type ?? 'Full-time' }}</span>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">
-                            <span class="text-slate-500 dark:text-slate-400 block mb-0.5">Height:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $profile->height_cm ? $profile->height_cm . ' cm' : 'Not specified' }}</span>
-                        </div>
+                    @endif
+                    <div class="def-row">
+                        <dt class="def-term">Family Values</dt>
+                        <dd class="def-desc">{{ $profile->family_values ?? 'Traditional practicing family with deep respect for Islamic values.' }}</dd>
                     </div>
-                </div>
-            </div>
+                </dl>
+            </section>
 
-            <!-- Right Column: Family & Partner Preferences -->
-            <div class="space-y-6">
-                <!-- Family Background -->
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
-                    <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                        <span class="text-xl">🏡</span>
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Family Background</h3>
+            <!-- Section 3: Education & Career -->
+            <section class="def-section">
+                <h2 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3">
+                    3. Education &amp; Professional Career
+                </h2>
+                <dl class="divide-y divide-[var(--border-subtle)]">
+                    <div class="def-row">
+                        <dt class="def-term">Education Level</dt>
+                        <dd class="def-desc">{{ $profile->education_level ?: 'University Graduate' }}</dd>
                     </div>
-                    <div class="space-y-3 text-xs">
-                        <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                            <span class="text-slate-500 dark:text-slate-400">Family Religiosity:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $profile->family_religiosity ?? 'Practicing')) }}</span>
-                        </div>
-                        <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                            <span class="text-slate-500 dark:text-slate-400">Desired Living Structure:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ ucfirst($profile->desired_family_structure ?? 'Independent') }}</span>
-                        </div>
-                        <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                            <span class="text-slate-500 dark:text-slate-400">Siblings:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $profile->siblings_count ?? 'Not specified' }}</span>
-                        </div>
-                        <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                            <span class="text-slate-500 dark:text-slate-400">Parents' Occupation:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $profile->parents_occupation ?? 'Respected background' }}</span>
-                        </div>
-                        @if($activeWaliLink ?? null)
-                            <div class="flex justify-between border-t border-purple-100 dark:border-purple-900/60 pt-2 bg-purple-50/50 dark:bg-purple-950/30 -mx-2 px-2 rounded-lg">
-                                <span class="text-purple-700 dark:text-purple-300 font-medium">Assigned Wali:</span>
-                                <span class="font-bold text-purple-950 dark:text-purple-200">
-                                    🛡️ {{ $activeWaliLink->wali_name }} ({{ ucfirst(str_replace('_', ' ', $activeWaliLink->relationship_type)) }})
-                                </span>
-                            </div>
-                        @endif
+                    <div class="def-row">
+                        <dt class="def-term">Occupation / Profession</dt>
+                        <dd class="def-desc">{{ $profile->occupation ?: 'Professional' }}</dd>
                     </div>
-                </div>
+                    <div class="def-row">
+                        <dt class="def-term">Employment Status</dt>
+                        <dd class="def-desc">{{ $profile->employment_status ?: 'Employed' }}</dd>
+                    </div>
+                </dl>
+            </section>
 
-                <!-- Partner Preferences -->
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
-                    <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                        <span class="text-xl">🎯</span>
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Looking For</h3>
+            <!-- Section 4: Religious Practice & Ethics -->
+            <section class="def-section">
+                <h2 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3">
+                    4. Religious Practice &amp; Islamic Alignment
+                </h2>
+                <dl class="divide-y divide-[var(--border-subtle)]">
+                    <div class="def-row">
+                        <dt class="def-term">Sect / Madhhab</dt>
+                        <dd class="def-desc">{{ $profile->sect_madhhab ?: 'Sunni' }}</dd>
                     </div>
-                    @php $prefs = $profile->partner_preferences ?? []; @endphp
-                    <div class="space-y-3 text-xs">
-                        <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                            <span class="text-slate-500 dark:text-slate-400">Preferred Age:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">
-                                {{ $prefs['age_min'] ?? 'Any' }} - {{ $prefs['age_max'] ?? 'Any' }} years
-                            </span>
-                        </div>
-                        <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                            <span class="text-slate-500 dark:text-slate-400">Preferred Sect:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $prefs['preferred_sect'] ?? 'Compatible Sunni' }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-500 dark:text-slate-400">Preferred Location:</span>
-                            <span class="font-bold text-slate-900 dark:text-white">{{ $prefs['preferred_location'] ?? 'Open' }}</span>
-                        </div>
+                    <div class="def-row">
+                        <dt class="def-term">Prayer Frequency</dt>
+                        <dd class="def-desc">{{ str_replace('_', ' ', $profile->prayer_frequency ?: '5x Daily Prayer') }}</dd>
                     </div>
-                </div>
+                    @if($targetUser->gender === 'female')
+                        <div class="def-row">
+                            <dt class="def-term">Hijab / Modesty Practice</dt>
+                            <dd class="def-desc">{{ ucfirst(str_replace('_', ' ', $profile->hijab_niqab_practice ?: 'Observes Modesty')) }}</dd>
+                        </div>
+                    @else
+                        <div class="def-row">
+                            <dt class="def-term">Sunnah Beard Practice</dt>
+                            <dd class="def-desc">{{ ucfirst(str_replace('_', ' ', $profile->beard_practice ?: 'Maintained')) }}</dd>
+                        </div>
+                    @endif
+                    <div class="def-row">
+                        <dt class="def-term">Quran Knowledge</dt>
+                        <dd class="def-desc">{{ ucfirst(str_replace('_', ' ', $profile->quran_knowledge ?: 'Fluent Reciter')) }}</dd>
+                    </div>
+                    <div class="def-row">
+                        <dt class="def-term">Halal Dietary Adherence</dt>
+                        <dd class="def-desc">{{ ucfirst(str_replace('_', ' ', $profile->halal_dietary_adherence ?: 'Strictly Halal')) }}</dd>
+                    </div>
+                    <div class="def-row">
+                        <dt class="def-term">Mosque Attendance</dt>
+                        <dd class="def-desc">{{ ucfirst(str_replace('_', ' ', $profile->mosque_attendance ?: 'Weekly Jummah')) }}</dd>
+                    </div>
+                </dl>
+            </section>
 
-                <!-- Report User (FR-4.6) -->
-                <div class="text-center pt-2">
-                    <button type="button" onclick="document.getElementById('reportModal').classList.remove('hidden')" class="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 font-semibold">
-                        🚩 Report inappropriate profile or behavior (FR-4.6)
-                    </button>
-                </div>
+            <!-- Section 5: Partner Expectations & Preferences -->
+            <section class="def-section">
+                <h2 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3">
+                    5. Partner Preferences &amp; Marital Expectations
+                </h2>
+                <dl class="divide-y divide-[var(--border-subtle)]">
+                    <div class="def-row">
+                        <dt class="def-term">Preferred Age Range</dt>
+                        <dd class="def-desc">{{ $profile->partner_age_min ?? '18' }} to {{ $profile->partner_age_max ?? '40' }} years</dd>
+                    </div>
+                    <div class="def-row">
+                        <dt class="def-term">Preferred Marital Status</dt>
+                        <dd class="def-desc capitalize">{{ str_replace('_', ' ', $profile->partner_marital_status ?? 'Any status open') }}</dd>
+                    </div>
+                    <div class="def-row">
+                        <dt class="def-term">Preferred Location</dt>
+                        <dd class="def-desc">{{ $profile->partner_location ?? 'Open to relocation with family consent' }}</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <!-- Report Inappropriate Profile Trigger -->
+            <div class="pt-4 text-center">
+                <button type="button" onclick="document.getElementById('reportModal').classList.remove('hidden')"
+                        class="text-xs text-[var(--color-danger)] hover:underline font-medium inline-flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                    <span>Report inappropriate profile or conduct</span>
+                </button>
             </div>
         </div>
 
     </div>
 </div>
 
-<!-- Send Interest Modal -->
-<div id="sendInterestModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
-        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 font-heading">Express Halal Interest</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-            @if($profile->wali_required)
-                Notice: This candidate has a linked guardian (Wali). If accepted, communications will be chaperoned according to Islamic protocol (FR-4.3).
-            @else
-                Express your interest respectfully. If the candidate accepts, private halal messaging will unlock (FR-4.2).
-            @endif
-        </p>
-        <form action="{{ route('interests.send', $targetUser->id) }}" method="POST">
+<!-- ========================================================= -->
+<!-- SEND INTEREST MODAL                                       -->
+<!-- ========================================================= -->
+<div id="sendInterestModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="card-ledger max-w-md w-full p-6 bg-[var(--bg-surface)] shadow-2xl space-y-4">
+        <div>
+            <h3 class="text-base font-bold text-[var(--text-primary)]">Express Halal Interest</h3>
+            <p class="text-xs text-[var(--text-secondary)] mt-1">
+                @if($profile->wali_required)
+                    Notice: This candidate has a linked guardian (Wali). Communications will be chaperoned according to Islamic protocol.
+                @else
+                    Express your interest respectfully. If accepted, private messaging will unlock.
+                @endif
+            </p>
+        </div>
+
+        <form action="{{ route('interests.send', $targetUser->id) }}" method="POST" class="space-y-3">
             @csrf
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Optional Introductory Note</label>
-                <textarea name="note" rows="3" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="As-salamu alaykum, I appreciate your profile and shared deen values..."></textarea>
+            <div>
+                <label for="interest_note" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Optional Introductory Note</label>
+                <textarea id="interest_note" name="note" rows="3"
+                          class="w-full p-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                          placeholder="As-salamu alaykum, I have reviewed your biodata and share similar values..."></textarea>
             </div>
-            <div class="flex items-center justify-end gap-2">
-                <button type="button" onclick="document.getElementById('sendInterestModal').classList.add('hidden')" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs">Send Interest</button>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="document.getElementById('sendInterestModal').classList.add('hidden')" class="btn-secondary text-xs">Cancel</button>
+                <button type="submit" class="btn-primary text-xs font-bold">Send Interest</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Report User Modal (FR-4.6) -->
-<div id="reportModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
-        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 font-heading">Report Candidate</h3>
-        <form action="{{ route('reports.store') }}" method="POST">
+<!-- ========================================================= -->
+<!-- REPORT CANDIDATE MODAL                                    -->
+<!-- ========================================================= -->
+<div id="reportModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="card-ledger max-w-md w-full p-6 bg-[var(--bg-surface)] shadow-2xl space-y-4">
+        <div>
+            <h3 class="text-base font-bold text-[var(--text-primary)]">Report Candidate</h3>
+            <p class="text-xs text-[var(--text-secondary)] mt-1">Reports are investigated promptly by female and male moderation staff.</p>
+        </div>
+
+        <form action="{{ route('reports.store') }}" method="POST" class="space-y-3">
             @csrf
             <input type="hidden" name="reported_id" value="{{ $targetUser->id }}">
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Reason for Report</label>
-                <select name="reason" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+
+            <div>
+                <label for="report_reason" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Reason for Report</label>
+                <select id="report_reason" name="reason" required class="w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs outline-none">
                     <option value="inappropriate_language">Inappropriate or vulgar language</option>
-                    <option value="harassment">Harassment / pressure</option>
-                    <option value="fake_profile">Suspicious / fake profile claims</option>
-                    <option value="external_solicitation">Commercial solicitation / scam</option>
-                    <option value="contact_sharing_violation">Unauthorized external contact sharing</option>
+                    <option value="harassment">Harassment or undue pressure</option>
+                    <option value="fake_profile">Suspicious or fake profile details</option>
+                    <option value="external_solicitation">Commercial solicitation or fraud</option>
+                    <option value="contact_sharing_violation">Unauthorized phone / contact sharing</option>
                 </select>
             </div>
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Details for Moderation Staff (FR-7.2)</label>
-                <textarea name="details" rows="3" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Provide any context..."></textarea>
+
+            <div>
+                <label for="report_details" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Details for Staff Review</label>
+                <textarea id="report_details" name="details" rows="3" class="w-full p-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs outline-none" placeholder="Please describe what occurred..."></textarea>
             </div>
-            <div class="flex items-center justify-end gap-2">
-                <button type="button" onclick="document.getElementById('reportModal').classList.add('hidden')" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700">Submit Report</button>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="document.getElementById('reportModal').classList.add('hidden')" class="btn-secondary text-xs">Cancel</button>
+                <button type="submit" class="btn-primary text-xs font-bold bg-[var(--color-danger)] text-white hover:bg-[var(--color-danger)]">Submit Report</button>
             </div>
         </form>
     </div>

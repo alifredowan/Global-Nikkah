@@ -55,38 +55,39 @@
         })();
     </script>
 
-    <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+    <!-- Google Fonts: Inter, Noto Sans Bengali & Hind Siliguri -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
+        body { font-family: var(--font-sans); }
+        h1, h2, h3, h4, .font-heading { font-family: var(--font-sans); letter-spacing: -0.015em; }
         .bg-emerald-gradient {
-            background: linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%);
+            background: var(--accent-primary);
         }
         .bg-gold-gradient {
-            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            background: var(--secondary-primary);
         }
         .glass-header {
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(12px);
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-default);
         }
         .dark .glass-header {
-            background: rgba(15, 23, 42, 0.92);
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-default);
         }
         .photo-blur {
             filter: blur(14px);
-            transition: filter 0.3s ease;
+            transition: filter var(--duration-normal) var(--ease-standard);
         }
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-emerald-500 selection:text-white transition-colors duration-200"
+<body class="h-full bg-[var(--bg-canvas)] text-[var(--text-primary)] antialiased selection:bg-[var(--accent-primary)] selection:text-white transition-colors duration-200"
       x-data="{
           sidebarOpen: (function() {
               try { localStorage.removeItem('sidebar_open'); } catch(e){}
@@ -113,11 +114,13 @@
          aria-modal="false"
          aria-labelledby="cookie-consent-title"
          aria-describedby="cookie-consent-description">
-        <div class="rounded-2xl border border-emerald-200 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:border-emerald-900/80 dark:bg-slate-900/95 sm:p-5">
+        <div class="card-ledger p-4 sm:p-5 shadow-lg">
             <div class="flex items-start gap-3">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-lg text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" aria-hidden="true">🍪</div>
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[var(--accent-text)]" aria-hidden="true">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                </div>
                 <div class="min-w-0 flex-1">
-                    <h2 id="cookie-consent-title" class="font-heading text-sm font-extrabold text-slate-900 dark:text-white">Your privacy, your choice</h2>
+                    <h2 id="cookie-consent-title" class="text-sm font-bold text-[var(--text-primary)]">Your privacy, your choice</h2>
                     <p id="cookie-consent-description" class="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
                         We use essential cookies to keep you signed in, protect forms, and remember your privacy preference. We do not use advertising cookies. <a href="{{ route('privacy') }}#cookies" class="font-bold text-emerald-700 underline underline-offset-2 dark:text-emerald-400">Read our cookie policy</a>.
                     </p>

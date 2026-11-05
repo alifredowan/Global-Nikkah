@@ -1,185 +1,213 @@
 @extends('layouts.app')
 
-@section('title', 'My Interests - Global Nikkah')
+@section('title', 'Interests & Inquiries - Global Nikkah')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen" x-data="{ tab: 'received' }">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="py-8 bg-[var(--bg-canvas)] min-h-screen" x-data="{ tab: 'received' }">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <!-- Header Card -->
+        <div class="card-ledger p-5 sm:p-6 bg-[var(--bg-surface)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Halal Interests & Introductions</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Review expressions of interest sent and received under Islamic etiquette (FR-4.1).</p>
+                <h1 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">Interests &amp; Introductions</h1>
+                <p class="text-xs text-[var(--text-secondary)] mt-0.5">Manage formal matrimonial interest requests sent and received under family etiquette.</p>
             </div>
-            <!-- Tab Buttons -->
-            <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-                <button @click="tab = 'received'" :class="tab === 'received' ? 'bg-white dark:bg-slate-700 shadow-xs text-emerald-900 dark:text-emerald-200 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'" class="px-4 py-2 rounded-lg text-xs transition">
+
+            <!-- Tab Switcher -->
+            <div class="inline-flex rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-subtle)] p-0.5 text-xs font-semibold">
+                <button type="button" @click="tab = 'received'"
+                        :class="tab === 'received' ? 'bg-[var(--bg-surface)] text-[var(--accent-text)] shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'"
+                        class="px-3.5 py-1.5 rounded-[var(--radius-xs)] transition cursor-pointer">
                     Received ({{ $received->count() }})
                 </button>
-                <button @click="tab = 'sent'" :class="tab === 'sent' ? 'bg-white dark:bg-slate-700 shadow-xs text-emerald-900 dark:text-emerald-200 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'" class="px-4 py-2 rounded-lg text-xs transition">
+                <button type="button" @click="tab = 'sent'"
+                        :class="tab === 'sent' ? 'bg-[var(--bg-surface)] text-[var(--accent-text)] shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'"
+                        class="px-3.5 py-1.5 rounded-[var(--radius-xs)] transition cursor-pointer">
                     Sent ({{ $sent->count() }})
                 </button>
             </div>
         </div>
 
-        <!-- Received Tab -->
-        <div x-show="tab === 'received'" class="space-y-4">
+        <!-- ========================================================= -->
+        <!-- RECEIVED TAB                                              -->
+        <!-- ========================================================= -->
+        <div x-show="tab === 'received'" class="space-y-3">
             @forelse($received as $interest)
-                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <a href="{{ route('discovery.show', $interest->sender_id) }}" class="w-14 h-14 rounded-xl overflow-hidden bg-slate-800 shrink-0 hover:ring-2 hover:ring-emerald-500 transition block group cursor-pointer" title="View Candidate Profile">
+                <article class="card-ledger p-4 sm:p-5 bg-[var(--bg-surface)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 min-w-0">
+                        <a href="{{ route('discovery.show', $interest->sender_id) }}"
+                           class="w-14 h-14 rounded-[var(--radius-sm)] overflow-hidden bg-[var(--neutral-900)] shrink-0 block border border-[var(--border-default)]"
+                           title="View Candidate Profile">
                             @if($interest->sender->profile?->primaryPhoto)
-                                <img src="{{ $interest->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->sender->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition" loading="lazy" decoding="async">
+                                <img src="{{ $interest->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->sender->name }}"
+                                     class="w-full h-full object-cover photo-blur" loading="lazy">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-xl group-hover:bg-emerald-900 transition">
+                                <div class="w-full h-full flex items-center justify-center bg-[var(--neutral-800)] text-white font-bold text-lg">
                                     {{ substr($interest->sender->name, 0, 1) }}
                                 </div>
                             @endif
                         </a>
-                        <div>
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <a href="{{ route('discovery.show', $interest->sender_id) }}" class="font-bold text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline">
+
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <a href="{{ route('discovery.show', $interest->sender_id) }}" class="font-bold text-sm text-[var(--text-primary)] hover:underline">
                                     {{ $interest->sender->name }}
                                 </a>
+                                @if($interest->sender->is_verified)
+                                    <span class="badge-verified">Verified</span>
+                                @endif
                                 @if($interest->sender->isPro())
-                                    <span class="bg-amber-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs" title="Sender has a Pro Matrimonial Membership">
-                                        🌟 PRIORITY PROPOSAL
+                                    <span class="px-1.5 py-0.2 rounded-[var(--radius-xs)] text-[10px] font-bold bg-[var(--secondary-subtle)] text-[var(--secondary-text)] border border-[var(--secondary-border)]">
+                                        Pro
                                     </span>
                                 @endif
-                                @if($interest->sender->is_verified)
-                                    <span class="bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">✓ Verified</span>
-                                @endif
-                                <a href="{{ route('discovery.show', $interest->sender_id) }}" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline ml-1">
-                                    View Profile ↗
-                                </a>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">
-                                {{ $interest->sender->age }} yrs • {{ $interest->sender->profile?->city ?? 'Location not specified' }}, {{ $interest->sender->profile?->country ?? '' }} •
-                                <span class="text-emerald-700 dark:text-emerald-400 font-medium">{{ $interest->sender->profile?->sect_madhhab ?? 'Practicing' }}</span>
+
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                                {{ $interest->sender->age }} yrs &bull; {{ $interest->sender->profile?->city ?? 'District flexible' }}, {{ $interest->sender->profile?->country ?? '' }} &bull;
+                                <span>{{ $interest->sender->profile?->sect_madhhab ?? 'Practicing' }}</span>
                             </p>
+
                             @if($interest->message_note)
-                                <p class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 p-2 rounded-lg mt-2 italic">
-                                    "{{ $interest->message_note }}"
+                                <p class="text-xs text-[var(--text-primary)] bg-[var(--bg-subtle)] p-2 rounded-[var(--radius-xs)] mt-2 italic border border-[var(--border-subtle)]">
+                                    &ldquo;{{ $interest->message_note }}&rdquo;
                                 </p>
                             @endif
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
-                        <a href="{{ route('discovery.show', $interest->sender_id) }}" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
-                            <span>👤</span> View Profile
+                    <!-- Right Column: Actions & Status Label -->
+                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--border-subtle)]">
+                        <a href="{{ route('discovery.show', $interest->sender_id) }}" class="btn-secondary text-xs h-9 py-0">
+                            <span>View Profile</span>
                         </a>
+
                         @if($interest->status === 'pending')
                             <form action="{{ route('interests.respond', $interest->id) }}" method="POST" class="inline">
                                 @csrf
                                 <input type="hidden" name="action" value="accept">
-                                <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition cursor-pointer">
-                                    Accept Interest
+                                <button type="submit" class="btn-primary text-xs font-bold h-9 py-0">
+                                    <span>Accept Interest</span>
                                 </button>
                             </form>
                             <form action="{{ route('interests.respond', $interest->id) }}" method="POST" class="inline">
                                 @csrf
                                 <input type="hidden" name="action" value="decline">
-                                <button type="submit" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold transition cursor-pointer">
-                                    Decline
+                                <button type="submit" class="btn-secondary text-xs font-semibold h-9 py-0">
+                                    <span>Decline</span>
                                 </button>
                             </form>
                         @elseif($interest->status === 'accepted')
-                            <div class="text-right">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
-                                    Accepted
-                                </span>
-                                <a href="{{ $interest->conversation ? route('chat.show', $interest->conversation->id) : route('chat.user', $interest->sender_id) }}" class="block text-xs text-emerald-700 dark:text-emerald-400 font-bold hover:underline mt-1">
-                                    Open Chat &rarr;
-                                </a>
-                            </div>
+                            <span class="badge-status text-[var(--color-success)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)]">
+                                Accepted
+                            </span>
+                            <a href="{{ $interest->conversation ? route('chat.show', $interest->conversation->id) : route('chat.user', $interest->sender_id) }}" class="btn-subtle text-xs">
+                                <span>Open Chat &rarr;</span>
+                            </a>
+                        @elseif($interest->status === 'declined')
+                            <span class="badge-status text-[var(--color-danger)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)]">
+                                Declined
+                            </span>
                         @elseif($interest->status === 'closed_married')
-                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
-                                💍 Closed (Nikah Completed)
+                            <span class="badge-status text-[var(--accent-text)] bg-[var(--accent-subtle)] border border-[var(--accent-border)]">
+                                Closed (Nikah Completed)
                             </span>
                         @else
-                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 capitalize">
+                            <span class="badge-status text-[var(--text-muted)] bg-[var(--bg-subtle)] border border-[var(--border-default)] capitalize">
                                 {{ $interest->status }}
                             </span>
                         @endif
                     </div>
-                </div>
+                </article>
             @empty
-                <div class="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
-                    <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">No interest requests received yet.</p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Complete your profile to increase discovery visibility!</p>
+                <div class="card-ledger p-12 text-center bg-[var(--bg-surface)]">
+                    <p class="text-sm font-semibold text-[var(--text-secondary)]">No interest requests received yet.</p>
+                    <p class="text-xs text-[var(--text-muted)] mt-1">Keep your profile detailed and up-to-date to increase discovery.</p>
                 </div>
             @endforelse
         </div>
 
-        <!-- Sent Tab -->
-        <div x-show="tab === 'sent'" x-cloak class="space-y-4">
+        <!-- ========================================================= -->
+        <!-- SENT TAB                                                  -->
+        <!-- ========================================================= -->
+        <div x-show="tab === 'sent'" x-cloak class="space-y-3">
             @forelse($sent as $interest)
-                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <a href="{{ route('discovery.show', $interest->recipient_id) }}" class="w-14 h-14 rounded-xl overflow-hidden bg-slate-800 shrink-0 hover:ring-2 hover:ring-emerald-500 transition block group cursor-pointer" title="View Candidate Profile">
+                <article class="card-ledger p-4 sm:p-5 bg-[var(--bg-surface)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 min-w-0">
+                        <a href="{{ route('discovery.show', $interest->recipient_id) }}"
+                           class="w-14 h-14 rounded-[var(--radius-sm)] overflow-hidden bg-[var(--neutral-900)] shrink-0 block border border-[var(--border-default)]"
+                           title="View Candidate Profile">
                             @if($interest->recipient->profile?->primaryPhoto)
-                                <img src="{{ $interest->recipient->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->recipient->name }}" class="w-full h-full object-cover photo-blur group-hover:scale-105 transition" loading="lazy" decoding="async">
+                                <img src="{{ $interest->recipient->profile->primaryPhoto->displayUrl() }}" alt="{{ $interest->recipient->name }}"
+                                     class="w-full h-full object-cover photo-blur" loading="lazy">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-xl group-hover:bg-emerald-900 transition">
+                                <div class="w-full h-full flex items-center justify-center bg-[var(--neutral-800)] text-white font-bold text-lg">
                                     {{ substr($interest->recipient->name, 0, 1) }}
                                 </div>
                             @endif
                         </a>
-                        <div>
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <a href="{{ route('discovery.show', $interest->recipient_id) }}" class="font-bold text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline">
+
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <a href="{{ route('discovery.show', $interest->recipient_id) }}" class="font-bold text-sm text-[var(--text-primary)] hover:underline">
                                     {{ $interest->recipient->name }}
                                 </a>
-                                <a href="{{ route('discovery.show', $interest->recipient_id) }}" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline ml-1">
-                                    View Profile ↗
-                                </a>
+                                @if($interest->recipient->is_verified)
+                                    <span class="badge-verified">Verified</span>
+                                @endif
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">
-                                {{ $interest->recipient->age }} yrs • {{ $interest->recipient->profile?->city ?? 'Location not specified' }}, {{ $interest->recipient->profile?->country ?? '' }}
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                                {{ $interest->recipient->age }} yrs &bull; {{ $interest->recipient->profile?->city ?? 'District flexible' }}, {{ $interest->recipient->profile?->country ?? '' }}
                             </p>
-                            <span class="text-[11px] text-slate-400 dark:text-slate-500 block mt-1">Sent on {{ $interest->created_at->format('d/m/Y') }}</span>
+                            <span class="text-[11px] text-[var(--text-muted)] block mt-1">Dispatched on {{ $interest->created_at->format('d/m/Y') }}</span>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <a href="{{ route('discovery.show', $interest->recipient_id) }}" class="px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition flex items-center gap-1 shadow-2xs cursor-pointer">
-                            <span>👤</span> View Profile
+                    <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--border-subtle)]">
+                        <a href="{{ route('discovery.show', $interest->recipient_id) }}" class="btn-secondary text-xs h-9 py-0">
+                            <span>View Profile</span>
                         </a>
+
                         @if($interest->status === 'accepted')
                             @if($interest->wali_approval_status === 'pending')
-                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300">
-                                    🛡️ Awaiting Wali Approval
+                                <span class="badge-status text-[var(--color-info)] bg-[var(--color-info-bg)] border border-[var(--color-info-border)]">
+                                    Awaiting Wali Approval
                                 </span>
                             @else
-                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
-                                    ✓ Accepted & Unlocked
+                                <span class="badge-status text-[var(--color-success)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)]">
+                                    Accepted
                                 </span>
-                                <a href="{{ $interest->conversation ? route('chat.show', $interest->conversation->id) : route('chat.user', $interest->recipient_id) }}" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
-                                    Open Chat
+                                <a href="{{ $interest->conversation ? route('chat.show', $interest->conversation->id) : route('chat.user', $interest->recipient_id) }}" class="btn-subtle text-xs">
+                                    <span>Open Chat</span>
                                 </a>
                             @endif
                         @elseif($interest->status === 'pending')
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300">
-                                ⏳ Pending Recipient Response
+                            <span class="badge-status text-[var(--secondary-text)] bg-[var(--secondary-subtle)] border border-[var(--secondary-border)]">
+                                Pending Recipient Response
+                            </span>
+                        @elseif($interest->status === 'declined')
+                            <span class="badge-status text-[var(--color-danger)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)]">
+                                Declined
                             </span>
                         @elseif($interest->status === 'closed_married')
-                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
-                                💍 Closed (Nikah Completed)
+                            <span class="badge-status text-[var(--accent-text)] bg-[var(--accent-subtle)] border border-[var(--accent-border)]">
+                                Closed (Nikah Completed)
                             </span>
                         @else
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 capitalize">
+                            <span class="badge-status text-[var(--text-muted)] bg-[var(--bg-subtle)] border border-[var(--border-default)] capitalize">
                                 {{ $interest->status }}
                             </span>
                         @endif
                     </div>
-                </div>
+                </article>
             @empty
-                <div class="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
-                    <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">You haven't sent any interest requests yet.</p>
-                    <a href="{{ route('discovery.index') }}" class="inline-block mt-3 px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold">
-                        Browse Candidates
-                    </a>
+                <div class="card-ledger p-12 text-center bg-[var(--bg-surface)]">
+                    <p class="text-sm font-semibold text-[var(--text-secondary)]">You have not dispatched any interest requests yet.</p>
+                    <div class="pt-3">
+                        <a href="{{ route('discovery.index') }}" class="btn-primary text-xs font-semibold">
+                            Browse Candidates
+                        </a>
+                    </div>
                 </div>
             @endforelse
         </div>

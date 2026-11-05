@@ -3,52 +3,75 @@
 @section('title', 'Register - Global Nikkah')
 
 @section('content')
-<div class="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen" x-data="{ role: '{{ old('role', 'seeker') }}' }">
+<div class="py-10 bg-[var(--bg-canvas)] min-h-screen"
+     x-data="{
+        step: 1,
+        role: '{{ old('role', 'seeker') }}',
+        name: '{{ old('name', '') }}',
+        email: '{{ old('email', '') }}',
+        phone: '{{ old('phone', '') }}',
+        gender: '{{ old('gender', '') }}',
+        dob: '{{ old('dob', '') }}',
+        password: '',
+        password_confirmation: '',
+        get isStep1Valid() {
+            return this.role === 'seeker' || this.role === 'wali';
+        },
+        get isStep2Valid() {
+            return this.name.trim().length >= 2 && this.email.includes('@') && this.gender !== '' && this.dob.length === 10;
+        },
+        saveDraft() {
+            try {
+                localStorage.setItem('nikah_reg_draft', JSON.stringify({
+                    role: this.role,
+                    name: this.name,
+                    email: this.email,
+                    gender: this.gender,
+                    dob: this.dob
+                }));
+                alert('Your registration progress has been saved locally. You can resume anytime.');
+            } catch(e) {}
+        }
+     }">
     <div class="max-w-xl mx-auto px-4 sm:px-6">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 transition-colors">
-            <div class="text-center mb-8">
-                <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center text-2xl mx-auto mb-3"
-                     x-text="role === 'seeker' ? '💍' : '🛡️'">
-                    💍
+        <div class="card-ledger p-6 sm:p-8 bg-[var(--bg-surface)] shadow-md">
+
+            <!-- Header -->
+            <div class="border-b border-[var(--border-subtle)] pb-4 mb-6 flex items-start justify-between">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+                        <span x-show="role === 'seeker'">Create Candidate Profile</span>
+                        <span x-show="role === 'wali'" style="display: none;">Register as Guardian (Wali)</span>
+                    </h1>
+                    <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                        <span x-show="role === 'seeker'">Begin your matrimonial journey with sincere intentions.</span>
+                        <span x-show="role === 'wali'" style="display: none;">Register to supervise and chaperone your family member.</span>
+                    </p>
                 </div>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">
-                    <span x-show="role === 'seeker'">Create Candidate Profile</span>
-                    <span x-show="role === 'wali'" style="display: none;">Register as Guardian (Wali)</span>
-                </h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    <span x-show="role === 'seeker'">Begin your journey towards a blessed marriage with sincere intentions.</span>
-                    <span x-show="role === 'wali'" style="display: none;">Safeguard and assist your family member in their marriage search.</span>
-                </p>
+                <!-- Save Progress Button -->
+                <button type="button" @click="saveDraft()"
+                        class="text-[11px] font-semibold text-[var(--accent-text)] hover:underline flex items-center gap-1 shrink-0"
+                        title="Save progress locally">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    <span>Save &amp; Continue Later</span>
+                </button>
             </div>
 
-            <!-- Role Selection Tabs -->
+            <!-- Multi-Step Progress Indicator -->
             <div class="mb-6">
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">I am registering as:</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <button type="button" @click="role = 'seeker'"
-                            :class="role === 'seeker' ? 'border-emerald-600 bg-emerald-50/70 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'"
-                            class="p-4 rounded-xl border text-left transition flex flex-col justify-between">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-lg">💍</span>
-                            <span class="font-bold text-sm font-heading">Candidate / Seeker</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">I am looking for a spouse for myself (Groom or Bride).</p>
-                    </button>
-
-                    <button type="button" @click="role = 'wali'"
-                            :class="role === 'wali' ? 'border-purple-600 bg-purple-50/70 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200 ring-2 ring-purple-500' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'"
-                            class="p-4 rounded-xl border text-left transition flex flex-col justify-between">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-lg">🛡️</span>
-                            <span class="font-bold text-sm font-heading">Guardian / Wali</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">I am registering on behalf of my daughter, sister, or ward.</p>
-                    </button>
+                <div class="flex items-center justify-between text-xs font-semibold text-[var(--text-secondary)] mb-2">
+                    <span :class="step >= 1 ? 'text-[var(--accent-text)] font-bold' : ''">1. Account Role</span>
+                    <span :class="step >= 2 ? 'text-[var(--accent-text)] font-bold' : ''">2. Personal Details</span>
+                    <span :class="step >= 3 ? 'text-[var(--accent-text)] font-bold' : ''">3. Security</span>
+                </div>
+                <div class="h-1.5 w-full bg-[var(--bg-muted)] rounded-full overflow-hidden">
+                    <div class="h-full bg-[var(--accent-primary)] transition-all duration-200"
+                         :style="'width: ' + (step === 1 ? '33.33%' : (step === 2 ? '66.66%' : '100%'))"></div>
                 </div>
             </div>
 
             @if ($errors->any())
-                <div class="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs">
+                <div class="mb-6 p-4 rounded-[var(--radius-sm)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)] text-[var(--color-danger)] text-xs">
                     <ul class="list-disc list-inside space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -57,205 +80,263 @@
                 </div>
             @endif
 
-            <form action="{{ route('register') }}" method="POST" class="space-y-4">
+            <form action="{{ route('register') }}" method="POST" class="space-y-5">
                 @csrf
-
-                <!-- Hidden Input for Selected Role -->
                 <input type="hidden" name="role" :value="role">
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                        <span x-show="role === 'seeker'">Full Legal Name</span>
-                        <span x-show="role === 'wali'" style="display: none;">Guardian's Full Legal Name</span>
-                    </label>
-                    <input type="text" name="name" value="{{ old('name') }}" required
-                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                           :placeholder="role === 'seeker' ? 'e.g. Zayd Al-Hassan' : 'e.g. Dr. Tariq Al-Mansoor'">
+                <!-- ===================================================== -->
+                <!-- STEP 1: ROLE SELECTION                                -->
+                <!-- ===================================================== -->
+                <div x-show="step === 1" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">I am registering as:</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button type="button" @click="role = 'seeker'"
+                                    :class="role === 'seeker' ? 'border-[var(--accent-primary)] bg-[var(--accent-subtle)] ring-1 ring-[var(--accent-primary)]' : 'border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)]'"
+                                    class="p-4 rounded-[var(--radius-sm)] border text-left transition flex flex-col justify-between cursor-pointer">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <svg class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        <span class="font-bold text-sm text-[var(--text-primary)]">Candidate / Seeker</span>
+                                    </div>
+                                    <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed">I am searching for a spouse for myself (Groom or Bride).</p>
+                                </div>
+                            </button>
+
+                            <button type="button" @click="role = 'wali'"
+                                    :class="role === 'wali' ? 'border-[var(--accent-primary)] bg-[var(--accent-subtle)] ring-1 ring-[var(--accent-primary)]' : 'border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)]'"
+                                    class="p-4 rounded-[var(--radius-sm)] border text-left transition flex flex-col justify-between cursor-pointer">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <svg class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                        <span class="font-bold text-sm text-[var(--text-primary)]">Guardian / Wali</span>
+                                    </div>
+                                    <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed">I am registering to represent and chaperone my daughter, sister, or ward.</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 flex justify-end">
+                        <button type="button" @click="step = 2" class="btn-primary text-xs font-bold px-6">
+                            <span>Continue to Step 2</span>
+                            <span>&rarr;</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- ===================================================== -->
+                <!-- STEP 2: PERSONAL IDENTITY & CONTACT                   -->
+                <!-- ===================================================== -->
+                <div x-show="step === 2" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required
-                               class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                               placeholder="your.email@domain.com">
+                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+                            <span x-show="role === 'seeker'">Full Legal Name</span>
+                            <span x-show="role === 'wali'" style="display: none;">Guardian's Legal Name</span>
+                        </label>
+                        <input type="text" name="name" x-model="name" required
+                               class="w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-sm focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                               :placeholder="role === 'seeker' ? 'Full legal name' : 'Guardian legal name'">
+                        <span x-show="name.length > 0 && name.length < 2" class="text-[11px] text-[var(--color-danger)] block mt-0.5">Please provide your full legal name.</span>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Phone Number</label>
-                        <div class="flex gap-2"
-                             x-data="{
-                                open: false,
-                                search: '',
-                                selected: '{{ old('phone_country', '') }}',
-                                countries: @js($countries),
-                                get filtered() {
-                                    const q = this.search.trim().toLowerCase();
-                                    return Object.entries(this.countries).filter(([code, c]) => {
-                                        return !q || c.name.toLowerCase().includes(q) || c.dial_code.includes(q) || code.toLowerCase().includes(q);
-                                    });
-                                },
-                                get selectedCountry() {
-                                    return this.selected ? this.countries[this.selected] : null;
-                                },
-                                choose(code) {
-                                    this.selected = code;
-                                    this.open = false;
-                                    this.search = '';
-                                }
-                             }"
-                             @click.outside="open = false">
-                            <div class="relative w-24 shrink-0">
-                                <input type="hidden" name="phone_country" :value="selected">
-                                <button type="button" @click="open = !open"
-                                        class="w-full h-full px-2 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition flex items-center justify-between gap-1">
-                                    <span x-text="selectedCountry ? ('+' + selectedCountry.dial_code) : 'Code'" class="truncate"></span>
-                                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                    </svg>
-                                </button>
-                                <div x-show="open" x-cloak
-                                     class="absolute z-30 mt-1 w-64 max-h-72 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg flex flex-col">
-                                    <div class="p-2 border-b border-slate-100 dark:border-slate-700">
-                                        <input type="text" x-model="search" x-ref="countrySearch" @click.stop
-                                               placeholder="Search country or code..."
-                                               class="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
-                                    </div>
-                                    <div class="overflow-y-auto">
-                                        <template x-for="[code, c] in filtered" :key="code">
-                                            <button type="button" @click="choose(code)"
-                                                    class="w-full text-left px-3 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 flex items-center justify-between gap-2">
-                                                <span class="truncate" x-text="c.name"></span>
-                                                <span class="text-slate-400 shrink-0" x-text="'+' + c.dial_code"></span>
-                                            </button>
-                                        </template>
-                                        <p x-show="filtered.length === 0" class="px-3 py-2 text-xs text-slate-400">No country found.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Email Address</label>
+                            <input type="email" name="email" x-model="email" required
+                                   class="w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-sm focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                                   placeholder="your.email@example.com">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Phone Number</label>
+                            <div class="flex gap-2"
+                                 x-data="{
+                                    open: false,
+                                    search: '',
+                                    selected: '{{ old('phone_country', '') }}',
+                                    countries: @js($countries),
+                                    get filtered() {
+                                        const q = this.search.trim().toLowerCase();
+                                        return Object.entries(this.countries).filter(([code, c]) => {
+                                            return !q || c.name.toLowerCase().includes(q) || c.dial_code.includes(q) || code.toLowerCase().includes(q);
+                                        });
+                                    },
+                                    get selectedCountry() {
+                                        return this.selected ? this.countries[this.selected] : null;
+                                    },
+                                    choose(code) {
+                                        this.selected = code;
+                                        this.open = false;
+                                        this.search = '';
+                                    }
+                                 }"
+                                 @click.outside="open = false">
+                                <div class="relative w-24 shrink-0">
+                                    <input type="hidden" name="phone_country" :value="selected">
+                                    <button type="button" @click="open = !open"
+                                            class="w-full h-10 px-2 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-xs text-[var(--text-primary)] flex items-center justify-between gap-1">
+                                        <span x-text="selectedCountry ? ('+' + selectedCountry.dial_code) : 'Code'" class="truncate"></span>
+                                        <svg class="w-3 h-3 text-[var(--text-muted)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                    <div x-show="open" x-cloak
+                                         class="absolute z-30 mt-1 w-60 max-h-60 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-lg flex flex-col">
+                                        <div class="p-2 border-b border-[var(--border-subtle)]">
+                                            <input type="text" x-model="search" @click.stop placeholder="Search country..."
+                                                   class="w-full px-2 py-1 text-xs border border-[var(--border-default)] rounded-[var(--radius-xs)] outline-none">
+                                        </div>
+                                        <div class="overflow-y-auto">
+                                            <template x-for="[code, c] in filtered" :key="code">
+                                                <button type="button" @click="choose(code)"
+                                                        class="w-full text-left px-2.5 py-1.5 text-xs hover:bg-[var(--bg-subtle)] flex items-center justify-between">
+                                                    <span class="truncate" x-text="c.name"></span>
+                                                    <span class="text-[var(--text-muted)]" x-text="'+' + c.dial_code"></span>
+                                                </button>
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
+                                <input type="tel" name="phone" x-model="phone"
+                                       class="flex-1 min-w-0 h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-sm focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                                       placeholder="123456789">
                             </div>
-                            <input type="tel" name="phone" value="{{ old('phone') }}"
-                                   class="flex-1 min-w-0 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                                   placeholder="e.g. 555 123 4567">
                         </div>
-                        <span class="text-[10px] text-slate-400 block mt-0.5">Select your country, then enter your local number.</span>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Gender</label>
-                        <select name="gender" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
-                            <option value="">Select Gender</option>
-                            <option value="male" {{ old('gender') === 'male' ? 'selected' : '' }}>Brother (Male)</option>
-                            <option value="female" {{ old('gender') === 'female' ? 'selected' : '' }}>Sister (Female)</option>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Gender</label>
+                            <select name="gender" x-model="gender" required
+                                    class="w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs outline-none">
+                                <option value="">Select Gender</option>
+                                <option value="male">Brother (Male)</option>
+                                <option value="female">Sister (Female)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Date of Birth (18+ Enforced)</label>
+                            <input type="text" name="dob" x-model="dob" required
+                                   inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10"
+                                   pattern="\d{2}/\d{2}/\d{4}"
+                                   x-on:input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3').slice(0, 10); dob = $el.value"
+                                   class="w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs outline-none">
+                            <span class="text-[10px] text-[var(--text-muted)] block mt-0.5">Format: dd/mm/yyyy</span>
+                        </div>
+                    </div>
+
+                    <!-- Seeker Marital Status -->
+                    <div x-show="role === 'seeker'">
+                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Marital Status</label>
+                        <select name="marital_status" :required="role === 'seeker'"
+                                class="w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs outline-none">
+                            <option value="never_married">Single / Never Married</option>
+                            <option value="divorced">Divorced</option>
+                            <option value="widowed">Widowed</option>
+                            <option value="annulled">Annulled</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                            Date of Birth (18+ Enforced)
-                        </label>
-                        <input type="text" name="dob" value="{{ old('dob') }}" required
-                               inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10"
-                               pattern="\d{2}/\d{2}/\d{4}"
-                               x-data
-                               x-on:input="$el.value = $el.value.replace(/[^0-9]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3').slice(0, 10)"
-                               class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
-                        <span class="text-[10px] text-slate-400 block mt-0.5">Format: dd/mm/yyyy. Must be at least 18 years old.</span>
+
+                    <!-- Wali Relationship -->
+                    <div x-show="role === 'wali'" style="display: none;">
+                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Relationship to Candidate / Ward</label>
+                        <select name="relationship_type"
+                                class="w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs outline-none">
+                            <option value="father">Father</option>
+                            <option value="brother">Brother</option>
+                            <option value="uncle">Uncle (Paternal / Maternal)</option>
+                            <option value="grandfather">Grandfather</option>
+                            <option value="other_mahram">Other Mahram / Legal Guardian</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-3 flex justify-between gap-3">
+                        <button type="button" @click="step = 1" class="btn-secondary text-xs">
+                            <span>&larr; Back</span>
+                        </button>
+                        <button type="button" @click="step = 3" class="btn-primary text-xs font-bold px-6">
+                            <span>Continue to Step 3</span>
+                            <span>&rarr;</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Seeker-specific Field: Marital Status -->
-                <div x-show="role === 'seeker'">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Marital Status</label>
-                    <select name="marital_status" :required="role === 'seeker'" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
-                        <option value="">Select Marital Status</option>
-                        <option value="never_married" {{ old('marital_status', 'never_married') === 'never_married' ? 'selected' : '' }}>Single / Never Married</option>
-                        <option value="divorced" {{ old('marital_status') === 'divorced' ? 'selected' : '' }}>Divorced</option>
-                        <option value="widowed" {{ old('marital_status') === 'widowed' ? 'selected' : '' }}>Widowed</option>
-                        <option value="annulled" {{ old('marital_status') === 'annulled' ? 'selected' : '' }}>Annulled</option>
-                    </select>
-                </div>
+                <!-- ===================================================== -->
+                <!-- STEP 3: SECURITY & AFFIRMATION                        -->
+                <!-- ===================================================== -->
+                <div x-show="step === 3" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Password</label>
+                            <div class="relative" x-data="{ showPass: false }">
+                                <input :type="showPass ? 'text' : 'password'" name="password" x-model="password" required
+                                       class="w-full h-10 px-3 pr-10 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-xs text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                       placeholder="••••••••">
+                                <button type="button" @click="showPass = !showPass"
+                                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 cursor-pointer"
+                                        aria-label="Toggle password visibility">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
+                        </div>
 
-                <!-- Wali-specific Field: Relationship to Ward -->
-                <div x-show="role === 'wali'" style="display: none;">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Relationship to Candidate / Ward</label>
-                    <select name="relationship_type" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition">
-                        <option value="father" {{ old('relationship_type') === 'father' ? 'selected' : '' }}>Father</option>
-                        <option value="brother" {{ old('relationship_type') === 'brother' ? 'selected' : '' }}>Brother</option>
-                        <option value="uncle" {{ old('relationship_type') === 'uncle' ? 'selected' : '' }}>Uncle (Paternal / Maternal)</option>
-                        <option value="grandfather" {{ old('relationship_type') === 'grandfather' ? 'selected' : '' }}>Grandfather</option>
-                        <option value="other_mahram" {{ old('relationship_type') === 'other_mahram' ? 'selected' : '' }}>Other Mahram / Legal Guardian</option>
-                    </select>
-                    <span class="text-[10px] text-slate-400 block mt-1">You can easily link your ward's profile once logged in.</span>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Password</label>
-                        <div class="relative" x-data="{ showPass: false }">
-                            <input :type="showPass ? 'text' : 'password'" name="password" required
-                                   class="w-full px-4 py-2.5 pr-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                                   placeholder="••••••••">
-                            <button type="button" @click="showPass = !showPass"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none cursor-pointer p-1"
-                                    :title="showPass ? 'Hide password' : 'View password'"
-                                    tabindex="-1">
-                                <svg x-show="!showPass" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                                <svg x-show="showPass" style="display: none;" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
-                                </svg>
-                            </button>
+                        <div>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Confirm Password</label>
+                            <div class="relative" x-data="{ showConfirm: false }">
+                                <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" x-model="password_confirmation" required
+                                       class="w-full h-10 px-3 pr-10 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-xs text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                       placeholder="••••••••">
+                                <button type="button" @click="showConfirm = !showConfirm"
+                                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 cursor-pointer"
+                                        aria-label="Toggle password visibility">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Confirm Password</label>
-                        <div class="relative" x-data="{ showConfirm: false }">
-                            <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required
-                                   class="w-full px-4 py-2.5 pr-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                                   placeholder="••••••••">
-                            <button type="button" @click="showConfirm = !showConfirm"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none cursor-pointer p-1"
-                                    :title="showConfirm ? 'Hide password' : 'View password'"
-                                    tabindex="-1">
-                                <svg x-show="!showConfirm" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                                <svg x-show="showConfirm" style="display: none;" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                @if($turnstileEnabled)
-                    <div class="flex justify-center pt-2">
-                        <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
-                    </div>
-                @endif
-
-                <div class="pt-2">
-                    <label class="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
-                        <input type="checkbox" name="terms" required class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 dark:bg-slate-800 dark:border-slate-700">
-                        <span>
-                            I affirm that I am using this platform strictly for marriage (Nikah), I agree to conduct interactions with Islamic etiquette, and I accept the <a href="#" class="text-emerald-700 dark:text-emerald-400 underline font-medium">Terms of Service</a> and <a href="#" class="text-emerald-700 dark:text-emerald-400 underline font-medium">Privacy Policy</a>.
+                    <!-- Inline Password Match Validation -->
+                    <div x-show="password.length > 0 && password_confirmation.length > 0" class="text-xs">
+                        <span x-show="password === password_confirmation" class="text-[var(--color-success)] flex items-center gap-1 font-medium">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                            <span>Passwords match.</span>
                         </span>
-                    </label>
+                        <span x-show="password !== password_confirmation" class="text-[var(--color-danger)] flex items-center gap-1 font-medium">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                            <span>Passwords do not match yet.</span>
+                        </span>
+                    </div>
+
+                    @if($turnstileEnabled)
+                        <div class="flex justify-center pt-2">
+                            <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
+                        </div>
+                    @endif
+
+                    <div class="pt-2">
+                        <label class="flex items-start gap-2.5 text-xs text-[var(--text-secondary)] cursor-pointer">
+                            <input type="checkbox" name="terms" required class="mt-0.5 rounded-[var(--radius-xs)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]">
+                            <span>
+                                I affirm that I am using this service strictly for marriage (Nikah), I agree to conduct communications with dignity and Islamic etiquette, and accept the <a href="{{ route('terms') }}" class="underline text-[var(--accent-text)] font-semibold">Terms of Service</a> and <a href="{{ route('privacy') }}" class="underline text-[var(--accent-text)] font-semibold">Privacy Policy</a>.
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="pt-3 flex justify-between gap-3">
+                        <button type="button" @click="step = 2" class="btn-secondary text-xs">
+                            <span>&larr; Back</span>
+                        </button>
+                        <button type="submit" class="btn-primary text-xs font-bold px-6">
+                            <span x-show="role === 'seeker'">Create Candidate Profile</span>
+                            <span x-show="role === 'wali'" style="display: none;">Create Guardian Account</span>
+                        </button>
+                    </div>
                 </div>
 
-                <button type="submit"
-                        :class="role === 'seeker' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-900/15' : 'bg-purple-700 hover:bg-purple-800 shadow-purple-900/15'"
-                        class="w-full py-3.5 rounded-xl text-white font-bold text-sm shadow-md transition mt-4">
-                    <span x-show="role === 'seeker'">Create Candidate Profile</span>
-                    <span x-show="role === 'wali'" style="display: none;">Create Guardian (Wali) Account</span>
-                </button>
             </form>
 
-            <div class="text-center mt-6 pt-4 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
-                Already registered? <a href="{{ route('login') }}" class="font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300">Sign in here</a>
+            <div class="text-center mt-6 pt-4 text-xs text-[var(--text-muted)] border-t border-[var(--border-subtle)]">
+                Already registered? <a href="{{ route('login') }}" class="font-bold text-[var(--accent-text)] hover:underline">Sign in to your account</a>
             </div>
         </div>
     </div>

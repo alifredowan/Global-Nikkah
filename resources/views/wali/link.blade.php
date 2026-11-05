@@ -33,7 +33,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Guardian's Full Name</label>
-                        <input type="text" name="wali_name" required value="{{ old('wali_name') }}" placeholder="e.g. Dr. Tariq Al-Mansoor"
+                        <input type="text" name="wali_name" required value="{{ old('wali_name') }}" placeholder="Guardian legal name"
                                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                         @error('wali_name')
                             <p class="text-rose-600 dark:text-rose-400 text-xs mt-1 font-semibold">{{ $message }}</p>

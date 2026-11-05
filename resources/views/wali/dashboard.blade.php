@@ -1,146 +1,144 @@
 @extends('layouts.app')
 
-@section('title', 'Wali Guardian Console - Global Nikkah')
+@section('title', 'Guardian (Wali) Console - Global Nikkah')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+<div class="py-8 bg-[var(--bg-canvas)] min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-        <!-- Top Atmospheric Banner (Vivah Style) -->
-        <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-950 rounded-3xl p-6 sm:p-8 text-white shadow-md border border-emerald-900/40 relative overflow-hidden">
-            <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2">
-                        <span>🛡️</span>
-                        <span>Wali Guardian Governance Console</span>
+        <!-- Header Ledger Card (Curved Floating Style) -->
+        <div class="card-ledger pattern-header rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-[var(--bg-surface)] border-[var(--border-default)] shadow-xs">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1.5">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] bg-[var(--accent-subtle)] text-[var(--accent-text)] text-xs font-semibold">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>Guardian (Wali) Chaperone Console</span>
                     </div>
-                    <h1 class="font-heading font-extrabold text-2xl sm:text-3xl text-white">
-                        Family Oversight & Matrimonial Approval Center
+                    <h1 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+                        Family Oversight &amp; Matrimonial Approvals
                     </h1>
-                    <p class="text-xs text-emerald-100/80 mt-1 max-w-2xl leading-relaxed">
-                        Shariah matrimonial facilitation empowering trusted guardians to review introductions, grant parental approvals, and guide serious marriage inquiries with dignity.
+                    <p class="text-xs text-[var(--text-secondary)] max-w-xl leading-relaxed">
+                        Shariah-aligned family oversight empowering trusted guardians to review candidate introductions, grant approvals, and chaperone serious inquiries.
                     </p>
                 </div>
-                <span class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-emerald-200 border border-white/15 self-start md:self-center shrink-0">
-                    ✓ Guardian Oversight Active
+                <span class="badge-status text-[var(--color-success)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)] self-start md:self-center shrink-0">
+                    Oversight Active
                 </span>
             </div>
         </div>
 
         <!-- Pending Interest Approvals (FR-4.3) -->
-        <div class="space-y-4">
-            <div class="flex items-center justify-between">
-                <h2 class="text-base font-bold text-slate-900 dark:text-white font-heading flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    Pending Interest Approvals Requiring Your Review
+        <div class="space-y-3">
+            <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2.5">
+                <h2 class="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[var(--color-warning)]"></span>
+                    <span>Pending Interest Approvals Requiring Review</span>
                 </h2>
-                <span class="text-xs text-slate-500 dark:text-slate-400">{{ $pendingInterests->count() }} awaiting review</span>
+                <span class="text-xs text-[var(--text-muted)]">{{ $pendingInterests->count() }} awaiting action</span>
             </div>
 
             @forelse($pendingInterests as $pi)
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border-2 border-purple-100 dark:border-purple-900/60 p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 rounded-xl bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                <article class="card-ledger p-5 bg-[var(--bg-surface)] flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                    <div class="flex items-center gap-4 min-w-0">
+                        <div class="w-14 h-14 rounded-[var(--radius-sm)] bg-[var(--neutral-900)] overflow-hidden shrink-0 border border-[var(--border-default)]">
                             @if($pi->sender->profile?->primaryPhoto)
-                                <img src="{{ $pi->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $pi->sender->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                                <img src="{{ $pi->sender->profile->primaryPhoto->displayUrl() }}" alt="{{ $pi->sender->name }}" class="w-full h-full object-cover" loading="lazy">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-2xl">
+                                <div class="w-full h-full flex items-center justify-center bg-[var(--neutral-800)] text-white font-bold text-xl">
                                     {{ substr($pi->sender->name, 0, 1) }}
                                 </div>
                             @endif
                         </div>
-                        <div>
-                            <span class="text-[10px] font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider block">Introduction Request for: {{ $pi->recipient->name }}</span>
-                            <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ $pi->sender->name }}</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">
-                                {{ $pi->sender->age }} yrs • {{ $pi->sender->profile?->city }}, {{ $pi->sender->profile?->country }} •
-                                <span class="font-semibold text-emerald-800 dark:text-emerald-400">{{ $pi->sender->profile?->sect_madhhab }}</span>
+                        <div class="min-w-0">
+                            <span class="text-[10px] font-bold text-[var(--accent-text)] uppercase tracking-wider block">Introduction Request for: {{ $pi->recipient->name }}</span>
+                            <h3 class="font-bold text-sm text-[var(--text-primary)]">{{ $pi->sender->name }}</h3>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                                {{ $pi->sender->age }} yrs &bull; {{ $pi->sender->profile?->city }}, {{ $pi->sender->profile?->country }} &bull;
+                                <span>{{ $pi->sender->profile?->sect_madhhab }}</span>
                             </p>
                             @if($pi->message_note)
-                                <p class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 mt-2 italic">
-                                    "{{ $pi->message_note }}"
+                                <p class="text-xs text-[var(--text-primary)] bg-[var(--bg-subtle)] p-2 rounded-[var(--radius-xs)] border border-[var(--border-subtle)] mt-2 italic">
+                                    &ldquo;{{ $pi->message_note }}&rdquo;
                                 </p>
                             @endif
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                        <a href="{{ route('discovery.show', $pi->sender_id) }}" target="_blank" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)]">
+                        <a href="{{ route('discovery.show', $pi->sender_id) }}" target="_blank" class="btn-secondary text-xs h-9 py-0">
                             Inspect Profile
                         </a>
                         <form action="{{ route('wali.interests.approve', $pi->id) }}" method="POST">
                             @csrf
-                            <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
-                                ✓ Approve Request
+                            <button type="submit" class="btn-primary text-xs font-bold h-9 py-0">
+                                Approve Request
                             </button>
                         </form>
                         <form action="{{ route('wali.interests.reject', $pi->id) }}" method="POST">
                             @csrf
-                            <button type="submit" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 text-xs font-bold transition">
+                            <button type="submit" class="btn-secondary text-xs h-9 py-0 text-[var(--color-danger)] hover:bg-[var(--color-danger-bg)]">
                                 Decline
                             </button>
                         </form>
                     </div>
-                </div>
+                </article>
             @empty
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 text-center text-xs text-slate-500 dark:text-slate-400">
-                    No pending interest requests awaiting your approval right now.
+                <div class="card-ledger p-8 text-center text-xs text-[var(--text-muted)] bg-[var(--bg-surface)]">
+                    No pending introduction requests awaiting guardian approval at this time.
                 </div>
             @endforelse
         </div>
 
         <!-- My Linked Wards -->
-        <div class="space-y-4">
-            <h2 class="text-base font-bold text-slate-900 dark:text-white font-heading">My Linked Wards</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+            <h2 class="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider border-b border-[var(--border-subtle)] pb-2.5">My Linked Wards</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @forelse($wards as $wardLink)
-                    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs flex items-center justify-between">
-                        <div class="flex items-center gap-3.5">
-                            <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 font-bold flex items-center justify-center text-base border border-emerald-200 dark:border-emerald-800/60">
+                    <div class="card-ledger p-4 bg-[var(--bg-surface)] flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--accent-subtle)] text-[var(--accent-text)] font-bold flex items-center justify-center text-sm border border-[var(--accent-border)]">
                                 {{ substr($wardLink->seeker->name, 0, 1) }}
                             </div>
                             <div>
-                                <h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ $wardLink->seeker->name }}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">Relationship: <span class="capitalize font-semibold text-slate-700 dark:text-slate-300">{{ $wardLink->relationship_type }}</span></p>
-                                <span class="text-[10px] text-purple-700 dark:text-purple-400 font-bold uppercase">Permission: {{ str_replace('_', ' ', $wardLink->permission_level) }}</span>
+                                <h3 class="font-bold text-sm text-[var(--text-primary)]">{{ $wardLink->seeker->name }}</h3>
+                                <p class="text-xs text-[var(--text-muted)]">Relationship: <span class="capitalize font-semibold text-[var(--text-primary)]">{{ $wardLink->relationship_type }}</span></p>
                             </div>
                         </div>
-                        <a href="{{ route('discovery.show', $wardLink->seeker_user_id) }}" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                        <a href="{{ route('discovery.show', $wardLink->seeker_user_id) }}" class="text-xs font-semibold text-[var(--accent-text)] hover:underline">
                             View Ward &rarr;
                         </a>
                     </div>
                 @empty
-                    <div class="col-span-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 text-center text-xs text-slate-500 dark:text-slate-400">
-                        No linked wards currently registered under your email.
+                    <div class="col-span-full card-ledger p-6 text-center text-xs text-[var(--text-muted)] bg-[var(--bg-surface)]">
+                        No linked wards currently registered under your email address.
                     </div>
                 @endforelse
             </div>
         </div>
 
         <!-- Chaperoned Conversations Under My Oversight -->
-        <div class="space-y-4">
-            <h2 class="text-base font-bold text-slate-900 dark:text-white font-heading">Chaperoned Conversations</h2>
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden shadow-xs">
+        <div class="space-y-3">
+            <h2 class="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider border-b border-[var(--border-subtle)] pb-2.5">Chaperoned Conversations</h2>
+            <div class="card-ledger bg-[var(--bg-surface)] divide-y divide-[var(--border-subtle)] overflow-hidden">
                 @forelse($chaperonedConversations as $conv)
-                    <a href="{{ route('chat.show', $conv->id) }}" class="p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition block">
+                    <a href="{{ route('chat.show', $conv->id) }}" class="p-4 flex items-center justify-between hover:bg-[var(--bg-subtle)] transition block">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="font-bold text-sm text-slate-900 dark:text-white">
+                                <span class="font-bold text-sm text-[var(--text-primary)]">
                                     {{ $conv->participants->pluck('name')->join(' & ') }}
                                 </span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
+                                <span class="badge-status text-[var(--accent-text)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[10px]">
                                     Observing as Wali
                                 </span>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            <p class="text-xs text-[var(--text-muted)] mt-0.5">
                                 Last message: {{ $conv->latestMessage?->body ?? 'Chat active' }}
                             </p>
                         </div>
-                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Enter Room &rarr;</span>
+                        <span class="text-xs font-semibold text-[var(--accent-text)]">Enter Room &rarr;</span>
                     </a>
                 @empty
-                    <div class="p-8 text-center text-xs text-slate-500 dark:text-slate-400">
+                    <div class="p-8 text-center text-xs text-[var(--text-muted)]">
                         No active chaperoned conversations yet.
                     </div>
                 @endforelse
