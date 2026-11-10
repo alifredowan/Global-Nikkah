@@ -1,0 +1,80 @@
+<!-- =======================================================================
+     COMPONENT: LOADING SKELETONS (Subdued, Accessible, Non-Jittery)
+     Uses warm neutral scale `--neutral-200` & `--neutral-100` with subtle pulse.
+     ======================================================================= -->
+
+<div class="space-y-8 max-w-2xl mx-auto">
+
+  <!-- =====================================================================
+       1. CANDIDATE PROFILE CARD SKELETON (Grid View)
+       ===================================================================== -->
+  <div class="card-ledger overflow-hidden max-w-sm animate-pulse" aria-hidden="true">
+    <!-- Image placeholder -->
+    <div class="h-56 bg-[var(--neutral-200)] relative">
+      <div class="absolute top-3 left-3 w-20 h-5 rounded-[var(--radius-sm)] bg-[var(--neutral-300)]"></div>
+    </div>
+
+    <!-- Content placeholder -->
+    <div class="p-4 space-y-3">
+      <div class="space-y-1.5">
+        <div class="w-3/4 h-4 rounded-[var(--radius-xs)] bg-[var(--neutral-300)]"></div>
+        <div class="w-1/2 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--border-subtle)]">
+        <div class="space-y-1">
+          <div class="w-12 h-2.5 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+          <div class="w-20 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-300)]"></div>
+        </div>
+        <div class="space-y-1">
+          <div class="w-12 h-2.5 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+          <div class="w-20 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-300)]"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer buttons placeholder -->
+    <div class="p-4 pt-0 border-t border-[var(--border-subtle)] flex items-center gap-2">
+      <div class="flex-1 h-9 rounded-[var(--radius-sm)] bg-[var(--neutral-300)]"></div>
+      <div class="w-10 h-9 rounded-[var(--radius-sm)] bg-[var(--neutral-200)]"></div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       2. LIST VIEW ROW SKELETON
+       ===================================================================== -->
+  <div class="card-ledger p-4 flex items-center justify-between gap-4 animate-pulse" aria-hidden="true">
+    <div class="flex items-center gap-4 flex-1">
+      <div class="w-16 h-16 rounded-[var(--radius-sm)] bg-[var(--neutral-200)] shrink-0"></div>
+      <div class="space-y-2 flex-1">
+        <div class="w-40 h-4 rounded-[var(--radius-xs)] bg-[var(--neutral-300)]"></div>
+        <div class="w-64 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+        <div class="w-32 h-2.5 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+      </div>
+    </div>
+    <div class="w-24 h-9 rounded-[var(--radius-sm)] bg-[var(--neutral-300)] shrink-0"></div>
+  </div>
+
+  <!-- =====================================================================
+       3. DEFINITION LIST ROW SKELETON (Profile Detail)
+       ===================================================================== -->
+  <div class="card-ledger p-6 space-y-4 animate-pulse" aria-hidden="true">
+    <div class="w-36 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-300)] mb-2"></div>
+    <div class="space-y-3">
+      <div class="flex justify-between py-2 border-b border-[var(--border-subtle)]">
+        <div class="w-28 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+        <div class="w-44 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-300)]"></div>
+      </div>
+      <div class="flex justify-between py-2 border-b border-[var(--border-subtle)]">
+        <div class="w-24 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+        <div class="w-36 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-300)]"></div>
+      </div>
+      <div class="flex justify-between py-2">
+        <div class="w-32 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-200)]"></div>
+        <div class="w-48 h-3 rounded-[var(--radius-xs)] bg-[var(--neutral-300)]"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

@@ -31,7 +31,7 @@ class PhotoController extends Controller
             return $this->serveSvgSilhouette($photo);
         }
 
-        $isAuthorized = $photo->profile?->isPhotoVisibleTo($viewer);
+        $isAuthorized = $viewer && $viewer->can('view', $photo);
 
         if ($isAuthorized) {
             return $this->serveOriginal($photo);
@@ -54,7 +54,7 @@ class PhotoController extends Controller
             $fullPath = Storage::disk('private')->path($filePath);
             $mime = mime_content_type($fullPath) ?: 'image/jpeg';
 
-            return response()->file($fullPath, [
+            return response(file_get_contents($fullPath), 200, [
                 'Content-Type' => $mime,
                 'Cache-Control' => 'private, no-cache, no-store, must-revalidate',
             ]);
@@ -73,7 +73,7 @@ class PhotoController extends Controller
         $cacheFile = $cacheDir.'/blurred_'.$photo->id.'.jpg';
 
         if (file_exists($cacheFile)) {
-            return response()->file($cacheFile, [
+            return response(file_get_contents($cacheFile), 200, [
                 'Content-Type' => 'image/jpeg',
                 'Cache-Control' => 'private, no-cache, no-store, must-revalidate',
             ]);
@@ -119,7 +119,7 @@ class PhotoController extends Controller
                     imagejpeg($thumb, $cacheFile, 65);
                     imagedestroy($thumb);
 
-                    return response()->file($cacheFile, [
+                    return response(file_get_contents($cacheFile), 200, [
                         'Content-Type' => 'image/jpeg',
                         'Cache-Control' => 'private, no-cache, no-store, must-revalidate',
                     ]);

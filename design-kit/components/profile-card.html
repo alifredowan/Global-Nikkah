@@ -1,0 +1,137 @@
+<!-- =======================================================================
+     COMPONENT: CANDIDATE PROFILE CARD (Grid View & List View)
+     Tokens-only, WCAG AA contrast, modesty protection shield.
+     ======================================================================= -->
+
+<!-- =======================================================================
+     1. GRID VIEW CANDIDATE CARD
+     ======================================================================= -->
+<article class="card-ledger flex flex-col justify-between overflow-hidden group max-w-sm">
+  <div>
+    <!-- Candidate Photo & Badges Container -->
+    <div class="relative h-60 bg-[var(--neutral-900)] overflow-hidden">
+      <!-- Candidate Photo (Modesty photo shield applied when unconsented) -->
+      <img src="/placeholder-avatar.jpg"
+           alt="Candidate Portrait"
+           class="w-full h-full object-cover photo-shield group-hover:scale-102 transition duration-300"
+           loading="lazy" />
+
+      <!-- Top Overlay: Verification & Tier Badges -->
+      <div class="absolute top-3 inset-x-3 flex items-center justify-between gap-2 pointer-events-none">
+        <span class="badge-verified bg-black/75 text-white border-white/20 backdrop-blur-xs">
+          <svg class="w-3.5 h-3.5 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Verified ID</span>
+        </span>
+
+        <span class="badge-status bg-black/60 text-white border border-white/15 backdrop-blur-xs">
+          92% Compatible
+        </span>
+      </div>
+
+      <!-- Modesty Shield Indicator Overlay -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] bg-black/70 border border-white/15 text-white text-[11px] font-semibold backdrop-blur-xs">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Photo Privacy Active</span>
+        </span>
+      </div>
+
+      <!-- Bottom Headline Scrim -->
+      <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 text-white">
+        <h3 class="text-base font-bold leading-tight truncate">Candidate Name</h3>
+        <p class="text-xs text-[var(--neutral-300)] mt-0.5 truncate">
+          26 yrs &bull; 5' 6" (168 cm) &bull; Dhaka, Bangladesh
+        </p>
+      </div>
+    </div>
+
+    <!-- Candidate Biodata Ledger Matrix -->
+    <div class="p-4 space-y-3">
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <span class="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider block">Profession</span>
+          <span class="font-semibold text-[var(--text-primary)] truncate block">Software Engineer</span>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider block">Education</span>
+          <span class="font-semibold text-[var(--text-primary)] truncate block">B.Sc. in Computer Science</span>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider block">Marital Status</span>
+          <span class="font-semibold text-[var(--text-primary)] truncate block">Never Married</span>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider block">Family Oversight</span>
+          <span class="font-semibold text-[var(--text-primary)] truncate block">Guardian (Wali) Linked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary & Secondary Action Footer -->
+  <div class="p-4 pt-0 border-t border-[var(--border-subtle)] flex items-center gap-2">
+    <!-- Primary CTA: Send Interest -->
+    <button type="button" class="btn-primary flex-1 text-xs">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      <span>Send Interest</span>
+    </button>
+
+    <!-- Secondary CTA: Shortlist / Bookmark -->
+    <button type="button" class="btn-secondary px-3" title="Shortlist Candidate" aria-label="Shortlist Candidate">
+      <svg class="w-4 h-4 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+    </button>
+  </div>
+</article>
+
+
+<!-- =======================================================================
+     2. LIST VIEW CANDIDATE ROW
+     ======================================================================= -->
+<article class="card-ledger p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+  <div class="flex items-center gap-4 min-w-0 flex-1">
+    <!-- Compact Photo with Modesty Shield -->
+    <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-[var(--radius-sm)] bg-[var(--neutral-900)] overflow-hidden shrink-0 border border-[var(--border-default)]">
+      <img src="/placeholder-avatar.jpg"
+           alt="Candidate Portrait"
+           class="w-full h-full object-cover photo-shield"
+           loading="lazy" />
+      <span class="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full bg-[var(--color-success)] ring-2 ring-white" title="Verified candidate"></span>
+    </div>
+
+    <!-- Details Column -->
+    <div class="min-w-0 flex-1 space-y-1">
+      <div class="flex items-center gap-2 flex-wrap">
+        <h3 class="text-sm font-bold text-[var(--text-primary)] truncate">Candidate Name</h3>
+        <span class="badge-verified text-[10px]">Verified ID</span>
+        <span class="text-xs text-[var(--text-muted)]">&bull; 26 yrs &bull; 5' 6"</span>
+      </div>
+
+      <p class="text-xs text-[var(--text-secondary)] truncate">
+        Software Engineer &bull; B.Sc. in Computer Science &bull; Dhaka, Bangladesh
+      </p>
+
+      <div class="flex items-center gap-3 text-[11px] text-[var(--text-muted)] pt-0.5">
+        <span>Never Married</span>
+        <span>&bull;</span>
+        <span>Chaperoned by Guardian</span>
+        <span>&bull;</span>
+        <span class="font-semibold text-[var(--accent-text)]">92% Match</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-[var(--border-subtle)]">
+    <button type="button" class="btn-secondary text-xs h-9 py-0">
+      <svg class="w-3.5 h-3.5 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      <span>Shortlist</span>
+    </button>
+    <button type="button" class="btn-primary text-xs font-bold h-9 py-0">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      <span>Send Interest</span>
+    </button>
+  </div>
+</article>
+

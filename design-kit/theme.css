@@ -1,0 +1,110 @@
+/**
+ * Theme Tokens (Community & Site-Specific)
+ * 
+ * CURRENT PRESET: Dignified Muslim Matrimonial Theme
+ * (Deep forest teal accent, warm unbleached parchment base, quiet brass secondary).
+ *
+ * TO ADAPT FOR ANOTHER PLATFORM:
+ * - Hindu Matrimony (Vivah): Swap --accent-primary to Vedic Crimson (#80131d), --secondary-primary to Gold/Amber (#b38128).
+ * - Christian Matrimony (Maitri): Swap --accent-primary to Deep Navy (#142850), --secondary-primary to Burgundy (#6b1426).
+ * - Secular / Modern Matrimonial: Swap --accent-primary to Slate Teal (#1d4e4f), --bg-canvas to Crisp Chalk (#f7f7f8).
+ */
+
+:root {
+  /* =======================================================================
+   * 1. CANVAS & BACKGROUND TINTS (Warm unbleached parchment base)
+   * ======================================================================= */
+  --bg-canvas: #faf9f5;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f3f1ea;
+  --bg-muted: #e8e5dc;
+  --bg-inset: #edeae1;
+
+  /* =======================================================================
+   * 2. TYPOGRAPHY INK & CONTRAST
+   * ======================================================================= */
+  --text-primary: #18221e;
+  --text-secondary: #47544e;
+  --text-muted: #6f7c75;
+  --text-inverse: #ffffff;
+
+  /* =======================================================================
+   * 3. HAIRLINE BORDER HUES
+   * ======================================================================= */
+  --border-subtle: #eeece4;
+  --border-default: #dfdcce;
+  --border-strong: #bbb7a5;
+
+  /* =======================================================================
+   * 4. PRIMARY ACCENT (Dignified Forest Teal — Calm, Shariah-aligned)
+   * ======================================================================= */
+  --accent-primary: #0f4c42;
+  --accent-hover: #093730;
+  --accent-active: #062722;
+  --accent-subtle: #edf5f3;
+  --accent-subtle-hover: #e2eeea;
+  --accent-border: #b8d9d2;
+  --accent-text: #0b3d35;
+  --accent-contrast: #ffffff;
+
+  /* =======================================================================
+   * 5. SECONDARY ACCENT (Subdued Brass / Amber — Warm editorial signals)
+   * ======================================================================= */
+  --secondary-primary: #85531b;
+  --secondary-hover: #6c4213;
+  --secondary-subtle: #fbf5eb;
+  --secondary-border: #ebd9be;
+  --secondary-text: #61390d;
+
+  /* =======================================================================
+   * 6. KEYBOARD ACCESSIBILITY FOCUS RING
+   * ======================================================================= */
+  --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
+  --focus-ring-offset: 2px;
+
+  /* =======================================================================
+   * 7. GEOMETRIC BACKGROUND PATTERN (Restrained 3-5% opacity)
+   * ======================================================================= */
+  --pattern-faint: radial-gradient(circle, rgba(15, 76, 66, 0.05) 1px, transparent 1px);
+  --pattern-faint-size: 24px 24px;
+}
+
+/* =======================================================================
+ * DARK THEME (Serene, deep slate-teal night palette — NO harsh #000000)
+ * ======================================================================= */
+.dark {
+  --bg-canvas: #111614;
+  --bg-surface: #171e1b;
+  --bg-subtle: #1e2723;
+  --bg-muted: #27332e;
+  --bg-inset: #131916;
+
+  --text-primary: #f2f4f3;
+  --text-secondary: #b6c1bb;
+  --text-muted: #7d8c85;
+  --text-inverse: #111614;
+
+  --border-subtle: #212c27;
+  --border-default: #2d3b34;
+  --border-strong: #41544a;
+
+  --accent-primary: #2dd4bf;
+  --accent-hover: #5eead4;
+  --accent-active: #14b8a6;
+  --accent-subtle: #142e27;
+  --accent-subtle-hover: #1a3c33;
+  --accent-border: #215448;
+  --accent-text: #5eead4;
+  --accent-contrast: #0b241e;
+
+  --secondary-primary: #f3b060;
+  --secondary-hover: #fcd34d;
+  --secondary-subtle: #291e10;
+  --secondary-border: #4d391c;
+  --secondary-text: #fcd34d;
+
+  --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
+  --pattern-faint: radial-gradient(circle, rgba(45, 212, 191, 0.04) 1px, transparent 1px);
+  --pattern-faint-size: 24px 24px;
+}
+

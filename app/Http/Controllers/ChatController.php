@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSentEvent;
+use App\Http\Requests\Chat\SendMessageRequest;
 use App\Models\AuditLog;
 use App\Models\Conversation;
 use App\Models\ConversationParticipant;
@@ -125,34 +126,7 @@ class ChatController extends Controller
         ])->findOrFail($conversationId);
 
         // Ensure active Walis of all seekers in this conversation are added as chaperone participants
-        $this->waliService->ensureWaliParticipants($conversation);
-        $conversation->load('participants.profile.primaryPhoto');
-
-        // Security check: must be a direct participant, active Wali of a participant, or admin/mod
-        $isParticipant = $conversation->participants->contains('id', $user->id);
-        if (! $isParticipant) {
-            $participantIds = $conversation->participants->pluck('id');
-            $isWaliOfParticipant = WaliLink::whereIn('seeker_user_id', $participantIds)
-                ->where(function ($q) use ($user) {
-                    $q->where('wali_user_id', $user->id)
-                        ->orWhere('wali_email', $user->email);
-                })
-                ->where('status', 'active')
-                ->exists();
-
-            if ($isWaliOfParticipant) {
-                ConversationParticipant::firstOrCreate([
-                    'conversation_id' => $conversation->id,
-                    'user_id' => $user->id,
-                ], [
-                    'role' => 'wali_chaperone',
-                ]);
-                $conversation->load('participants.profile.primaryPhoto');
-                $isParticipant = true;
-            }
-        }
-
-        if (! $isParticipant && ! $user->isAdmin() && ! $user->isModerator()) {
+        if (! $this->ensureAccess($conversation, $user)) {
             return redirect()->route('chat.index')->with('error', 'You are not a participant in this conversation.');
         }
 
@@ -181,44 +155,12 @@ class ChatController extends Controller
         return view('chat.show', compact('conversation', 'otherUser', 'waliObserver', 'marriage'));
     }
 
-    public function sendMessage(Request $request, int $conversationId): RedirectResponse|JsonResponse
+    public function sendMessage(SendMessageRequest $request, int $conversationId): RedirectResponse|JsonResponse
     {
-        $request->validate([
-            'body' => ['required', 'string', 'max:2000'],
-        ]);
-
         $user = Auth::user();
         $conversation = Conversation::with('participants')->findOrFail($conversationId);
 
-        // Ensure active Walis are attached as chaperone participants
-        $this->waliService->ensureWaliParticipants($conversation);
-        $conversation->load('participants');
-
-        // Security check: must be a participant, authorized wali, or admin
-        $isParticipant = $conversation->participants->contains('id', $user->id);
-        if (! $isParticipant) {
-            $participantIds = $conversation->participants->pluck('id');
-            $isWaliOfParticipant = WaliLink::whereIn('seeker_user_id', $participantIds)
-                ->where(function ($q) use ($user) {
-                    $q->where('wali_user_id', $user->id)
-                        ->orWhere('wali_email', $user->email);
-                })
-                ->where('status', 'active')
-                ->exists();
-
-            if ($isWaliOfParticipant) {
-                ConversationParticipant::firstOrCreate([
-                    'conversation_id' => $conversation->id,
-                    'user_id' => $user->id,
-                ], [
-                    'role' => 'wali_chaperone',
-                ]);
-                $conversation->load('participants');
-                $isParticipant = true;
-            }
-        }
-
-        if (! $isParticipant && ! $user->isAdmin() && ! $user->isModerator()) {
+        if (! $this->ensureAccess($conversation, $user)) {
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json(['error' => 'You are not a participant in this conversation.'], 403);
             }
@@ -384,5 +326,41 @@ class ChatController extends Controller
         ]);
 
         return back()->with('success', 'User report submitted to platform moderation team (FR-4.6, 7.2). We will review this report within 24 hours.');
+    }
+
+    /**
+     * Ensure active Walis of participants are attached and verify access permissions.
+     */
+    protected function ensureAccess(Conversation $conversation, User $user): bool
+    {
+        $this->waliService->ensureWaliParticipants($conversation);
+        $conversation->load('participants.profile.primaryPhoto');
+
+        if ($conversation->participants->contains('id', $user->id)) {
+            return true;
+        }
+
+        $participantIds = $conversation->participants->pluck('id');
+        $isWaliOfParticipant = WaliLink::whereIn('seeker_user_id', $participantIds)
+            ->where(function ($q) use ($user) {
+                $q->where('wali_user_id', $user->id)
+                    ->orWhere('wali_email', $user->email);
+            })
+            ->where('status', 'active')
+            ->exists();
+
+        if ($isWaliOfParticipant) {
+            ConversationParticipant::firstOrCreate([
+                'conversation_id' => $conversation->id,
+                'user_id' => $user->id,
+            ], [
+                'role' => 'wali_chaperone',
+            ]);
+            $conversation->load('participants.profile.primaryPhoto');
+
+            return true;
+        }
+
+        return $user->isAdmin() || $user->isModerator();
     }
 }

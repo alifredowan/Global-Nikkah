@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\AuditLog;
 use App\Models\PhotoAccessGrant;
 use App\Models\Profile;
@@ -36,60 +38,12 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(Request $request): RedirectResponse
+    public function register(RegisterRequest $request): RedirectResponse
     {
-        $maxBirthDate = Carbon::now()->subYears(18)->format('d/m/Y');
+        $validated = $request->validated();
+        $role = $validated['role'];
 
-        $role = $request->input('role', 'seeker');
-        if (! in_array($role, ['seeker', 'wali'], true)) {
-            $role = 'seeker';
-        }
-
-        $normalizedEmail = strtolower(trim((string) $request->input('email')));
-        $normalizedPhone = $request->filled('phone') ? trim((string) $request->input('phone')) : null;
-
-        $request->merge([
-            'role' => $role,
-            'email' => $normalizedEmail,
-            'phone' => $normalizedPhone,
-        ]);
-
-        $rules = [
-            'role' => ['required', 'in:seeker,wali'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users', 'email')->where(function ($query) use ($normalizedEmail) {
-                    return $query->whereRaw('LOWER(email) = ?', [$normalizedEmail]);
-                }),
-            ],
-            'phone_country' => ['nullable', 'required_with:phone', 'string', 'size:2'],
-            'phone' => ['nullable', 'string', new Phone, 'unique:users,phone'],
-            'gender' => ['required', 'in:male,female'],
-            'dob' => ['required', 'date_format:d/m/Y', "before_or_equal:{$maxBirthDate}"],
-            'password' => ['required', 'confirmed', Password::defaults()],
-            'terms' => ['accepted'],
-            'cf-turnstile-response' => [new Turnstile],
-        ];
-
-        if ($role === 'seeker') {
-            $rules['marital_status'] = ['required', 'in:never_married,divorced,widowed,annulled'];
-        } else {
-            $rules['marital_status'] = ['nullable', 'in:never_married,divorced,widowed,annulled'];
-            $rules['relationship_type'] = ['nullable', 'string', 'in:father,brother,uncle,grandfather,other_mahram'];
-        }
-
-        $validated = $request->validate($rules, [
-            'email.unique' => 'An account with this email address already exists. Please sign in or use forgot password.',
-            'phone.phone' => 'Please enter a valid phone number for the selected country.',
-            'dob.date_format' => 'Please enter the date of birth in dd/mm/yyyy format.',
-            'dob.before_or_equal' => 'You must be at least 18 years old to register for Global Nikkah.',
-        ]);
-
-        $normalizedPhoneNumber = $validated['phone']
+        $normalizedPhoneNumber = ! empty($validated['phone']) && ! empty($validated['phone_country'])
             ? phone($validated['phone'], $validated['phone_country'])->formatE164()
             : null;
 
@@ -155,18 +109,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login(Request $request): RedirectResponse
+    public function login(LoginRequest $request): RedirectResponse
     {
-        $normalizedEmail = strtolower(trim((string) $request->input('email')));
-        $request->merge(['email' => $normalizedEmail]);
-
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-            'cf-turnstile-response' => [new Turnstile],
-        ]);
-        unset($credentials['cf-turnstile-response']);
-        $credentials['email'] = $normalizedEmail;
+        $credentials = $request->only(['email', 'password']);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $user = Auth::user();

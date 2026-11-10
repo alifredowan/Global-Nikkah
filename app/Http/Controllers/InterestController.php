@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Interest\SendInterestRequest;
 use App\Models\AuditLog;
 use App\Models\Conversation;
 use App\Models\Interest;
@@ -46,12 +47,8 @@ class InterestController extends Controller
         return view('interests.index', compact('received', 'sent'));
     }
 
-    public function send(Request $request, int $recipientId): RedirectResponse
+    public function send(SendInterestRequest $request, int $recipientId): RedirectResponse
     {
-        $request->validate([
-            'note' => ['nullable', 'string', 'max:1000'],
-        ]);
-
         $sender = Auth::user();
 
         if ($sender->id === $recipientId) {

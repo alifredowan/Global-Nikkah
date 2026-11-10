@@ -1,0 +1,116 @@
+<!-- =======================================================================
+     COMPONENT: FORM INPUTS (Accessible, 44px Touch Targets, Explicit Focus)
+     ======================================================================= -->
+
+<div class="space-y-6 max-w-md">
+
+  <!-- 1. Standard Text Input with Helper Text -->
+  <div class="space-y-1">
+    <label for="sample_name" class="block text-xs font-semibold text-[var(--text-secondary)]">
+      Full Legal Name <span class="text-[var(--color-danger)]">*</span>
+    </label>
+    <input type="text"
+           id="sample_name"
+           name="name"
+           required
+           placeholder="Enter full legal name"
+           class="w-full h-11 px-3.5 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition" />
+    <p class="text-[11px] text-[var(--text-muted)]">As printed on government identity documentation.</p>
+  </div>
+
+  <!-- 2. Text Input with Validation Error State -->
+  <div class="space-y-1">
+    <label for="sample_email_error" class="block text-xs font-semibold text-[var(--text-secondary)]">
+      Email Address <span class="text-[var(--color-danger)]">*</span>
+    </label>
+    <input type="email"
+           id="sample_email_error"
+           name="email"
+           value="invalid-email@"
+           aria-invalid="true"
+           aria-describedby="email-error-msg"
+           class="w-full h-11 px-3.5 rounded-[var(--radius-sm)] border border-[var(--color-danger)] bg-[var(--color-danger-bg)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-danger)] transition" />
+    <p id="email-error-msg" class="text-[11px] font-semibold text-[var(--color-danger)] flex items-center gap-1">
+      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Please enter a valid email address.</span>
+    </p>
+  </div>
+
+  <!-- 3. Select Dropdown -->
+  <div class="space-y-1">
+    <label for="sample_select" class="block text-xs font-semibold text-[var(--text-secondary)]">
+      Marital Status
+    </label>
+    <div class="relative">
+      <select id="sample_select"
+              name="marital_status"
+              class="w-full h-11 px-3.5 pr-10 appearance-none rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition">
+        <option value="">Select option</option>
+        <option value="never_married">Never Married</option>
+        <option value="divorced">Divorced</option>
+        <option value="widowed">Widowed</option>
+      </select>
+      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[var(--text-muted)]" aria-hidden="true">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Date of Birth Input (Strict dd/mm/yyyy mask) -->
+  <div class="space-y-1">
+    <label for="sample_dob" class="block text-xs font-semibold text-[var(--text-secondary)]">
+      Date of Birth (18+ Enforced) <span class="text-[var(--color-danger)]">*</span>
+    </label>
+    <input type="text"
+           id="sample_dob"
+           name="dob"
+           inputmode="numeric"
+           placeholder="dd/mm/yyyy"
+           maxlength="10"
+           pattern="\d{2}/\d{2}/\d{4}"
+           class="w-full h-11 px-3.5 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition" />
+    <p class="text-[11px] text-[var(--text-muted)]">Format: dd/mm/yyyy (Day / Month / Year)</p>
+  </div>
+
+  <!-- 5. Textarea with Character Budget -->
+  <div class="space-y-1">
+    <div class="flex items-center justify-between">
+      <label for="sample_bio" class="block text-xs font-semibold text-[var(--text-secondary)]">
+        About Yourself &amp; Values
+      </label>
+      <span class="text-[11px] text-[var(--text-muted)]">0 / 500</span>
+    </div>
+    <textarea id="sample_bio"
+              name="bio"
+              rows="4"
+              placeholder="Describe your background, lifestyle, and life outlook..."
+              class="w-full p-3.5 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition"></textarea>
+  </div>
+
+  <!-- 6. Checkbox Control -->
+  <label class="flex items-start gap-3 cursor-pointer select-none">
+    <input type="checkbox"
+           name="terms_agreed"
+           class="mt-1 h-4 w-4 rounded-[var(--radius-xs)] border-[var(--border-default)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]" />
+    <span class="text-xs text-[var(--text-secondary)] leading-snug">
+      I affirm with sincere intention that all information entered is accurate, truthful, and provided for marriage purposes only.
+    </span>
+  </label>
+
+  <!-- 7. Radio Option Group -->
+  <fieldset class="space-y-2">
+    <legend class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Looking for</legend>
+    <div class="grid grid-cols-2 gap-2">
+      <label class="flex items-center gap-2 p-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] cursor-pointer text-xs font-semibold text-[var(--text-primary)] transition">
+        <input type="radio" name="seeking_gender" value="female" class="text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]" />
+        <span>Bride (Female)</span>
+      </label>
+      <label class="flex items-center gap-2 p-3 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] cursor-pointer text-xs font-semibold text-[var(--text-primary)] transition">
+        <input type="radio" name="seeking_gender" value="male" class="text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]" />
+        <span>Groom (Male)</span>
+      </label>
+    </div>
+  </fieldset>
+
+</div>
+

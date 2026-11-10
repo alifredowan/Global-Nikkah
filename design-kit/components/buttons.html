@@ -1,0 +1,61 @@
+<!-- =======================================================================
+     COMPONENT: BUTTONS (Tokens-Only, WCAG AA 44px Touch Targets)
+     No site-specific logic, no hardcoded colors.
+     ======================================================================= -->
+
+<!-- 1. Primary Action Button -->
+<button type="button" class="btn-primary">
+  <span>Primary Action</span>
+</button>
+
+<!-- 2. Primary Button with Leading Icon -->
+<button type="button" class="btn-primary">
+  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="m22 2-7 20-4-9-9-4Z"/>
+    <path d="M22 2 11 13"/>
+  </svg>
+  <span>Send Interest</span>
+</button>
+
+<!-- 3. Primary Button with Trailing Arrow -->
+<button type="button" class="btn-primary">
+  <span>Continue to Next Step</span>
+  <span aria-hidden="true">&rarr;</span>
+</button>
+
+<!-- 4. Secondary / Outline Button -->
+<button type="button" class="btn-secondary">
+  <svg class="w-4 h-4 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+  </svg>
+  <span>Shortlist</span>
+</button>
+
+<!-- 5. Subtle / Ghost Button -->
+<button type="button" class="btn-subtle">
+  <span>Cancel</span>
+</button>
+
+<!-- 6. Danger / Destructive Action Button -->
+<button type="button" class="btn-secondary text-[var(--color-danger)] hover:bg-[var(--color-danger-bg)] hover:border-[var(--color-danger-border)]">
+  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/>
+  </svg>
+  <span>Block Profile</span>
+</button>
+
+<!-- 7. Disabled Button State -->
+<button type="button" class="btn-primary" disabled aria-disabled="true">
+  <span>Interest Already Sent</span>
+</button>
+
+<!-- 8. Loading / Spinner State -->
+<button type="button" class="btn-primary cursor-wait" disabled aria-busy="true">
+  <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+    <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+  </svg>
+  <span>Processing...</span>
+</button>
+

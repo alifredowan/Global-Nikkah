@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Http\Requests\Profile\UploadPhotoRequest;
 use App\Models\AuditLog;
 use App\Models\Interest;
 use App\Models\PhotoAccessGrant;
@@ -58,7 +60,7 @@ class ProfileController extends Controller
         return view('profile.edit', compact('user', 'profile'));
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateProfileRequest $request): RedirectResponse
     {
         $user = Auth::user();
 
@@ -71,46 +73,7 @@ class ProfileController extends Controller
         }
 
         $profile = $user->profile ?? Profile::create(['user_id' => $user->id]);
-
-        $validated = $request->validate([
-            'height_cm' => ['nullable', 'integer', 'min:120', 'max:230'],
-            'education_level' => ['nullable', 'string', 'max:100'],
-            'profession' => ['nullable', 'string', 'max:100'],
-            'employment_type' => ['nullable', 'string', 'max:50'],
-            'city' => ['nullable', 'string', 'max:100'],
-            'state' => ['nullable', 'string', 'max:100'],
-            'country' => ['nullable', 'string', 'max:100'],
-            'mother_tongue' => ['nullable', 'string', 'max:50'],
-            'citizenship' => ['nullable', 'string', 'max:100'],
-            'bio' => ['nullable', 'string', 'max:2000'],
-
-            // Religious fields
-            'sect_madhhab' => ['nullable', 'string', 'in:Sunni - Hanafi,Sunni - Shafi\'i,Sunni - Maliki,Sunni - Hanbali,Shia - Jafari,Muslim (Unspecified)'],
-            'prayer_frequency' => ['nullable', 'string', 'in:5x_daily,occasional,rarely'],
-            'hijab_niqab_practice' => ['nullable', 'string', 'in:hijab,niqab,modest_without_hijab,planning_to_wear'],
-            'beard_practice' => ['nullable', 'string', 'in:full_sunnah_beard,trimmed_beard,clean_shaven'],
-            'quran_knowledge' => ['nullable', 'string', 'in:hafiz,fluent_reciter,basic_reader,learning'],
-            'mosque_attendance' => ['nullable', 'string', 'in:daily,weekly_jummah,occasional'],
-            'halal_dietary_adherence' => ['nullable', 'string', 'in:strictly_halal,halal_meat_only,flexible'],
-            'polygamy_opinion' => ['nullable', 'string', 'max:50'],
-            'desired_family_structure' => ['nullable', 'string', 'in:independent,joint_family'],
-
-            // Family fields
-            'parents_status' => ['nullable', 'string', 'max:100'],
-            'parents_occupation' => ['nullable', 'string', 'max:100'],
-            'siblings_count' => ['nullable', 'integer', 'min:0', 'max:20'],
-            'family_religiosity' => ['nullable', 'string', 'in:very_practicing,moderate,traditional'],
-
-            // Partner preferences
-            'pref_age_min' => ['nullable', 'integer', 'min:18', 'max:80', 'lte:pref_age_max'],
-            'pref_age_max' => ['nullable', 'integer', 'min:18', 'max:80'],
-            'pref_sect' => ['nullable', 'string', 'max:100'],
-            'pref_location' => ['nullable', 'string', 'max:100'],
-            'pref_education' => ['nullable', 'string', 'max:100'],
-
-            // Privacy & Wali
-            'wali_required' => ['nullable', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         $partnerPreferences = [
             'age_min' => $validated['pref_age_min'] ?? null,
@@ -133,13 +96,8 @@ class ProfileController extends Controller
         return redirect()->route('profile.show')->with('success', 'Your profile details have been updated successfully!');
     }
 
-    public function uploadPhoto(Request $request): RedirectResponse
+    public function uploadPhoto(UploadPhotoRequest $request): RedirectResponse
     {
-        $request->validate([
-            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // max 5MB
-            'is_private' => ['nullable', 'boolean'],
-        ]);
-
         $user = Auth::user();
         $profile = $user->profile;
 

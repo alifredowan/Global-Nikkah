@@ -1,0 +1,90 @@
+<!-- =======================================================================
+     COMPONENT: MULTI-STEP PROGRESS STEPPER & WIZARD NAVIGATION
+     Progress indicator, current step highlights, save-and-continue-later.
+     ======================================================================= -->
+
+<div class="card-ledger p-6 sm:p-8 bg-[var(--bg-surface)] max-w-2xl mx-auto space-y-6">
+
+  <!-- =====================================================================
+       1. STEP PROGRESS HEADER (3 Steps)
+       ===================================================================== -->
+  <div class="space-y-3">
+    <div class="flex items-center justify-between text-xs">
+      <div>
+        <span class="font-bold text-[var(--accent-text)] uppercase tracking-wider">Step 2 of 3</span>
+        <h2 class="text-base font-bold text-[var(--text-primary)]">Personal Biodata &amp; Background</h2>
+      </div>
+      <span class="text-xs font-semibold text-[var(--text-muted)]">66% Completed</span>
+    </div>
+
+    <!-- Continuous Progress Bar Track -->
+    <div class="w-full h-1.5 rounded-full bg-[var(--neutral-200)] overflow-hidden" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+      <div class="h-full bg-[var(--accent-primary)] transition-all duration-300" style="width: 66%;"></div>
+    </div>
+
+    <!-- Step Breadcrumb Badges -->
+    <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+      <!-- Step 1: Completed -->
+      <div class="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] justify-center">
+        <span class="w-5 h-5 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] border border-[var(--color-success-border)] flex items-center justify-center text-[10px] font-bold">
+          &check;
+        </span>
+        <span class="hidden sm:inline font-medium">1. Intent &amp; Role</span>
+      </div>
+
+      <!-- Step 2: Active -->
+      <div class="flex items-center gap-1.5 text-xs text-[var(--text-primary)] justify-center">
+        <span class="w-5 h-5 rounded-full bg-[var(--accent-primary)] text-white flex items-center justify-center text-[10px] font-bold shadow-xs">
+          2
+        </span>
+        <span class="hidden sm:inline font-bold">2. Personal Biodata</span>
+      </div>
+
+      <!-- Step 3: Upcoming -->
+      <div class="flex items-center gap-1.5 text-xs text-[var(--text-muted)] justify-center">
+        <span class="w-5 h-5 rounded-full bg-[var(--neutral-100)] text-[var(--text-muted)] border border-[var(--border-default)] flex items-center justify-center text-[10px] font-medium">
+          3
+        </span>
+        <span class="hidden sm:inline font-normal">3. Security &amp; Trust</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="border-t border-[var(--border-subtle)]"></div>
+
+  <!-- Sample Form Step Body Container -->
+  <div class="py-2 space-y-4">
+    <p class="text-xs text-[var(--text-secondary)]">
+      Step-specific form inputs render here (e.g., legal name, date of birth, education, marital status).
+    </p>
+  </div>
+
+  <!-- =====================================================================
+       2. WIZARD NAVIGATION FOOTER (Back, Save Later, Continue)
+       ===================================================================== -->
+  <div class="border-t border-[var(--border-subtle)] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <!-- Save & Continue Later -->
+    <button type="button" class="btn-subtle text-xs order-2 sm:order-1">
+      <svg class="w-4 h-4 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <span>Save and finish later</span>
+    </button>
+
+    <!-- Step Controls -->
+    <div class="flex items-center gap-2 w-full sm:w-auto justify-end order-1 sm:order-2">
+      <!-- Back Button -->
+      <button type="button" class="btn-secondary text-xs">
+        <span aria-hidden="true">&larr;</span>
+        <span>Back</span>
+      </button>
+
+      <!-- Next / Continue Button -->
+      <button type="button" class="btn-primary text-xs font-bold">
+        <span>Continue to Step 3</span>
+        <span aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+
