@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Global Nikkah - Muslim Matrimonial Platform')</title>
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-    <link rel="alternate icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
+    <link rel="alternate icon" href="{{ asset('favicon.png') }}" type="image/png">
     <meta name="description" content="@yield('meta_description', 'Global Nikkah is an ethical Muslim matrimonial platform for serious marriage with verified profiles, Wali participation, and privacy-first matchmaking.')">
     <meta name="robots" content="@yield('robots', 'noindex, nofollow')">
     @hasSection('canonical_url')
@@ -178,14 +178,10 @@
 
                     <!-- Brand in Mobile Drawer (Clicking closes drawer) -->
                     <div @click="mobileSidebarOpen = false" class="flex items-center gap-3 px-2 mb-6 cursor-pointer select-none" title="Close Drawer">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-gradient flex items-center justify-center text-white shadow-md shadow-emerald-950/50">
-                            <svg class="w-6 h-6 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                            </svg>
-                        </div>
+                        <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-10 h-10 rounded-xl object-cover shadow-md shadow-emerald-950/50">
                         <div>
                             <span class="font-heading font-extrabold text-lg text-white tracking-tight flex items-center gap-1">
-                                Nikah<span class="text-amber-400">Connect</span>
+                                Global<span class="text-amber-400">Nikah</span>
                             </span>
                             <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block -mt-0.5">
                                 {{ Auth::user()->isSuperAdmin() ? 'Super Admin' : (Auth::user()->isModerator() ? 'Staff' : (Auth::user()->isWali() ? 'Guardian (Wali)' : 'Seeker')) }}
@@ -235,11 +231,7 @@
                             @click="toggleSidebar()"
                             class="flex items-center gap-3 group flex-1 min-w-0 text-left cursor-pointer focus:outline-none"
                             title="Open / Close Sidebar (Global Nikkah Logo)">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-gradient flex items-center justify-center text-white shadow-lg shadow-emerald-950/50 group-hover:scale-105 transition transform">
-                            <svg class="w-6 h-6 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                            </svg>
-                        </div>
+                        <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-10 h-10 rounded-xl object-cover shadow-lg shadow-emerald-950/50 group-hover:scale-105 transition transform">
                         <div>
                             <div class="font-heading font-extrabold text-base text-white tracking-tight flex items-center gap-1 group-hover:text-emerald-400 transition">
                                 Global<span class="text-amber-400">Nikkah</span>
@@ -320,11 +312,7 @@
                              x-show="!sidebarOpen || window.innerWidth < 1024"
                              class="flex items-center gap-2.5 cursor-pointer select-none group"
                              title="Open / Close Sidebar (Global Nikkah Logo)">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-gradient flex items-center justify-center text-white shadow-md shadow-emerald-950/20 group-hover:scale-105 transition transform">
-                                <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                                </svg>
-                            </div>
+                            <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-9 h-9 rounded-xl object-cover shadow-md shadow-emerald-950/20 group-hover:scale-105 transition transform">
                             <span class="font-heading font-extrabold text-base tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition">
                                 Global<span class="text-amber-500">Nikkah</span>
                             </span>
@@ -690,11 +678,7 @@
                         <!-- Brand Logo -->
                         <div class="flex items-center gap-3">
                             <a href="{{ route('landing') }}" class="flex items-center gap-2.5 group">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-gradient flex items-center justify-center text-white shadow-md shadow-emerald-900/20 group-hover:scale-105 transition transform">
-                                    <svg class="w-6 h-6 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                                    </svg>
-                                </div>
+                                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-10 h-10 rounded-xl object-cover shadow-md shadow-emerald-900/20 group-hover:scale-105 transition transform">
                                 <div>
                                     <span class="font-heading font-extrabold text-xl tracking-tight text-emerald-950 dark:text-emerald-100 flex items-center gap-1.5">
                                         Global<span class="text-amber-500">Nikkah</span>

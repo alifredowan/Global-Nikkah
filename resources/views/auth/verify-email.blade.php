@@ -23,10 +23,10 @@
         <!-- Verification Notice Card -->
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-6 sm:p-8 space-y-6">
 
-            <!-- Envelope Icon with Pulsing Effect -->
+            <!-- Logo with Verified Status Badge -->
             <div class="text-center">
-                <div class="relative inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 text-3xl border border-emerald-200 dark:border-emerald-800 shadow-inner">
-                    <span>✉️</span>
+                <div class="relative inline-flex items-center justify-center">
+                    <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-20 h-20 rounded-3xl object-cover shadow-xl border-2 border-emerald-500/30">
                     <span class="absolute -top-1 -right-1 flex h-4 w-4">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>

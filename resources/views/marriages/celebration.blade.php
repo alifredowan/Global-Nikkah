@@ -26,6 +26,9 @@
 
         <!-- Mubarak Hero Celebration Card -->
         <div class="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 rounded-3xl p-8 sm:p-12 text-white shadow-2xl border border-emerald-700/40 text-center space-y-6">
+            <div class="flex justify-center mb-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah" class="w-20 h-20 rounded-2xl object-cover shadow-2xl border-2 border-amber-400/40">
+            </div>
             <!-- Islamic Dua -->
             <div class="space-y-3 max-w-2xl mx-auto">
                 <span class="px-3.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30 inline-block">

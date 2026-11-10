@@ -8,9 +8,7 @@
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 transition-colors">
             
             <div class="text-center mb-6">
-                <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center text-2xl mx-auto mb-3">
-                    🔐
-                </div>
+                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-16 h-16 rounded-2xl object-cover shadow-md mx-auto mb-3">
                 <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Reset Password</h1>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     Enter your new secure password below to regain access to your account.

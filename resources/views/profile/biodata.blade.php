@@ -46,6 +46,9 @@
 
         <!-- Top Header & Bismillah -->
         <div class="text-center border-b border-emerald-900/10 pb-6 space-y-2">
+            <div class="flex justify-center mb-3">
+                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Emblem" class="w-16 h-16 rounded-2xl object-cover shadow-sm border border-emerald-600/20">
+            </div>
             <div class="font-arabic text-2xl sm:text-3xl text-emerald-900 tracking-wider">
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </div>

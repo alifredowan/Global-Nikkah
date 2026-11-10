@@ -5,10 +5,8 @@
             <!-- Brand Logo & Copyright -->
             <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-center sm:text-left">
                 <a href="{{ route('landing') }}" class="flex items-center gap-2.5 group">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white shadow-sm shadow-emerald-900/30 group-hover:scale-105 transition transform">
-                        <span class="font-bold text-amber-300 text-sm">☪</span>
-                    </div>
-                    <span class="font-heading font-extrabold text-lg text-white tracking-tight">Global Nikkah</span>
+                    <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-8 h-8 rounded-lg object-cover shadow-sm shadow-emerald-900/30 group-hover:scale-105 transition transform">
+                    <span class="font-heading font-extrabold text-lg text-white tracking-tight">Global Nikah</span>
                 </a>
                 <span class="hidden sm:inline text-slate-700">|</span>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
