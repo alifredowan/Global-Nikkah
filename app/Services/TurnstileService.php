@@ -16,18 +16,27 @@ class TurnstileService
 
     public function __construct()
     {
-        $dbEnabled = PlatformSetting::get('turnstile_enabled');
-        if ($dbEnabled !== null) {
-            $this->enabled = (bool) $dbEnabled;
-        } else {
-            $this->enabled = (bool) config('services.turnstile.enabled', true);
+        // Always start from .env / config as the base truth
+        $configEnabled = (bool) config('services.turnstile.enabled', true);
+        $configSiteKey = config('services.turnstile.site_key');
+        $configSecretKey = config('services.turnstile.secret_key');
+
+        // Database platform settings override config when available
+        try {
+            $dbEnabled = PlatformSetting::get('turnstile_enabled');
+            $this->enabled = $dbEnabled !== null ? (bool) $dbEnabled : $configEnabled;
+
+            $dbSiteKey = PlatformSetting::get('turnstile_site_key');
+            $this->siteKey = ! empty($dbSiteKey) ? $dbSiteKey : $configSiteKey;
+
+            $dbSecretKey = PlatformSetting::get('turnstile_secret_key');
+            $this->secretKey = ! empty($dbSecretKey) ? $dbSecretKey : $configSecretKey;
+        } catch (\Throwable) {
+            // Database unavailable — fall back entirely to .env / config
+            $this->enabled = $configEnabled;
+            $this->siteKey = $configSiteKey;
+            $this->secretKey = $configSecretKey;
         }
-
-        $dbSiteKey = PlatformSetting::get('turnstile_site_key');
-        $this->siteKey = ! empty($dbSiteKey) ? $dbSiteKey : config('services.turnstile.site_key');
-
-        $dbSecretKey = PlatformSetting::get('turnstile_secret_key');
-        $this->secretKey = ! empty($dbSecretKey) ? $dbSecretKey : config('services.turnstile.secret_key');
     }
 
     public function isEnabled(): bool
