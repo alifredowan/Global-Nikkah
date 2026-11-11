@@ -104,7 +104,7 @@
     @endphp
 
     <!-- Hero -->
-    <section class="relative isolate overflow-hidden bg-emerald-950 py-16 text-white sm:py-24">
+    <section class="section--dark relative isolate overflow-hidden bg-emerald-950 py-16 text-white sm:py-24">
         <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,.2),transparent_30%),radial-gradient(circle_at_85%_80%,rgba(245,158,11,.15),transparent_28%)]"></div>
         <div class="absolute -left-20 top-16 h-72 w-72 rounded-full border border-emerald-400/10"></div>
         <div class="absolute -right-24 bottom-0 h-96 w-96 rounded-full border border-amber-300/10"></div>
@@ -357,7 +357,7 @@
     </section>
 
     <!-- Closing CTA -->
-    <section class="bg-emerald-950 py-16 text-white sm:py-20">
+    <section class="section--dark bg-emerald-950 py-16 text-white sm:py-20">
         <div class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-8 px-4 text-center sm:px-6 lg:flex-row lg:text-left lg:px-8">
             <div><span class="text-xs font-extrabold uppercase tracking-[.2em] text-amber-300">Ready when you are</span><h2 class="mt-3 font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">Start with a sincere intention.</h2><p class="mt-3 max-w-xl text-sm leading-6 text-emerald-100/70">Your next chapter can begin with a profile that reflects who you are and the family values you want to build.</p></div>
             <a href="{{ route('register') }}" class="shrink-0 rounded-xl bg-amber-400 px-6 py-3.5 text-sm font-extrabold text-emerald-950 shadow-xl shadow-amber-950/30 transition hover:-translate-y-0.5 hover:bg-amber-300">Create your profile &rarr;</a>

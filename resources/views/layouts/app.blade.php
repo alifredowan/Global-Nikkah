@@ -40,43 +40,30 @@
     <meta property="og:description" content="@yield('meta_description', 'Global Nikkah is an ethical Muslim matrimonial platform for serious marriage with verified profiles, Wali participation, and privacy-first matchmaking.')">
     <meta property="og:type" content="website">
 
-    <!-- Theme Initialization (Prevent FOUC: 4 Moods Supported) -->
+    <!-- Theme Initialization (Prevent FOUC: Light / Dark Mode) -->
     <script>
         (function() {
-            const savedMood = localStorage.getItem('nikah_theme') || (localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
-            document.documentElement.classList.remove('dark', 'theme-emerald', 'theme-sand');
-            if (savedMood === 'dark') {
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
-            } else if (savedMood === 'emerald') {
-                document.documentElement.classList.add('dark', 'theme-emerald');
-            } else if (savedMood === 'sand') {
-                document.documentElement.classList.add('theme-sand');
+            } else {
+                document.documentElement.classList.remove('dark');
             }
         })();
     </script>
 
-    <!-- Google Fonts: Inter, Noto Sans Bengali & Hind Siliguri -->
+    <!-- Google Fonts: Cormorant Garamond, Source Sans 3, Inter & Amiri -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         body { font-family: var(--font-sans); }
-        h1, h2, h3, h4, .font-heading { font-family: var(--font-sans); letter-spacing: -0.015em; }
-        .bg-emerald-gradient {
-            background: var(--accent-primary);
-        }
-        .bg-gold-gradient {
-            background: var(--secondary-primary);
-        }
+        h1, h2, h3, h4, .font-heading, .font-serif { font-family: var(--font-serif); }
         .glass-header {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border-default);
-        }
-        .dark .glass-header {
             background: var(--bg-surface);
             border-bottom: 1px solid var(--border-default);
         }
@@ -108,31 +95,7 @@
       @keydown.window.cmd.k.prevent="commandPaletteOpen = true"
       @open-command-palette.window="commandPaletteOpen = true">
 
-    <div id="cookie-consent-banner"
-         class="fixed inset-x-3 bottom-3 z-[100] hidden sm:inset-x-auto sm:bottom-5 sm:left-5 sm:max-w-xl"
-         role="dialog"
-         aria-modal="false"
-         aria-labelledby="cookie-consent-title"
-         aria-describedby="cookie-consent-description">
-        <div class="card-ledger p-4 sm:p-5 shadow-lg">
-            <div class="flex items-start gap-3">
-                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[var(--accent-text)]" aria-hidden="true">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <h2 id="cookie-consent-title" class="text-sm font-bold text-[var(--text-primary)]">Your privacy, your choice</h2>
-                    <p id="cookie-consent-description" class="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
-                        We use essential cookies to keep you signed in, protect forms, and remember your privacy preference. We do not use advertising cookies. <a href="{{ route('privacy') }}#cookies" class="font-bold text-emerald-700 underline underline-offset-2 dark:text-emerald-400">Read our cookie policy</a>.
-                    </p>
-                    <div class="mt-4 flex flex-wrap items-center gap-2">
-                        <button type="button" data-cookie-consent="accepted" class="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">Accept all</button>
-                        <button type="button" data-cookie-consent="essential" class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-emerald-700 dark:hover:text-emerald-400 dark:focus:ring-offset-slate-900">Essential only</button>
-                        <a href="{{ route('contact') }}" class="ml-auto text-[11px] font-bold text-slate-500 hover:text-emerald-700 hover:underline dark:text-slate-400 dark:hover:text-emerald-400">Questions?</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('layouts.partials.cookie-banner')
 
     @auth
         {{-- ========================================================= --}}
@@ -194,7 +157,7 @@
                         @include('layouts.partials.sidebar-nav')
                     </nav>
 
-                    <!-- Mobile User Card & Logout -->
+                    <!-- Mobile User Card -->
                     <div class="pt-4 mt-4 border-t border-slate-800">
                         <div class="flex items-center gap-3 px-2 py-2">
                             <div class="w-9 h-9 rounded-full bg-emerald-900 border border-emerald-600 text-emerald-200 font-bold flex items-center justify-center text-sm">
@@ -205,12 +168,6 @@
                                 <p class="text-[10px] text-emerald-400 font-medium capitalize">{{ Auth::user()->role }}</p>
                             </div>
                         </div>
-                        <form action="{{ route('logout') }}" method="POST" class="mt-2">
-                            @csrf
-                            <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-rose-400 hover:bg-rose-950/40 rounded-xl transition">
-                                <span>🚪</span> Sign Out
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -259,30 +216,20 @@
                     @include('layouts.partials.sidebar-nav')
                 </nav>
 
-                <!-- Sidebar Footer User Card with Integrated Arrow Logout -->
+                <!-- Sidebar Footer User Card -->
                 <div class="p-4 border-t border-slate-800/80 bg-slate-950/40">
-                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-800/50 border border-slate-700/60">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-200 font-bold flex items-center justify-center text-xs shrink-0">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name }}</p>
-                                <p class="text-[10px] text-slate-400 truncate">{{ Auth::user()->email }}</p>
-                                <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-400 uppercase tracking-wider">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                    {{ Auth::user()->isSuperAdmin() ? 'Super Admin' : (Auth::user()->isModerator() ? 'Staff' : (Auth::user()->isWali() ? 'Wali' : 'Seeker')) }}
-                                </span>
-                            </div>
+                    <div class="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-800/50 border border-slate-700/60">
+                        <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-200 font-bold flex items-center justify-center text-xs shrink-0">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                         </div>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" title="Sign Out" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-700/60 rounded-xl transition cursor-pointer">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                                </svg>
-                            </button>
-                        </form>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name }}</p>
+                            <p class="text-[10px] text-slate-400 truncate">{{ Auth::user()->email }}</p>
+                            <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-400 uppercase tracking-wider">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                {{ Auth::user()->isSuperAdmin() ? 'Super Admin' : (Auth::user()->isModerator() ? 'Staff' : (Auth::user()->isWali() ? 'Wali' : 'Seeker')) }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -290,307 +237,73 @@
             <!-- Main Canvas (Top Header with ZERO TABS + Content) -->
             <div class="flex-1 flex flex-col min-w-0">
 
-                <!-- Clean Top Navigation Header (NO TABS) -->
-                <header class="sticky top-0 z-40 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 lg:px-8">
-                    <!-- Left: Single 3-Dots Button AND NikahConnect Logo (Both trigger open/close) -->
-                    <div class="flex items-center gap-3">
-                        <!-- 3-Dots Toggle Button (The ONE 3-Dots Button) -->
+                <!-- Clean Top Navigation Header -->
+                <header class="sticky top-0 z-40 h-14 sm:h-16 bg-[var(--bg-surface)]/95 backdrop-blur-md border-b border-[var(--border-default)] flex items-center justify-between px-4 sm:px-6 lg:px-8 transition-colors">
+                    <!-- Left: Sidebar Toggle AND NikahConnect Brand Logo -->
+                    <div class="flex items-center gap-3 shrink-0">
+                        <!-- Sidebar Toggle Button -->
                         <button type="button"
                                 @click="toggleSidebar()"
-                                class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition focus:outline-none cursor-pointer flex items-center justify-center shrink-0"
+                                class="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--accent-primary)] hover:bg-[var(--bg-subtle)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] cursor-pointer flex items-center justify-center shrink-0"
                                 aria-label="Toggle Sidebar Menu"
                                 title="Open / Close Sidebar (3 Dots)">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                                 <circle cx="5" cy="12" r="2.25"/>
                                 <circle cx="12" cy="12" r="2.25"/>
                                 <circle cx="19" cy="12" r="2.25"/>
                             </svg>
                         </button>
 
-                        <!-- Global Nikkah Brand Logo & Name (Shown when sidebar is collapsed, or on mobile) -->
-                        <div @click="toggleSidebar()"
-                             x-show="!sidebarOpen || window.innerWidth < 1024"
-                             class="flex items-center gap-2.5 cursor-pointer select-none group"
-                             title="Open / Close Sidebar (Global Nikkah Logo)">
-                            <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-9 h-9 rounded-xl object-cover shadow-md shadow-emerald-950/20 group-hover:scale-105 transition transform">
-                            <span class="font-heading font-extrabold text-base tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition">
-                                Global<span class="text-amber-500">Nikkah</span>
+                        <!-- Brand Logo & Name -->
+                        <a href="{{ route('discovery.index') }}"
+                           class="flex items-center gap-2.5 cursor-pointer select-none group"
+                           title="Open / Close Sidebar (Global Nikkah Logo)">
+                            <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover shadow-xs border border-[var(--border-subtle)] group-hover:scale-105 transition transform">
+                            <span class="font-heading font-extrabold text-base tracking-tight text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition">
+                                Global<span class="text-[var(--secondary-primary)]">Nikkah</span>
                             </span>
-                        </div>
+                        </a>
                     </div>
 
-                    <!-- Center: Quick Command Search Trigger (Standard SaaS Benchmark) -->
-                    <div class="hidden md:flex flex-1 max-w-sm mx-4">
+                    <!-- Center or Left-Next-To-Logo: Main Navigation (Desktop) -->
+                    <nav class="hidden lg:flex items-center space-x-1 xl:space-x-2 text-sm font-medium text-[var(--text-secondary)] h-16 ml-4"
+                         aria-label="Main Navigation">
+                        <a href="{{ route('discovery.index') }}"
+                           class="relative h-16 flex items-center px-3.5 transition-colors {{ request()->routeIs('discovery.*') ? 'text-[var(--accent-primary)] font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-[var(--accent-primary)]' : 'hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/5' }}">
+                            Discover
+                        </a>
+
+                        <a href="{{ route('interests.index') }}"
+                           class="relative h-16 flex items-center px-3.5 transition-colors {{ request()->routeIs('interests.*') ? 'text-[var(--accent-primary)] font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-[var(--accent-primary)]' : 'hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/5' }}">
+                            Interests
+                        </a>
+
+                        <a href="{{ route('bookmarks.index') }}"
+                           class="relative h-16 flex items-center px-3.5 transition-colors {{ request()->routeIs('bookmarks.*') ? 'text-[var(--accent-primary)] font-semibold after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-[var(--accent-primary)]' : 'hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/5' }}">
+                            Shortlist
+                        </a>
+                    </nav>
+
+                    <!-- Quick Command Search Trigger -->
+                    <div class="hidden xl:flex flex-1 max-w-xs mx-4">
                         <button type="button"
                                 @click="commandPaletteOpen = true"
-                                class="w-full flex items-center justify-between gap-3 px-3.5 py-1.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-800/40 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 transition cursor-pointer text-xs group"
+                                class="w-full flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl border border-[var(--border-default)] bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition cursor-pointer text-xs group"
                                 title="Quick Command Palette & Search (Ctrl + K)">
                             <div class="flex items-center gap-2 min-w-0">
-                                <svg class="w-4 h-4 text-emerald-500 shrink-0 group-hover:scale-110 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 text-[var(--accent-primary)] shrink-0 group-hover:scale-110 transition transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                 </svg>
-                                <span class="font-medium text-slate-500 dark:text-slate-400 truncate">Quick search & navigation...</span>
+                                <span class="font-medium truncate">Quick search...</span>
                             </div>
-                            <div class="flex items-center gap-1 font-mono text-[10px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-md px-1.5 py-0.5 shadow-xs shrink-0">
+                            <div class="flex items-center gap-1 font-mono text-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-secondary)] rounded-md px-1.5 py-0.5 shadow-xs shrink-0">
                                 <kbd>Ctrl</kbd>+<kbd>K</kbd>
                             </div>
                         </button>
                     </div>
 
-                    <!-- Right Controls: Status Pill, 4-Mood Switcher, Reverb Bell, Profile Dropdown -->
-                    <div class="flex items-center gap-2 sm:gap-3">
-                        <!-- Operational System Live Status Pill -->
-                        <div class="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/60 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span>Live Operational</span>
-                        </div>
-
-                        <!-- 4-Mood Visual Theme Picker Dropdown -->
-                        <div class="relative" x-data="{
-                            moodOpen: false,
-                            currentMood: localStorage.getItem('nikah_theme') || (localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'),
-                            moods: [
-                                { id: 'light', name: 'Daylight', icon: '☀️', desc: 'Crisp daylight & emerald', dot: 'bg-emerald-400 border-amber-300' },
-                                { id: 'dark', name: 'Midnight', icon: '🌙', desc: 'Deep slate dark mode', dot: 'bg-slate-900 border-slate-700' },
-                                { id: 'emerald', name: 'Royal Emerald', icon: '💎', desc: 'Deep Islamic forest & gold', dot: 'bg-emerald-800 border-amber-400' },
-                                { id: 'sand', name: 'Desert Sand', icon: '🏜️', desc: 'Warm sand, coffee & cream', dot: 'bg-amber-100 border-amber-600' }
-                            ],
-                            selectMood(mood) {
-                                this.currentMood = mood;
-                                localStorage.setItem('nikah_theme', mood);
-                                localStorage.setItem('theme', (mood === 'light' || mood === 'sand') ? 'light' : 'dark');
-                                document.documentElement.classList.remove('dark', 'theme-emerald', 'theme-sand');
-                                if (mood === 'dark') {
-                                    document.documentElement.classList.add('dark');
-                                } else if (mood === 'emerald') {
-                                    document.documentElement.classList.add('dark', 'theme-emerald');
-                                } else if (mood === 'sand') {
-                                    document.documentElement.classList.add('theme-sand');
-                                }
-                                this.moodOpen = false;
-                                window.dispatchEvent(new CustomEvent('nikah-mood-changed', { detail: { mood } }));
-                            },
-                            get activeMood() {
-                                return this.moods.find(m => m.id === this.currentMood) || this.moods[0];
-                            }
-                        }">
-                            <button type="button"
-                                    id="theme-toggle"
-                                    @click="moodOpen = !moodOpen"
-                                    @click.outside="moodOpen = false"
-                                    class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/70 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-700 dark:text-slate-200 transition focus:outline-none"
-                                    title="Switch Visual Mood (4 Themes Available)"
-                                    aria-label="Switch Theme Mood">
-                                <span x-text="activeMood.icon" class="text-sm"></span>
-                                <span x-text="activeMood.name" class="hidden sm:inline text-xs font-bold text-slate-700 dark:text-slate-200"></span>
-                                <svg class="w-3.5 h-3.5 text-slate-400 transition transform" :class="moodOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-
-                            <!-- Dropdown Menu of 4 Moods -->
-                            <div x-show="moodOpen"
-                                 x-cloak
-                                 x-transition:enter="transition ease-out duration-150"
-                                 x-transition:enter-start="opacity-0 scale-95"
-                                 x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-100"
-                                 x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 scale-95"
-                                 class="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-2 z-50">
-                                <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-1 flex items-center justify-between">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Visual Mood (4 Available)</span>
-                                    <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Halal Aesthetics</span>
-                                </div>
-                                <div class="space-y-1">
-                                    <template x-for="mood in moods" :key="mood.id">
-                                        <button type="button"
-                                                @click="selectMood(mood.id)"
-                                                class="w-full flex items-center justify-between p-2 rounded-xl text-left transition cursor-pointer"
-                                                :class="currentMood === mood.id ? 'bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700' : 'hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent'">
-                                            <div class="flex items-center gap-2.5">
-                                                <span x-text="mood.icon" class="text-base"></span>
-                                                <div>
-                                                    <p class="text-xs font-bold text-slate-900 dark:text-white" x-text="mood.name"></p>
-                                                    <p class="text-[10px] text-slate-500 dark:text-slate-400" x-text="mood.desc"></p>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center gap-1.5">
-                                                <span class="w-3 h-3 rounded-full border shadow-xs" :class="mood.dot"></span>
-                                                <svg x-show="currentMood === mood.id" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                                </svg>
-                                            </div>
-                                        </button>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Real-time Notification Bell -->
-                        <div class="relative" x-data="{
-                            notifOpen: false,
-                            unreadCount: {{ Auth::user()->unreadNotifications->count() }},
-                            notifications: [],
-                            loading: false,
-                            fetchNotifications(silent = false) {
-                                if (!silent) this.loading = true;
-                                fetch('{{ route('notifications.index') }}', {
-                                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    const previousCount = this.unreadCount;
-                                    this.notifications = data.notifications;
-                                    this.unreadCount = data.unread_count;
-                                    if (!silent) this.loading = false;
-
-                                    if (typeof data.unread_messages_count !== 'undefined' && window.updateSidebarMessageBadge) {
-                                        window.updateSidebarMessageBadge(data.unread_messages_count);
-                                    }
-
-                                    // If silent background poll detected a new unread notification (e.g. when Echo is offline),
-                                    // only show toast if it hasn't already been displayed
-                                    if (silent && data.notifications && data.notifications.length > 0) {
-                                        const newest = data.notifications[0];
-                                        const newestId = newest.id;
-                                        if (newest && !newest.read_at && (!window.processedNotificationIds || !window.processedNotificationIds.has(newestId))) {
-                                            if (window.handleReverbNotification) {
-                                                window.handleReverbNotification({
-                                                    id: newest.id,
-                                                    title: newest.data?.title || 'New Notification',
-                                                    message: newest.data?.message || '',
-                                                    icon: newest.data?.icon || '🔔',
-                                                    action_url: newest.data?.action_url || ''
-                                                });
-                                            }
-                                        }
-                                    }
-                                })
-                                .catch(() => { if (!silent) this.loading = false; });
-                            },
-                            markAsRead(id, url) {
-                                fetch('/notifications/' + id + '/read', {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    }
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    this.unreadCount = data.unread_count;
-                                    const n = this.notifications.find(item => item.id === id);
-                                    if (n) n.read_at = new Date().toISOString();
-                                    if (url) window.location.href = url;
-                                });
-                            },
-                            markAllRead() {
-                                fetch('{{ route('notifications.read-all') }}', {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    }
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    this.unreadCount = 0;
-                                    this.notifications.forEach(n => n.read_at = new Date().toISOString());
-                                });
-                            }
-                        }"
-                        x-init="fetchNotifications(); setInterval(() => fetchNotifications(true), 4000);"
-                        @new-notification-received.window="unreadCount = Math.max(unreadCount + 1, 1); notifications.unshift($event.detail); if(notifications.length > 20) notifications.pop();">
-                            <button type="button"
-                                    @click="notifOpen = !notifOpen; if(notifOpen) { fetchNotifications(); if(unreadCount > 0) markAllRead(); }"
-                                    id="notification-bell-btn"
-                                    aria-label="Notifications"
-                                    title="Real-Time Notifications"
-                                    class="relative p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                                </svg>
-                                <span x-show="unreadCount > 0"
-                                      x-text="unreadCount > 99 ? '99+' : unreadCount"
-                                      x-cloak
-                                      class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-amber-500 text-white font-extrabold text-[10px] rounded-full flex items-center justify-center ring-2 ring-white dark:ring-slate-900 animate-pulse">
-                                </span>
-                            </button>
-
-                            <!-- Dropdown Menu -->
-                            <div x-show="notifOpen"
-                                 @click.away="notifOpen = false"
-                                 x-cloak
-                                 class="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-3 z-50 animate-in fade-in slide-in-from-top-2">
-                                
-                                <div class="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="text-xs font-bold font-heading text-slate-900 dark:text-white uppercase tracking-wider">
-                                            Notifications
-                                        </h3>
-                                        <span x-show="unreadCount > 0" x-text="unreadCount + ' new'" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300"></span>
-                                    </div>
-                                    <button type="button"
-                                            x-show="unreadCount > 0"
-                                            @click="markAllRead()"
-                                            class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
-                                        Mark all read
-                                    </button>
-                                </div>
-
-                                <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
-                                    <div x-show="loading" class="p-6 text-center text-xs text-slate-400">
-                                        Loading notifications...
-                                    </div>
-
-                                    <template x-for="item in notifications" :key="item.id">
-                                        <div class="p-3 sm:p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition flex items-start gap-3"
-                                             :class="{ 'bg-emerald-50/40 dark:bg-emerald-950/20': !item.read_at }">
-                                            <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-base shrink-0"
-                                                 x-text="item.data.icon || '🔔'">
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between gap-1">
-                                                    <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate" x-text="item.data.title || 'Notification'"></h4>
-                                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap" x-text="item.created_at"></span>
-                                                </div>
-                                                <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2" x-text="item.data.message"></p>
-                                                <template x-if="item.data.action_url">
-                                                    <a :href="item.data.action_url" class="inline-block mt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
-                                                        Open &rarr;
-                                                    </a>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </template>
-
-                                    <div x-show="!loading && notifications.length === 0" class="py-8 text-center text-xs text-slate-400 dark:text-slate-500">
-                                        No notifications yet
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Constant Super Admin / User Badge (No Dropdown, Constant Display) -->
-                        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 select-none"
-                             title="{{ Auth::user()->name }} ({{ Auth::user()->email }})">
-                            <div class="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                            </div>
-                            <div class="text-left hidden sm:block">
-                                <div class="text-xs font-bold text-slate-900 dark:text-white leading-tight">
-                                    {{ Auth::user()->name }}
-                                </div>
-                                <div class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 leading-tight flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                    {{ Auth::user()->isSuperAdmin() ? 'Super Admin' : (Auth::user()->isModerator() ? 'Staff Admin' : (Auth::user()->isWali() ? 'Guardian (Wali)' : 'Seeker')) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Right Controls: Standardized Header Actions (Messages -> Notifications -> Theme Toggle -> Avatar Account Menu) -->
+                    <x-header.header-actions />
                 </header>
 
                 <!-- Nikah Milestone Banner if pending -->
@@ -657,7 +370,7 @@
                 </div>
 
                 <!-- Main Content Area -->
-                <main class="flex-1 pb-16">
+                <main class="flex-1 pb-20 lg:pb-16">
                     @yield('content')
                 </main>
 
@@ -672,45 +385,54 @@
         {{-- ========================================================= --}}
         <div class="min-h-full flex flex-col">
             <!-- Public Header -->
-            <header class="sticky top-0 z-40 border-b border-slate-200/80 dark:border-slate-800 glass-header shadow-xs">
+            <header class="sticky top-0 z-40 border-b border-[var(--border-default)] bg-[var(--bg-surface)]/95 backdrop-blur-xs transition-colors">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex items-center justify-between h-16">
                         <!-- Brand Logo -->
                         <div class="flex items-center gap-3">
                             <a href="{{ route('landing') }}" class="flex items-center gap-2.5 group">
-                                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-10 h-10 rounded-xl object-cover shadow-md shadow-emerald-900/20 group-hover:scale-105 transition transform">
+                                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah" class="w-9 h-9 rounded-[var(--radius-sm)] object-cover shadow-xs border border-[var(--border-subtle)] group-hover:border-[var(--secondary-primary)] transition">
                                 <div>
-                                    <span class="font-heading font-extrabold text-xl tracking-tight text-emerald-950 dark:text-emerald-100 flex items-center gap-1.5">
-                                        Global<span class="text-amber-500">Nikkah</span>
+                                    <span class="font-serif text-xl font-bold tracking-tight text-[var(--accent-primary)] dark:text-[var(--text-primary)] flex items-center gap-1">
+                                        Global<span class="text-[var(--secondary-primary)]">Nikkah</span>
                                     </span>
-                                    <span class="text-[10px] uppercase font-bold tracking-widest text-emerald-700 dark:text-emerald-400 block -mt-1">Halal Matrimonial</span>
+                                    <span class="text-[10px] uppercase font-semibold tracking-wider text-[var(--text-muted)] block -mt-1">Verified Matrimonial Directory</span>
                                 </div>
                             </a>
                         </div>
 
                         <!-- Public Controls -->
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 sm:gap-3">
                             <a href="{{ route('how-it-works') }}"
-                               class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 px-2 py-2 transition {{ request()->routeIs('how-it-works') ? 'text-emerald-700 dark:text-emerald-400' : '' }}">
-                                <span class="text-emerald-500">✦</span>
-                                How it works
+                               class="hidden sm:inline-flex items-center text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--accent-primary)] px-2.5 py-1.5 rounded-[var(--radius-sm)] transition {{ request()->routeIs('how-it-works') ? 'text-[var(--accent-primary)] font-bold' : '' }}">
+                                How It Works
                             </a>
+
+                            <!-- Clean Light / Dark Toggle -->
                             <button type="button"
-                                    id="theme-toggle"
-                                    aria-label="Toggle Dark / Light Mode"
-                                    class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                                    onclick="
+                                        const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                                        if (next === 'dark') {
+                                            document.documentElement.classList.add('dark');
+                                        } else {
+                                            document.documentElement.classList.remove('dark');
+                                        }
+                                        localStorage.setItem('theme', next);
+                                    "
+                                    aria-label="Toggle dark / light mode"
+                                    class="p-2 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] text-[var(--text-secondary)] transition cursor-pointer">
+                                <svg class="w-4 h-4 hidden dark:block text-[var(--secondary-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                    <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
                                 </svg>
-                                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-slate-600 dark:text-slate-300" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                                <svg class="w-4 h-4 block dark:hidden text-[var(--text-secondary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
                                 </svg>
                             </button>
 
-                            <a href="{{ route('login') }}" class="text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 px-3 py-2">
-                                Log in
+                            <a href="{{ route('login') }}" class="text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--accent-primary)] px-3 py-2 transition">
+                                Sign In
                             </a>
-                            <a href="{{ route('register') }}" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-900/10 transition">
+                            <a href="{{ route('register') }}" class="btn-primary text-xs font-bold h-10 px-4 inline-flex items-center justify-center">
                                 Create Profile
                             </a>
                         </div>
@@ -770,6 +492,7 @@
                              { name: 'Payment Gateways & PayPal/Stripe Setup', cat: 'Billing', icon: '💰', url: '{{ route('admin.payment-settings') }}' },
                              @if(Auth::user()->isSuperAdmin())
                                  { name: 'Staff Management & Role Permissions', cat: 'Governance', icon: '👥', url: '{{ route('admin.staff') }}' },
+                                 { name: 'Compliance & Cookie Consent Governance', cat: 'Governance', icon: '🛡️', url: '{{ route('admin.compliance') }}' },
                              @endif
                              { name: 'Immutable Audit Logs', cat: 'Governance', icon: '📜', url: '{{ route('admin.audit-logs') }}' },
                              { name: 'Platform Policies & Security Rules', cat: 'Settings', icon: '⚙️', url: '{{ route('admin.settings') }}' },
@@ -966,30 +689,6 @@
 
         // Initialize Laravel Reverb Echo Listener
         document.addEventListener('DOMContentLoaded', function() {
-            const cookieConsentKey = 'global_nikkah_cookie_consent';
-            const cookieConsentBanner = document.getElementById('cookie-consent-banner');
-
-            try {
-                if (!localStorage.getItem(cookieConsentKey) && cookieConsentBanner) {
-                    cookieConsentBanner.classList.remove('hidden');
-                }
-            } catch (error) {
-                if (cookieConsentBanner) {
-                    cookieConsentBanner.classList.remove('hidden');
-                }
-            }
-
-            document.querySelectorAll('[data-cookie-consent]').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    try {
-                        localStorage.setItem(cookieConsentKey, button.dataset.cookieConsent);
-                    } catch (error) {
-                        // Continue with essential cookies when storage is unavailable.
-                    }
-
-                    cookieConsentBanner?.classList.add('hidden');
-                });
-            });
 
             @auth
                 const currentUserId = {{ Auth::id() }};
@@ -1078,5 +777,35 @@
             @endauth
         });
     </script>
+
+    {{-- Global Top Toast for Sign-Out & Status --}}
+    @if(session('status'))
+        <div x-data="{ show: true }"
+             x-show="show"
+             x-cloak
+             x-init="setTimeout(() => show = false, 5000)"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-4"
+             class="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-full px-4 pointer-events-none"
+             role="status"
+             aria-live="polite">
+            <div class="pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-default)] shadow-xl">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]"></span>
+                    <span class="text-xs font-semibold">{{ session('status') }}</span>
+                </div>
+                <button type="button" @click="show = false" class="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-sm font-bold leading-none p-1 focus:outline-none cursor-pointer">&times;</button>
+            </div>
+        </div>
+    @endif
+
+    {{-- Authenticated Mobile Bottom Tab Bar (5 items max: Discover, Interests, Messages, Shortlist, Profile) --}}
+    @auth
+        <x-header.mobile-tab-bar />
+    @endauth
 </body>
 </html>

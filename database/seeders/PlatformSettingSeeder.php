@@ -34,6 +34,11 @@ class PlatformSettingSeeder extends Seeder
 
         PlatformSetting::set('simulated_payment_enabled', true, 'boolean', 'payment', 'Allow Developer / Demo Mode payment option on checkout');
 
+        // Bot Protection (Cloudflare Turnstile CAPTCHA)
+        PlatformSetting::set('turnstile_enabled', true, 'boolean', 'security', 'Activate Cloudflare Turnstile CAPTCHA on registration and login');
+        PlatformSetting::set('turnstile_site_key', (string) config('services.turnstile.site_key', '1x00000000000000000000AA'), 'string', 'security', 'Cloudflare Turnstile Site Key (public)');
+        PlatformSetting::set('turnstile_secret_key', (string) config('services.turnstile.secret_key', '1x0000000000000000000000000000000AA'), 'string', 'security', 'Cloudflare Turnstile Secret Key (private)');
+
         // Pre-configure promotional discount codes (Section 3.5)
         DiscountCode::updateOrCreate(['code' => 'HALAL20'], [
             'discount_percentage' => 20,

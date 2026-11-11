@@ -1,76 +1,95 @@
 @extends('layouts.app')
 
-@section('title', 'Sign In - Global Nikkah')
+@section('title', 'Sign In • Global Nikkah')
 
 @section('content')
-<div class="py-16 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-md mx-auto px-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 transition-colors">
-            <div class="text-center mb-6">
-                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-16 h-16 rounded-2xl object-cover shadow-md mx-auto mb-3">
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Welcome Back</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sign in to review matches, interests, and chaperoned messages.</p>
+<div class="py-12 sm:py-16 bg-[var(--bg-canvas)] min-h-[calc(100vh-4rem)] flex items-center justify-center">
+    <div class="w-full max-w-md px-4 sm:px-6">
+        <div class="card-ledger pattern-header p-6 sm:p-8 bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-sm">
+
+            <!-- Dignified Header -->
+            <div class="text-center pb-5 mb-5 border-b border-[var(--border-subtle)]">
+                <a href="{{ route('landing') }}" class="inline-block mb-3">
+                    <img src="{{ asset('images/logo.png') }}" alt="Global Nikah" class="w-12 h-12 rounded-[var(--radius-sm)] object-cover mx-auto border border-[var(--border-default)] shadow-xs">
+                </a>
+                <h1 class="text-2xl font-serif font-bold text-[var(--text-primary)]">
+                    Assalamu Alaikum
+                </h1>
+                <p class="text-xs text-[var(--text-secondary)] mt-1">
+                    Sign in to continue your matrimonial search or review guardian requests.
+                </p>
             </div>
+
+            @if(session('status'))
+                <div class="mb-4 p-3 rounded-[var(--radius-sm)] bg-[var(--color-info-bg)] border border-[var(--color-info-border)] text-[var(--color-info)] text-xs">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-4 p-3 rounded-[var(--radius-sm)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)] text-[var(--color-danger)] text-xs space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
 
             <form action="{{ route('login') }}" method="POST" class="space-y-4">
                 @csrf
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
-                    <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                           placeholder="your.email@domain.com">
+                    <label for="email" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Email address</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                           class="w-full h-11 px-3.5 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                           placeholder="your.email@example.com">
                 </div>
 
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Password</label>
-                        <a href="{{ route('password.request') }}" class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label for="password" class="block text-xs font-semibold text-[var(--text-secondary)]">Password</label>
+                        <a href="{{ route('password.request') }}" class="text-xs font-semibold text-[var(--secondary-text)] hover:underline">
                             Forgot password?
                         </a>
                     </div>
                     <div class="relative" x-data="{ showPassword: false }">
-                        <input :type="showPassword ? 'text' : 'password'" name="password" required
-                               class="w-full px-4 py-2.5 pr-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                               placeholder="••••••••">
+                        <input :type="showPassword ? 'text' : 'password'" id="password" name="password" required
+                               class="w-full h-11 px-3.5 pr-11 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                               placeholder="Enter your password">
                         <button type="button" @click="showPassword = !showPassword"
                                 aria-label="Toggle password visibility"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none cursor-pointer p-1"
-                                :title="showPassword ? 'Hide password' : 'View password'"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] focus:outline-none cursor-pointer p-1"
                                 tabindex="-1">
-                            <!-- Eye icon (when hidden) -->
-                            <svg x-show="!showPassword" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <svg x-show="!showPassword" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
-                            <!-- Eye-slash icon (when visible) -->
-                            <svg x-show="showPassword" style="display: none;" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                            <svg x-show="showPassword" style="display: none;" class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/>
                             </svg>
                         </button>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-between text-xs pt-1">
-                    <label class="flex items-center gap-2 text-slate-600 dark:text-slate-400 cursor-pointer">
-                        <input type="checkbox" name="remember" class="rounded text-emerald-600 focus:ring-emerald-500 dark:bg-slate-800 dark:border-slate-700">
-                        <span>Remember me</span>
+                    <label class="flex items-center gap-2 text-[var(--text-secondary)] cursor-pointer">
+                        <input type="checkbox" name="remember" class="rounded-[var(--radius-xs)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] border-[var(--border-default)]">
+                        <span>Keep me signed in</span>
                     </label>
                 </div>
 
-                @if($turnstileEnabled)
-                    <div class="flex justify-center pt-1">
-                        <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
-                    </div>
-                @endif
+                <x-turnstile-captcha :enabled="$turnstileEnabled" :site-key="$turnstileSiteKey" action="login" />
 
-                <button type="submit" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-900/15 transition mt-2">
-                    Sign In
+                <button type="submit" class="btn-primary w-full text-sm font-bold h-12 mt-2">
+                    Sign in to account
                 </button>
             </form>
 
-            <div class="text-center mt-6 pt-4 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
-                Looking to find a spouse? <a href="{{ route('register') }}" class="font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300">Create a new profile</a>
+            <div class="text-center mt-6 pt-4 text-xs text-[var(--text-secondary)] border-t border-[var(--border-subtle)] space-y-2">
+                <p>
+                    Seeking marriage? <a href="{{ route('register') }}" class="font-bold text-[var(--accent-text)] hover:underline">Create a new profile</a>
+                </p>
+                <p class="text-[11px] text-[var(--text-muted)]">
+                    Guardian (Wali) accounts are free forever.
+                </p>
             </div>
         </div>
     </div>

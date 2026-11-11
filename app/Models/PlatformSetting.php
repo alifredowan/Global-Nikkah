@@ -20,19 +20,23 @@ class PlatformSetting extends Model
 
     public static function get(string $key, mixed $default = null): mixed
     {
-        return Cache::remember("platform_setting_{$key}", 3600, function () use ($key, $default) {
-            $setting = self::where('key', $key)->first();
-            if (! $setting) {
-                return $default;
-            }
+        try {
+            return Cache::remember("platform_setting_{$key}", 3600, function () use ($key, $default) {
+                $setting = self::where('key', $key)->first();
+                if (! $setting) {
+                    return $default;
+                }
 
-            return match ($setting->type) {
-                'boolean' => filter_var($setting->value, FILTER_VALIDATE_BOOLEAN),
-                'integer' => (int) $setting->value,
-                'json' => json_decode((string) $setting->value, true) ?? $default,
-                default => $setting->value,
-            };
-        });
+                return match ($setting->type) {
+                    'boolean' => filter_var($setting->value, FILTER_VALIDATE_BOOLEAN),
+                    'integer' => (int) $setting->value,
+                    'json' => json_decode((string) $setting->value, true) ?? $default,
+                    default => $setting->value,
+                };
+            });
+        } catch (\Throwable) {
+            return $default;
+        }
     }
 
     public static function set(string $key, mixed $value, string $type = 'string', string $group = 'general', ?string $description = null): self

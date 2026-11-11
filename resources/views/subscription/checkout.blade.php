@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout - ' . $planDetails['name'])
+@section('title', 'Checkout — ' . $planDetails['name'])
 
 @section('content')
-<div class="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
-    <div class="max-w-xl mx-auto px-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-8"
+<div class="py-12 bg-[var(--bg-canvas)] min-h-screen">
+    <div class="max-w-xl mx-auto px-4 sm:px-6">
+        <div class="card-ledger p-7 sm:p-10 bg-[var(--bg-surface)]"
              x-data="{
                 cycle: 'one_time_marriage',
                 basePrice: {{ (float) ($planDetails['one_time_price'] ?? $planDetails['monthly_price']) }},
@@ -64,23 +64,30 @@
                     }
                 }
              }">
-            <div class="text-center mb-6">
-                <span class="px-3.5 py-1 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 uppercase tracking-wider inline-flex items-center gap-1.5 shadow-xs">
-                    <span>💍</span> Single Marriage Pass
+
+            <!-- Header -->
+            <div class="text-center mb-8 space-y-2">
+                <span class="badge-status text-[var(--accent-text)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-xs inline-flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Single Marriage Pass</span>
                 </span>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading mt-2">Acquire {{ $planDetails['name'] }}</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">One-time payment. Valid until your confirmed Nikah milestone.</p>
+                <h1 class="font-serif text-2xl sm:text-3xl font-semibold text-[var(--text-primary)]">
+                    Acquire {{ $planDetails['name'] }}
+                </h1>
+                <p class="text-xs text-[var(--text-secondary)]">
+                    One-time payment. Valid until your confirmed Nikah milestone.
+                </p>
             </div>
 
             @if(request()->query('status') === 'cancelled')
-                <div class="mb-4 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs flex items-center gap-2">
-                    <span>ℹ️</span>
-                    <span>Checkout was cancelled. You have not been charged. Choose your payment method below to complete whenever you're ready.</span>
+                <div class="mb-5 p-3.5 rounded-[var(--radius-md)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[var(--accent-text)] text-xs flex items-center gap-2">
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <span>Checkout was cancelled. No charges were made. Select your preferred payment method below whenever you are ready.</span>
                 </div>
             @endif
 
             @if($errors->any() && !$errors->has('promo_code'))
-                <div class="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs">
+                <div class="mb-5 p-3.5 rounded-[var(--radius-md)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)] text-[var(--color-danger)] text-xs space-y-1">
                     @foreach($errors->all() as $err)
                         <p>{{ $err }}</p>
                     @endforeach
@@ -92,72 +99,72 @@
                 <input type="hidden" name="plan" value="{{ $plan }}">
                 <input type="hidden" name="billing_cycle" value="one_time_marriage">
 
-                <!-- One-Time Single Marriage Guarantee Information Card -->
-                <div class="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-2">
+                <!-- Pass Validity & Ethical Note -->
+                <div class="p-4 rounded-[var(--radius-md)] bg-[var(--bg-canvas)] border border-[var(--border-default)] space-y-1.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
-                            <span>🛡️</span> Pass Validity & Term
+                        <span class="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[var(--brand-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <span>Single Marriage Pass Terms</span>
                         </span>
-                        <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white uppercase tracking-wider">
+                        <span class="badge-status text-[var(--color-success)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)] text-[10px]">
                             Active Until Nikah
                         </span>
                     </div>
-                    <p class="text-xs text-emerald-800/90 dark:text-emerald-300 leading-relaxed">
-                        This is a single one-time charge of <strong class="font-extrabold">${{ number_format($planDetails['monthly_price'], 2) }}</strong>. You will <strong>never be auto-billed</strong> monthly or annually. Your pass remains active until you register and confirm your marriage on Global Nikkah.
+                    <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+                        This is a single one-time payment of <strong class="font-semibold text-[var(--text-primary)]">${{ number_format($planDetails['monthly_price'], 2) }}</strong>. You will <strong>never be auto-charged</strong> again. Your pass remains active until you and your spouse record your confirmed Nikah.
                     </p>
                 </div>
 
-                <!-- Promo Code Box (FR-3.5 with Special User Extra Discount Support) -->
+                <!-- Promo Code -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Promotional Discount Code</label>
+                    <label for="promo_code" class="block text-xs font-semibold text-[var(--text-primary)] mb-1.5">Promotional Discount Code</label>
                     <div class="flex gap-2">
-                        <input type="text" name="promo_code" x-model="promoCode" placeholder="e.g. PRO50, SPECIAL30"
+                        <input type="text" id="promo_code" name="promo_code" x-model="promoCode" placeholder="e.g. SPECIAL30"
                                @keydown.enter.prevent="checkPromo()"
-                               class="flex-1 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none uppercase font-mono font-bold">
+                               class="flex-1 h-11 px-3.5 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] uppercase font-mono font-medium">
                         <button type="button" @click="checkPromo()" :disabled="promoLoading"
-                                class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold transition cursor-pointer disabled:opacity-50">
+                                class="btn-secondary h-11 px-4 text-xs font-semibold shrink-0 cursor-pointer disabled:opacity-50">
                             <span x-show="!promoLoading">Apply</span>
                             <span x-show="promoLoading">Checking...</span>
                         </button>
                     </div>
 
-                    <!-- Live feedback messages -->
-                    <div x-show="promoMessage" x-cloak class="mt-2 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-1.5">
-                        <span>✓</span>
+                    <div x-show="promoMessage" x-cloak class="mt-2 p-2.5 rounded-[var(--radius-sm)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)] text-[var(--color-success)] text-xs font-medium flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                         <span x-text="promoMessage"></span>
                     </div>
 
-                    <div x-show="promoError" x-cloak class="mt-2 p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-1.5">
-                        <span>⚠️</span>
+                    <div x-show="promoError" x-cloak class="mt-2 p-2.5 rounded-[var(--radius-sm)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)] text-[var(--color-danger)] text-xs font-medium flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <span x-text="promoError"></span>
                     </div>
-
-                    <span class="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Special VIP discount codes can be entered here to avail exclusive discounts on eligible packages.</span>
                 </div>
 
-                <!-- Live Order Summary -->
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
-                    <div class="flex items-center justify-between text-slate-600 dark:text-slate-400">
+                <!-- Order Summary -->
+                <div class="p-4 rounded-[var(--radius-md)] bg-[var(--bg-canvas)] border border-[var(--border-default)] space-y-2 text-xs">
+                    <div class="flex items-center justify-between text-[var(--text-secondary)]">
                         <span>One-Time Marriage Pass ({{ $planDetails['name'] }}):</span>
-                        <span class="font-bold text-slate-900 dark:text-white" :class="promoApplied ? 'line-through text-slate-400 dark:text-slate-500' : ''">
+                        <span class="font-semibold text-[var(--text-primary)]" :class="promoApplied ? 'line-through text-[var(--text-muted)]' : ''">
                             $<span x-text="currentBasePrice().toFixed(2)"></span>
                         </span>
                     </div>
 
-                    <div x-show="promoApplied" x-cloak class="flex items-center justify-between text-emerald-700 dark:text-emerald-400 font-bold">
-                        <span>Extra Promo Discount (<span x-text="discountPercentage"></span>%):</span>
+                    <div x-show="promoApplied" x-cloak class="flex items-center justify-between text-[var(--color-success)] font-medium">
+                        <span>Promotional Discount (<span x-text="discountPercentage"></span>%):</span>
                         <span>-$<span x-text="currentDiscount().toFixed(2)"></span></span>
                     </div>
 
-                    <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-sm font-extrabold text-slate-900 dark:text-white">
-                        <span>Total Due Today (1-Time):</span>
-                        <span class="text-base text-emerald-700 dark:text-emerald-400">$<span x-text="currentFinalPrice().toFixed(2)"></span></span>
+                    <div class="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-sm font-semibold text-[var(--text-primary)]">
+                        <span>Total Due Today:</span>
+                        <span class="font-serif text-lg text-[var(--brand-primary)]">
+                            $<span x-text="currentFinalPrice().toFixed(2)"></span>
+                        </span>
                     </div>
                 </div>
 
-                <!-- Payment Gateway Selector (Stripe & PayPal) -->
+                <!-- Payment Method Selector -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    <label class="block text-xs font-semibold text-[var(--text-primary)] mb-2">
                         Select Payment Method
                     </label>
 
@@ -165,143 +172,114 @@
 
                     <div class="space-y-3">
                         @if($stripeEnabled ?? true)
-                            <!-- Stripe Card Option -->
                             <div @click="paymentMethod = 'stripe'"
                                  :class="paymentMethod === 'stripe'
-                                    ? 'border-2 border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/40 ring-2 ring-emerald-500/20'
-                                    : 'border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 hover:border-slate-300 dark:hover:border-slate-700'"
-                                 class="p-4 rounded-2xl cursor-pointer transition-all duration-200 relative group">
+                                    ? 'border-[var(--brand-primary)] bg-[var(--accent-subtle)] ring-1 ring-[var(--brand-primary)]'
+                                    : 'border-[var(--border-default)] bg-[var(--bg-canvas)] hover:border-[var(--border-strong)]'"
+                                 class="p-4 rounded-[var(--radius-md)] border cursor-pointer transition">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm shadow-sm">
-                                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                            </svg>
+                                        <div class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--brand-primary)] text-white flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                                         </div>
                                         <div>
                                             <div class="flex items-center gap-2">
-                                                <span class="text-sm font-bold text-slate-900 dark:text-white">Credit / Debit Card</span>
-                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">Stripe</span>
+                                                <span class="text-sm font-semibold text-[var(--text-primary)]">Credit or Debit Card</span>
+                                                <span class="badge-status text-[var(--accent-text)] bg-[var(--bg-surface)] border border-[var(--accent-border)] text-[10px]">Stripe</span>
                                             </div>
-                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Visa, Mastercard, Amex, Apple Pay & Google Pay</p>
+                                            <p class="text-xs text-[var(--text-muted)] mt-0.5">Visa, Mastercard, American Express, Apple Pay</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center">
-                                        <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition"
-                                              :class="paymentMethod === 'stripe' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300 dark:border-slate-600'">
-                                            <span x-show="paymentMethod === 'stripe'" class="w-2 h-2 rounded-full bg-white"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-                                    <span>🔒 256-bit encrypted checkout</span>
-                                    <span class="font-mono text-[10px]">PCI-DSS Compliant</span>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if($paypalEnabled ?? true)
-                            <!-- PayPal Option -->
-                            <div @click="paymentMethod = 'paypal'"
-                                 :class="paymentMethod === 'paypal'
-                                    ? 'border-2 border-sky-600 bg-sky-50/50 dark:bg-sky-950/40 ring-2 ring-sky-500/20'
-                                    : 'border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 hover:border-slate-300 dark:hover:border-slate-700'"
-                                 class="p-4 rounded-2xl cursor-pointer transition-all duration-200 relative group">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-xl bg-[#003087] text-white flex items-center justify-center font-black text-sm shadow-sm">
-                                            <span class="font-sans italic font-extrabold text-lg tracking-tighter">P<span class="text-[#0079C1]">P</span></span>
-                                        </div>
-                                        <div>
-                                            <div class="flex items-center gap-2">
-                                                <span class="text-sm font-bold text-slate-900 dark:text-white">PayPal</span>
-                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300">Buyer Protection</span>
-                                            </div>
-                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pay via PayPal balance, bank account, or PayPal credit</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition"
-                                              :class="paymentMethod === 'paypal' ? 'border-sky-600 bg-sky-600 text-white' : 'border-slate-300 dark:border-slate-600'">
-                                            <span x-show="paymentMethod === 'paypal'" class="w-2 h-2 rounded-full bg-white"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-                                    <span>🛡️ PayPal Official Gateway</span>
-                                    <span class="font-mono text-[10px]">Instant Activation</span>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if($simulatedEnabled ?? true)
-                            <!-- Instant / Test Mode Option (Available in local/testing environment or for instant review) -->
-                            <div @click="paymentMethod = 'simulated'"
-                                 :class="paymentMethod === 'simulated'
-                                    ? 'border-2 border-slate-600 bg-slate-100 dark:bg-slate-800 ring-2 ring-slate-400/20'
-                                    : 'border border-dashed border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 hover:border-slate-400'"
-                                 class="p-3.5 rounded-2xl cursor-pointer transition-all duration-200">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="text-lg">🧪</span>
-                                        <div>
-                                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Developer / Demo Mode</span>
-                                            <p class="text-[11px] text-slate-400">Instantly activate pass without external payment gateway</p>
-                                        </div>
-                                    </div>
-                                    <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center transition"
-                                          :class="paymentMethod === 'simulated' ? 'border-slate-700 bg-slate-700 text-white' : 'border-slate-300 dark:border-slate-600'">
-                                        <span x-show="paymentMethod === 'simulated'" class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition"
+                                          :class="paymentMethod === 'stripe' ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white' : 'border-[var(--border-default)]'">
+                                        <span x-show="paymentMethod === 'stripe'" class="w-2 h-2 rounded-full bg-white"></span>
                                     </span>
                                 </div>
                             </div>
                         @endif
 
-                        @if(!($stripeEnabled ?? true) && !($paypalEnabled ?? true) && !($simulatedEnabled ?? true))
-                            <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs">
-                                ⚠️ Online payment methods are currently being updated by administrators. Please contact support.
+                        @if($paypalEnabled ?? true)
+                            <div @click="paymentMethod = 'paypal'"
+                                 :class="paymentMethod === 'paypal'
+                                    ? 'border-[var(--brand-primary)] bg-[var(--accent-subtle)] ring-1 ring-[var(--brand-primary)]'
+                                    : 'border-[var(--border-default)] bg-[var(--bg-canvas)] hover:border-[var(--border-strong)]'"
+                                 class="p-4 rounded-[var(--radius-md)] border cursor-pointer transition">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-[var(--radius-sm)] bg-[#003087] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                                            PP
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-sm font-semibold text-[var(--text-primary)]">PayPal Express</span>
+                                                <span class="badge-status text-[var(--accent-text)] bg-[var(--bg-surface)] border border-[var(--accent-border)] text-[10px]">Buyer Protection</span>
+                                            </div>
+                                            <p class="text-xs text-[var(--text-muted)] mt-0.5">Pay via PayPal balance, bank account, or card</p>
+                                        </div>
+                                    </div>
+                                    <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition"
+                                          :class="paymentMethod === 'paypal' ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white' : 'border-[var(--border-default)]'">
+                                        <span x-show="paymentMethod === 'paypal'" class="w-2 h-2 rounded-full bg-white"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($simulatedEnabled ?? true)
+                            <div @click="paymentMethod = 'simulated'"
+                                 :class="paymentMethod === 'simulated'
+                                    ? 'border-[var(--brand-primary)] bg-[var(--bg-surface)] ring-1 ring-[var(--brand-primary)]'
+                                    : 'border-dashed border-[var(--border-default)] bg-[var(--bg-canvas)] hover:border-[var(--border-strong)]'"
+                                 class="p-3.5 rounded-[var(--radius-md)] border cursor-pointer transition">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <svg class="w-4 h-4 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                        <div>
+                                            <span class="text-xs font-semibold text-[var(--text-primary)]">Developer Test Mode</span>
+                                            <p class="text-[11px] text-[var(--text-muted)]">Instantly activate pass without payment gateway</p>
+                                        </div>
+                                    </div>
+                                    <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center transition"
+                                          :class="paymentMethod === 'simulated' ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white' : 'border-[var(--border-default)]'">
+                                        <span x-show="paymentMethod === 'simulated'" class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    </span>
+                                </div>
                             </div>
                         @endif
                     </div>
                 </div>
 
-                <!-- Submit Button with Dynamic Payment Method Label -->
-                <button type="submit"
-                        :class="{
-                            'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-emerald-900/20': paymentMethod === 'stripe',
-                            'bg-gradient-to-r from-[#00457C] to-[#0079C1] hover:from-[#003865] hover:to-[#0068a8] shadow-sky-900/20': paymentMethod === 'paypal',
-                            'bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 shadow-slate-900/20': paymentMethod === 'simulated'
-                        }"
-                        class="w-full py-4 rounded-2xl text-white font-extrabold text-sm shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]">
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary w-full h-12 text-sm font-semibold tracking-wide cursor-pointer flex items-center justify-center gap-2">
                     <template x-if="paymentMethod === 'stripe'">
                         <span class="flex items-center gap-2">
                             <span>Proceed to Stripe Checkout</span>
-                            <span class="text-base">→</span>
+                            <span aria-hidden="true">&rarr;</span>
                         </span>
                     </template>
                     <template x-if="paymentMethod === 'paypal'">
                         <span class="flex items-center gap-2">
                             <span>Pay with PayPal</span>
-                            <span class="text-base">→</span>
+                            <span aria-hidden="true">&rarr;</span>
                         </span>
                     </template>
                     <template x-if="paymentMethod === 'simulated'">
                         <span class="flex items-center gap-2">
                             <span>Activate Marriage Pass (Demo Mode)</span>
-                            <span class="text-base">✓</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                         </span>
                     </template>
                 </button>
 
-                <!-- Trust and Guarantee Badges -->
-                <div class="pt-2 grid grid-cols-2 gap-2 text-center text-[10px] text-slate-500 dark:text-slate-400">
-                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-1.5">
-                        <span>⚡</span>
-                        <span class="font-medium">Instant Activation</span>
+                <!-- Trust signals -->
+                <div class="pt-3 border-t border-[var(--border-subtle)] grid grid-cols-2 gap-3 text-center text-[11px] text-[var(--text-muted)]">
+                    <div class="flex items-center justify-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-[var(--brand-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Instant Activation</span>
                     </div>
-                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-1.5">
-                        <span>💍</span>
-                        <span class="font-medium">Valid Until Confirmed Nikah</span>
+                    <div class="flex items-center justify-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-[var(--brand-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>Valid Until Confirmed Nikah</span>
                     </div>
                 </div>
             </form>

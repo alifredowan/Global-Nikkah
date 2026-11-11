@@ -9,7 +9,6 @@ use App\Models\PhotoAccessGrant;
 use App\Models\Profile;
 use App\Models\Subscription;
 use App\Models\User;
-use App\Rules\Turnstile;
 use App\Services\AccountDeletionService;
 use App\Services\TurnstileService;
 use App\Services\WaliWorkflowService;
@@ -22,10 +21,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password as PasswordBroker;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
-use Propaganistas\LaravelPhone\Rules\Phone;
 
 class AuthController extends Controller
 {
@@ -164,7 +161,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('landing');
+        return redirect()->route('landing')->with('status', 'You have been signed out.');
     }
 
     public function deactivate(Request $request): RedirectResponse

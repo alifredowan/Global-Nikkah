@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\ComplianceController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\PlatformSettingController;
 use App\Http\Controllers\Admin\PromoCodeController;
@@ -205,5 +206,15 @@ class AdminController extends Controller
     public function testPaymentGateway(Request $request): RedirectResponse
     {
         return app(PlatformSettingController::class)->testPaymentGateway($request);
+    }
+
+    public function compliance(): View
+    {
+        return app(ComplianceController::class)->index();
+    }
+
+    public function updateCompliance(Request $request): RedirectResponse
+    {
+        return app(ComplianceController::class)->update($request);
     }
 }

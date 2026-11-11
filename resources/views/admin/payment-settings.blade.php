@@ -323,7 +323,7 @@
                         Stripe Settlement Currency *
                     </label>
                     <select name="stripe_currency" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500">
-                        @foreach(['USD' => 'USD ($) - US Dollar', 'GBP' => 'GBP (£) - British Pound', 'EUR' => 'EUR (€) - Euro', 'CAD' => 'CAD ($) - Canadian Dollar', 'AUD' => 'AUD ($) - Australian Dollar', 'BDT' => 'BDT (৳) - Bangladeshi Taka', 'AED' => 'AED (د.إ) - UAE Dirham', 'SAR' => 'SAR (﷼) - Saudi Riyal'] as $code => $label)
+                        @foreach(['USD' => 'USD ($) - US Dollar', 'GBP' => 'GBP (£) - British Pound', 'EUR' => 'EUR (€) - Euro', 'CAD' => 'CAD ($) - Canadian Dollar', 'AUD' => 'AUD ($) - Australian Dollar', 'BDT' => 'BDT - Bangladeshi Taka', 'AED' => 'AED (د.إ) - UAE Dirham', 'SAR' => 'SAR (﷼) - Saudi Riyal'] as $code => $label)
                             <option value="{{ $code }}" {{ strtoupper($stripeSettings['currency']) === $code ? 'selected' : '' }}>
                                 {{ $label }}
                             </option>

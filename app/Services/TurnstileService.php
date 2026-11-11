@@ -16,13 +16,26 @@ class TurnstileService
 
     public function __construct()
     {
-        $this->enabled = (bool) PlatformSetting::get('turnstile_enabled', false);
-        $this->siteKey = PlatformSetting::get('turnstile_site_key') ?: config('services.turnstile.site_key');
-        $this->secretKey = PlatformSetting::get('turnstile_secret_key') ?: config('services.turnstile.secret_key');
+        $dbEnabled = PlatformSetting::get('turnstile_enabled');
+        if ($dbEnabled !== null) {
+            $this->enabled = (bool) $dbEnabled;
+        } else {
+            $this->enabled = (bool) config('services.turnstile.enabled', true);
+        }
+
+        $dbSiteKey = PlatformSetting::get('turnstile_site_key');
+        $this->siteKey = ! empty($dbSiteKey) ? $dbSiteKey : config('services.turnstile.site_key');
+
+        $dbSecretKey = PlatformSetting::get('turnstile_secret_key');
+        $this->secretKey = ! empty($dbSecretKey) ? $dbSecretKey : config('services.turnstile.secret_key');
     }
 
     public function isEnabled(): bool
     {
+        if (app()->environment('testing') && ! config('services.turnstile.enabled_in_testing', false)) {
+            return false;
+        }
+
         return $this->enabled && $this->isConfigured();
     }
 
@@ -46,8 +59,13 @@ class TurnstileService
             return false;
         }
 
+        // Fast-path for dummy test keys or simulated verification tokens in dev/testing
+        if ($this->secretKey === '1x0000000000000000000000000000000AA' && in_array($token, ['cf-turnstile-dummy-pass', 'cf-verified-turnstile-token'], true)) {
+            return true;
+        }
+
         try {
-            $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+            $response = Http::asForm()->timeout(5)->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
                 'secret' => $this->secretKey,
                 'response' => $token,
                 'remoteip' => $ip,
@@ -56,6 +74,10 @@ class TurnstileService
             return (bool) ($response->json('success') ?? false);
         } catch (\Throwable $e) {
             Log::warning('Turnstile verification request failed: '.$e->getMessage());
+
+            if ($this->secretKey === '1x0000000000000000000000000000000AA') {
+                return true;
+            }
 
             return false;
         }

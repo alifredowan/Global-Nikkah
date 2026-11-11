@@ -33,8 +33,21 @@ class NotificationController extends Controller
                     $itemData['interest_status'] = $interests[$itemData['interest_id']]->status;
                 }
 
+                $type = $n->type ?? '';
+                $dataType = $itemData['type'] ?? '';
+                $category = 'general';
+
+                if (str_contains($type, 'Interest') || str_contains($dataType, 'interest')) {
+                    $category = 'interests';
+                } elseif (str_contains($type, 'ChatMessage') || str_contains($dataType, 'message') || str_contains($dataType, 'chat')) {
+                    $category = 'messages';
+                } elseif (str_contains($type, 'Wali') || str_contains($dataType, 'wali') || str_contains($dataType, 'family')) {
+                    $category = 'family';
+                }
+
                 return [
                     'id' => $n->id,
+                    'category' => $category,
                     'data' => $itemData,
                     'read_at' => $n->read_at,
                     'created_at' => $n->created_at->diffForHumans(),

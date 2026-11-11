@@ -1,23 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'Reset Password - Global Nikkah')
+@section('title', 'Set New Password • Global Nikkah')
 
 @section('content')
-<div class="py-16 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-md mx-auto px-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 transition-colors">
-            
-            <div class="text-center mb-6">
-                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-16 h-16 rounded-2xl object-cover shadow-md mx-auto mb-3">
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Reset Password</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Enter your new secure password below to regain access to your account.
+<div class="py-12 sm:py-16 bg-[var(--bg-canvas)] min-h-[calc(100vh-4rem)] flex items-center justify-center">
+    <div class="w-full max-w-md px-4 sm:px-6">
+        <div class="card-ledger pattern-header p-6 sm:p-8 bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-sm">
+
+            <div class="text-center pb-5 mb-5 border-b border-[var(--border-subtle)]">
+                <a href="{{ route('landing') }}" class="inline-block mb-3">
+                    <img src="{{ asset('images/logo.png') }}" alt="Global Nikah" class="w-12 h-12 rounded-[var(--radius-sm)] object-cover mx-auto border border-[var(--border-default)] shadow-xs">
+                </a>
+                <h1 class="text-2xl font-serif font-bold text-[var(--text-primary)]">Set a new password</h1>
+                <p class="text-xs text-[var(--text-secondary)] mt-1">
+                    Choose a strong, memorable password to secure your matrimonial profile.
                 </p>
             </div>
 
             <!-- Validation Errors -->
             @if ($errors->any())
-                <div class="mb-4 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs font-semibold text-rose-800 dark:text-rose-200">
+                <div class="mb-4 p-3.5 rounded-[var(--radius-sm)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)] text-xs text-[var(--color-danger)]">
                     <ul class="list-disc list-inside space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -31,67 +33,59 @@
                 <input type="hidden" name="token" value="{{ $token }}">
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                        Email Address
+                    <label for="email" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
+                        Email address
                     </label>
-                    <input type="email" name="email" value="{{ old('email', $email) }}" required autofocus
-                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                           placeholder="your.email@domain.com">
+                    <input type="email" id="email" name="email" value="{{ old('email', $email) }}" required autofocus
+                           class="w-full h-11 px-3.5 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                           placeholder="your.email@example.com">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                        New Password
+                    <label for="password" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
+                        New password
                     </label>
                     <div class="relative" x-data="{ showPass: false }">
-                        <input :type="showPass ? 'text' : 'password'" name="password" required
-                               class="w-full px-4 py-2.5 pr-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                               placeholder="••••••••">
+                        <input :type="showPass ? 'text' : 'password'" id="password" name="password" required
+                               class="w-full h-11 px-3.5 pr-11 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                               placeholder="At least 8 characters">
                         <button type="button" @click="showPass = !showPass"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none cursor-pointer p-1"
-                                :title="showPass ? 'Hide password' : 'View password'"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 cursor-pointer"
+                                aria-label="Toggle password visibility"
                                 tabindex="-1">
-                            <svg x-show="!showPass" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                            <svg x-show="showPass" style="display: none;" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
                         </button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                        Confirm New Password
+                    <label for="password_confirmation" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
+                        Confirm new password
                     </label>
                     <div class="relative" x-data="{ showConfirm: false }">
-                        <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required
-                               class="w-full px-4 py-2.5 pr-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                               placeholder="••••••••">
+                        <input :type="showConfirm ? 'text' : 'password'" id="password_confirmation" name="password_confirmation" required
+                               class="w-full h-11 px-3.5 pr-11 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                               placeholder="Re-enter password">
                         <button type="button" @click="showConfirm = !showConfirm"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none cursor-pointer p-1"
-                                :title="showConfirm ? 'Hide password' : 'View password'"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 cursor-pointer"
+                                aria-label="Toggle password visibility"
                                 tabindex="-1">
-                            <svg x-show="!showConfirm" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                            <svg x-show="showConfirm" style="display: none;" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-900/15 transition mt-2">
-                    Reset Password & Sign In
+                <button type="submit" class="btn-primary w-full text-xs font-bold py-3 mt-2">
+                    Update password &amp; sign in
                 </button>
             </form>
 
-            <div class="text-center mt-6 pt-4 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
-                Back to <a href="{{ route('login') }}" class="font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300">Sign in</a>
+            <div class="text-center mt-6 pt-4 text-xs text-[var(--text-muted)] border-t border-[var(--border-subtle)]">
+                Back to <a href="{{ route('login') }}" class="font-bold text-[var(--accent-text)] hover:underline">Sign in</a>
             </div>
 
         </div>

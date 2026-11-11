@@ -1,122 +1,203 @@
 @extends('layouts.app')
 
-@section('title', 'Guardian (Wali) Settings - Global Nikkah')
+@section('title', 'Guardian (Wali) Involvement — Global Nikkah')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="py-10 bg-[var(--bg-canvas)] min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Guardian (Wali) Linkage</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Configure guardian involvement to safeguard your marriage search with Islamic wisdom (FR-4.3, 6.2).</p>
+        <!-- Breadcrumb & Header -->
+        <div class="space-y-3">
+            <nav class="flex items-center gap-2 text-xs text-[var(--text-muted)]" aria-label="Breadcrumb">
+                <a href="{{ route('profile.show') }}" class="hover:text-[var(--text-primary)] transition">Profile</a>
+                <span>/</span>
+                <span class="text-[var(--text-primary)] font-medium">Guardian Involvement</span>
+            </nav>
+
+            <div class="card-ledger pattern-header p-6 sm:p-8 bg-[var(--bg-surface)]">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-2">
+                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-[var(--radius-sm)] bg-[var(--accent-subtle)] text-[var(--accent-text)] text-xs font-semibold">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <span>Family-First Nikah</span>
+                        </div>
+                        <h1 class="font-serif text-2xl sm:text-3xl font-semibold text-[var(--text-primary)] tracking-tight">
+                            Link Your Guardian (Wali)
+                        </h1>
+                        <p class="text-sm text-[var(--text-secondary)] max-w-xl leading-relaxed">
+                            A trusted guardian provides wisdom, vets prospective suitors, and ensures every conversation remains respectful. Guardian accounts are free forever.
+                        </p>
+                    </div>
+                    <div class="shrink-0 self-start sm:self-center">
+                        <span class="badge-status text-[var(--accent-text)] bg-[var(--accent-subtle)] border border-[var(--accent-border)]">
+                            Halal Matrimony Standard
+                        </span>
+                    </div>
+                </div>
             </div>
-            <span class="text-xl">🛡️</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Left Form -->
-            <div class="md:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
-                <h2 class="text-base font-bold text-slate-900 dark:text-white font-heading mb-2">Link a Registered Guardian</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                    The guardian must already have a registered account on Global Nikkah to be linked.
-                </p>
+        @if(session('error'))
+            <div class="p-4 rounded-[var(--radius-md)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)] text-xs text-[var(--color-danger)] flex items-start gap-3">
+                <svg class="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
 
-                @if(session('error'))
-                    <div class="mb-4 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs text-rose-800 dark:text-rose-300">
-                        {{ session('error') }}
-                    </div>
-                @endif
+        @if(session('status'))
+            <div class="p-4 rounded-[var(--radius-md)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)] text-xs text-[var(--color-success)] flex items-start gap-3">
+                <svg class="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span>{{ session('status') }}</span>
+            </div>
+        @endif
 
-                <form action="{{ route('wali.link.store') }}" method="POST" class="space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left: Guardian Link Form -->
+            <div class="lg:col-span-2 card-ledger p-6 sm:p-8 bg-[var(--bg-surface)]">
+                <div class="border-b border-[var(--border-subtle)] pb-4 mb-6">
+                    <h2 class="font-serif text-lg font-semibold text-[var(--text-primary)]">Guardian Details</h2>
+                    <p class="text-xs text-[var(--text-muted)] mt-1">
+                        Your guardian must already have a registered account on Global Nikkah using the email provided below.
+                    </p>
+                </div>
+
+                <form action="{{ route('wali.link.store') }}" method="POST" class="space-y-5">
                     @csrf
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Guardian's Full Name</label>
-                        <input type="text" name="wali_name" required value="{{ old('wali_name') }}" placeholder="Guardian legal name"
-                               class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <label for="wali_name" class="block text-xs font-semibold text-[var(--text-primary)] mb-1.5">
+                            Guardian's Full Name <span class="text-[var(--color-danger)]">*</span>
+                        </label>
+                        <input type="text" id="wali_name" name="wali_name" required value="{{ old('wali_name') }}" placeholder="e.g. Dr. Tariq Al-Mansoor"
+                               class="w-full h-11 px-3.5 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] focus:ring-1 focus:ring-[var(--brand-primary)] transition">
                         @error('wali_name')
-                            <p class="text-rose-600 dark:text-rose-400 text-xs mt-1 font-semibold">{{ $message }}</p>
+                            <p class="text-[var(--color-danger)] text-xs mt-1.5 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Relationship to You</label>
-                            <select name="relationship_type" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <label for="relationship_type" class="block text-xs font-semibold text-[var(--text-primary)] mb-1.5">
+                                Relationship to You <span class="text-[var(--color-danger)]">*</span>
+                            </label>
+                            <select id="relationship_type" name="relationship_type" required class="w-full h-11 px-3.5 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand-primary)] focus:ring-1 focus:ring-[var(--brand-primary)] transition">
                                 <option value="father" {{ old('relationship_type') === 'father' ? 'selected' : '' }}>Father</option>
                                 <option value="brother" {{ old('relationship_type') === 'brother' ? 'selected' : '' }}>Brother</option>
                                 <option value="uncle" {{ old('relationship_type') === 'uncle' ? 'selected' : '' }}>Uncle (Paternal / Maternal)</option>
                                 <option value="grandfather" {{ old('relationship_type') === 'grandfather' ? 'selected' : '' }}>Grandfather</option>
-                                <option value="other_mahram" {{ old('relationship_type') === 'other_mahram' ? 'selected' : '' }}>Other Mahram</option>
+                                <option value="other_mahram" {{ old('relationship_type') === 'other_mahram' ? 'selected' : '' }}>Other Mahram Guardian</option>
                             </select>
                             @error('relationship_type')
-                                <p class="text-rose-600 dark:text-rose-400 text-xs mt-1 font-semibold">{{ $message }}</p>
+                                <p class="text-[var(--color-danger)] text-xs mt-1.5 font-medium">{{ $message }}</p>
                             @enderror
                         </div>
+
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Permission Level (FR-6.2)</label>
-                            <select name="permission_level" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <label for="permission_level" class="block text-xs font-semibold text-[var(--text-primary)] mb-1.5">
+                                Oversight Level <span class="text-[var(--color-danger)]">*</span>
+                            </label>
+                            <select id="permission_level" name="permission_level" required class="w-full h-11 px-3.5 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand-primary)] focus:ring-1 focus:ring-[var(--brand-primary)] transition">
                                 <option value="approve_required" {{ old('permission_level') === 'approve_required' ? 'selected' : '' }}>Approval Required (Chat locked until Wali confirms)</option>
-                                <option value="view_only" {{ old('permission_level') === 'view_only' ? 'selected' : '' }}>View-Only (Observer in chats & requests)</option>
-                                <option value="full_proxy" {{ old('permission_level') === 'full_proxy' ? 'selected' : '' }}>Full Proxy (Manages profile communications)</option>
+                                <option value="view_only" {{ old('permission_level') === 'view_only' ? 'selected' : '' }}>Observer Only (Silent chaperone in chats)</option>
+                                <option value="full_proxy" {{ old('permission_level') === 'full_proxy' ? 'selected' : '' }}>Full Proxy (Guardian conducts communications)</option>
                             </select>
                             @error('permission_level')
-                                <p class="text-rose-600 dark:text-rose-400 text-xs mt-1 font-semibold">{{ $message }}</p>
+                                <p class="text-[var(--color-danger)] text-xs mt-1.5 font-medium">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                                Guardian's Account Email <span class="text-rose-500">*</span>
+                            <label for="wali_email" class="block text-xs font-semibold text-[var(--text-primary)] mb-1.5">
+                                Guardian's Account Email <span class="text-[var(--color-danger)]">*</span>
                             </label>
-                            <input type="email" name="wali_email" required value="{{ old('wali_email') }}" placeholder="wali.account@domain.com"
-                                   class="w-full px-4 py-2.5 rounded-xl border @error('wali_email') border-rose-500 ring-1 ring-rose-500 @else border-slate-300 dark:border-slate-700 @enderror bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <input type="email" id="wali_email" name="wali_email" required value="{{ old('wali_email') }}" placeholder="guardian@example.com"
+                                   class="w-full h-11 px-3.5 rounded-[var(--radius-md)] border @error('wali_email') border-[var(--color-danger)] @else border-[var(--border-default)] @enderror bg-[var(--bg-canvas)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] focus:ring-1 focus:ring-[var(--brand-primary)] transition">
                             @error('wali_email')
-                                <p class="text-rose-600 dark:text-rose-400 text-xs mt-1 font-semibold">{{ $message }}</p>
+                                <p class="text-[var(--color-danger)] text-xs mt-1.5 font-medium">{{ $message }}</p>
                             @else
-                                <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Must be an existing registered account on Global Nikkah.</p>
+                                <p class="text-[11px] text-[var(--text-muted)] mt-1">Must match their registered Global Nikkah account.</p>
                             @enderror
                         </div>
+
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Guardian's Phone / WhatsApp</label>
-                            <input type="tel" name="wali_phone" value="{{ old('wali_phone') }}" placeholder="+1 555 123 4567"
-                                   class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <label for="wali_phone" class="block text-xs font-semibold text-[var(--text-primary)] mb-1.5">
+                                Guardian's Phone / WhatsApp <span class="text-[var(--text-muted)] font-normal">(Optional)</span>
+                            </label>
+                            <input type="tel" id="wali_phone" name="wali_phone" value="{{ old('wali_phone') }}" placeholder="+1 555 019 2834"
+                                   class="w-full h-11 px-3.5 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] focus:ring-1 focus:ring-[var(--brand-primary)] transition">
                             @error('wali_phone')
-                                <p class="text-rose-600 dark:text-rose-400 text-xs mt-1 font-semibold">{{ $message }}</p>
+                                <p class="text-[var(--color-danger)] text-xs mt-1.5 font-medium">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full py-3 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs shadow-xs transition mt-2 cursor-pointer">
-                        Save Guardian Link
-                    </button>
+                    <div class="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between gap-4">
+                        <p class="text-xs text-[var(--text-muted)]">
+                            We will send a notification asking your guardian to accept this linkage.
+                        </p>
+                        <button type="submit" class="btn-primary h-11 px-6 shrink-0 text-xs font-semibold tracking-wide">
+                            Save Guardian Link
+                        </button>
+                    </div>
                 </form>
             </div>
 
-            <!-- Right Info / Current Links -->
+            <!-- Right: Explanatory & Current Links -->
             <div class="space-y-6">
-                <div class="bg-purple-50 dark:bg-purple-950/40 rounded-2xl border border-purple-200 dark:border-purple-900/60 p-5 text-xs text-purple-900 dark:text-purple-300 leading-relaxed">
-                    <h3 class="font-bold text-sm text-purple-950 dark:text-purple-200 mb-2 font-heading">Why Involve a Wali?</h3>
-                    <p class="mb-2">In Islam, the guardian acts as an advocate and protector, providing wisdom, vetting prospective suitors, and ensuring respect throughout.</p>
-                    <p>When "Approval Required" is selected, suitors cannot message you until your guardian has reviewed their profile and approved the introduction.</p>
+                <!-- Why Wali Card -->
+                <div class="card-ledger p-6 bg-[var(--bg-surface)] border-l-2 border-l-[var(--accent-gold)]">
+                    <h3 class="font-serif text-base font-semibold text-[var(--text-primary)] mb-2">
+                        How Guardian Oversight Works
+                    </h3>
+                    <div class="space-y-3 text-xs text-[var(--text-secondary)] leading-relaxed">
+                        <p>
+                            When <strong>Approval Required</strong> is selected, prospective suitors can view your profile and express interest, but no private messaging begins until your guardian reviews and confirms the match.
+                        </p>
+                        <p>
+                            Your guardian can read ongoing discussions as a silent chaperone, providing advice and peace of mind to both families.
+                        </p>
+                        <div class="pt-2 text-[11px] text-[var(--accent-text)] font-medium flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                            <span>Phone numbers stay private until families are ready.</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
-                    <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3">Linked Guardians</h3>
-                    @forelse($existingLinks as $link)
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 mb-2 text-xs">
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-slate-900 dark:text-white">{{ $link->wali_name ?? ($link->wali?->name ?? 'Guardian') }}</span>
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">{{ $link->status }}</span>
+                <!-- Current Linked Guardians -->
+                <div class="card-ledger p-6 bg-[var(--bg-surface)]">
+                    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3 mb-4">
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                            Current Linked Guardians
+                        </h3>
+                        <span class="text-xs text-[var(--text-muted)]">{{ count($existingLinks) }} linked</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        @forelse($existingLinks as $link)
+                            <div class="p-3.5 rounded-[var(--radius-md)] bg-[var(--bg-canvas)] border border-[var(--border-default)]">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="font-semibold text-sm text-[var(--text-primary)]">
+                                        {{ $link->wali_name ?? ($link->wali?->name ?? 'Guardian') }}
+                                    </span>
+                                    <span class="badge-status text-[10px] capitalize {{ $link->status === 'active' || $link->status === 'approved' ? 'text-[var(--color-success)] bg-[var(--color-success-bg)] border-[var(--color-success-border)]' : 'text-[var(--accent-text)] bg-[var(--accent-subtle)] border-[var(--accent-border)]' }}">
+                                        {{ $link->status }}
+                                    </span>
+                                </div>
+                                <div class="mt-1.5 flex items-center gap-2 text-xs text-[var(--text-muted)] capitalize">
+                                    <span>{{ $link->relationship_type }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ str_replace('_', ' ', $link->permission_level) }}</span>
+                                </div>
                             </div>
-                            <p class="text-slate-500 dark:text-slate-400 mt-1 capitalize">{{ $link->relationship_type }} • {{ str_replace('_', ' ', $link->permission_level) }}</p>
-                        </div>
-                    @empty
-                        <p class="text-xs text-slate-400 dark:text-slate-500">No guardian currently linked.</p>
-                    @endforelse
+                        @empty
+                            <div class="py-6 text-center text-xs text-[var(--text-muted)]">
+                                <p>No guardian currently linked.</p>
+                                <p class="mt-1 text-[11px]">Add your guardian's email to activate family chaperone protection.</p>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>

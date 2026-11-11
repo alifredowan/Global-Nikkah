@@ -8,7 +8,7 @@
 @section('content')
 <div class="min-h-screen bg-slate-50 py-10 text-slate-800 dark:bg-slate-950 dark:text-slate-100 sm:py-16">
     <div class="mx-auto max-w-6xl space-y-10 px-4 sm:px-6 lg:px-8">
-        <section class="relative overflow-hidden rounded-3xl bg-emerald-950 px-6 py-12 text-white shadow-2xl sm:px-12 sm:py-16">
+        <section class="section--dark relative overflow-hidden rounded-3xl bg-emerald-950 px-6 py-12 text-white shadow-2xl sm:px-12 sm:py-16">
             <div class="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-emerald-400/10 blur-3xl"></div>
             <div class="absolute -bottom-32 -left-20 h-72 w-72 rounded-full bg-amber-400/10 blur-3xl"></div>
             <div class="relative max-w-3xl space-y-5">

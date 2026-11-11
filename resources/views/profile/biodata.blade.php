@@ -179,7 +179,7 @@
                 </div>
                 <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                     <span class="text-slate-500 block text-[10px] uppercase font-bold">Mother Tongue</span>
-                    <span class="font-bold text-slate-900">{{ $profile->mother_tongue ?? 'Bengali / English' }}</span>
+                    <span class="font-bold text-slate-900">{{ $profile->mother_tongue ?? 'English' }}</span>
                 </div>
                 <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                     <span class="text-slate-500 block text-[10px] uppercase font-bold">Family Structure Desired</span>

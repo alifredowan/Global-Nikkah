@@ -67,6 +67,7 @@ class PublicLegalPagesAndFooterTest extends TestCase
         $response->assertSee(route('contact'));
         $response->assertSee('cookie-consent-banner');
         $response->assertSee('Essential only');
+        $response->assertSee('Cookie settings');
     }
 
     public function test_unified_footer_is_visible_for_authenticated_users(): void
@@ -95,5 +96,48 @@ class PublicLegalPagesAndFooterTest extends TestCase
         $response->assertSee(route('terms'));
         $response->assertSee(route('about'));
         $response->assertSee(route('contact'));
+        $response->assertDontSee('id="footer-cookie-settings"', false);
+        $response->assertSee('Cookie &amp; Tracking Preferences', false);
+        $response->assertSee('data-open-cookie-settings', false);
+    }
+
+    public function test_landing_page_renders_real_trust_metrics_from_database(): void
+    {
+        // 5 Seekers: 3 verified, 2 unverified (60% verified rate)
+        User::factory()->count(3)->create([
+            'role' => 'seeker',
+            'is_active' => true,
+            'is_verified' => true,
+        ]);
+        User::factory()->count(2)->create([
+            'role' => 'seeker',
+            'is_active' => true,
+            'is_verified' => false,
+        ]);
+
+        // 2 Wali Accounts
+        User::factory()->count(2)->create([
+            'role' => 'wali',
+            'is_active' => true,
+        ]);
+
+        $response = $this->get(route('landing'));
+
+        $response->assertStatus(200);
+
+        // Real active seekers count
+        $response->assertSee('Active Seekers');
+        $response->assertSee('5');
+
+        // Real ID verified percentage (3/5 = 60%)
+        $response->assertSee('ID Verified');
+        $response->assertSee('60');
+
+        // Real Wali accounts count
+        $response->assertSee('Free Wali Accounts');
+        $response->assertSee('2');
+
+        // Ensure fake dummy text is completely gone
+        $response->assertDontSee('50k+');
     }
 }

@@ -1,50 +1,50 @@
 @extends('layouts.app')
 
-@section('title', 'Forgot Password - Global Nikkah')
+@section('title', 'Forgot Password • Global Nikkah')
 
 @section('content')
-<div class="py-16 bg-slate-50 dark:bg-slate-950 min-h-screen">
-    <div class="max-w-md mx-auto px-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 transition-colors">
-            
-            <div class="text-center mb-6">
-                <img src="{{ asset('images/logo.png') }}" alt="Global Nikah Logo" class="w-16 h-16 rounded-2xl object-cover shadow-md mx-auto mb-3">
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Forgot Password?</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    No worries. Enter your registered email address and we'll send you a secure link to reset your password.
+<div class="py-12 sm:py-16 bg-[var(--bg-canvas)] min-h-[calc(100vh-4rem)] flex items-center justify-center">
+    <div class="w-full max-w-md px-4 sm:px-6">
+        <div class="card-ledger pattern-header p-6 sm:p-8 bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-sm">
+
+            <div class="text-center pb-5 mb-5 border-b border-[var(--border-subtle)]">
+                <a href="{{ route('landing') }}" class="inline-block mb-3">
+                    <img src="{{ asset('images/logo.png') }}" alt="Global Nikah" class="w-12 h-12 rounded-[var(--radius-sm)] object-cover mx-auto border border-[var(--border-default)] shadow-xs">
+                </a>
+                <h1 class="text-2xl font-serif font-bold text-[var(--text-primary)]">Reset your password</h1>
+                <p class="text-xs text-[var(--text-secondary)] mt-1">
+                    Enter your email address and we will send you a secure link to choose a new password.
                 </p>
             </div>
 
             <!-- Session Status Alert -->
             @if (session('status'))
-                <div class="mb-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-800 dark:text-emerald-200 flex items-center gap-2">
-                    <span class="text-base">✓</span>
+                <div class="mb-4 p-3.5 rounded-[var(--radius-sm)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)] text-xs text-[var(--color-success)] flex items-start gap-2">
+                    <svg class="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
                     <span>{{ session('status') }}</span>
                 </div>
             @endif
 
             <!-- Developer Local Testing Quick Link when in log mode -->
             @if (session('dev_reset_url'))
-                <div class="mb-4 p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800/80 text-xs text-amber-900 dark:text-amber-200">
-                    <strong class="font-bold flex items-center gap-1 mb-1">
-                        <span>⚡ Local Dev Shortcut:</span>
-                    </strong>
-                    <p class="text-[11px] text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">
+                <div class="mb-4 p-3.5 rounded-[var(--radius-sm)] bg-[var(--secondary-subtle)] border border-[var(--secondary-border)] text-xs text-[var(--secondary-text)]">
+                    <strong class="font-bold block mb-1">Local Testing Shortcut:</strong>
+                    <p class="text-[11px] mb-2 leading-relaxed">
                         @if(config('mail.default') === 'log')
-                            Your app is currently running in <strong>MAIL_MAILER=log</strong> mode (emails are written to <code class="px-1 py-0.5 bg-amber-100 dark:bg-amber-900/50 rounded font-mono text-[10px]">storage/logs/laravel.log</code>). You can test the reset link directly below, or configure SMTP in <code class="px-1 py-0.5 bg-amber-100 dark:bg-amber-900/50 rounded font-mono text-[10px]">.env</code> to deliver to your real inbox:
+                            Your environment is currently set to log mail. You can use the link below to test immediately:
                         @else
-                            You can also use this direct test shortcut:
+                            Direct test link:
                         @endif
                     </p>
-                    <a href="{{ session('dev_reset_url') }}" class="inline-flex items-center gap-1 font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
-                        <span>Proceed to Reset Password</span> &rarr;
+                    <a href="{{ session('dev_reset_url') }}" class="font-bold underline">
+                        Proceed to reset password &rarr;
                     </a>
                 </div>
             @endif
 
             <!-- Validation Errors -->
             @if ($errors->any())
-                <div class="mb-4 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs font-semibold text-rose-800 dark:text-rose-200">
+                <div class="mb-4 p-3.5 rounded-[var(--radius-sm)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-border)] text-xs text-[var(--color-danger)]">
                     <ul class="list-disc list-inside space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -57,23 +57,22 @@
                 @csrf
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                        Email Address
+                    <label for="email" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
+                        Email address
                     </label>
-                    <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-                           placeholder="your.email@domain.com">
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                           class="w-full h-11 px-3.5 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs focus:ring-2 focus:ring-[var(--accent-primary)] outline-none"
+                           placeholder="your.email@example.com">
                 </div>
 
-                <button type="submit" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-900/15 transition mt-2 flex items-center justify-center gap-2">
-                    <span>Email Password Reset Link</span>
+                <button type="submit" class="btn-primary w-full text-xs font-bold py-3">
+                    Send password reset link
                 </button>
             </form>
 
-            <div class="text-center mt-6 pt-4 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
-                Remember your password? <a href="{{ route('login') }}" class="font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300">Sign in</a>
+            <div class="text-center mt-6 pt-4 text-xs text-[var(--text-muted)] border-t border-[var(--border-subtle)]">
+                Remembered your password? <a href="{{ route('login') }}" class="font-bold text-[var(--accent-text)] hover:underline">Return to sign in</a>
             </div>
-
         </div>
     </div>
 </div>

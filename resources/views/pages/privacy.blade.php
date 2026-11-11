@@ -12,7 +12,7 @@
         <!-- Header Hero -->
         <div class="text-center space-y-4">
             <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
-                <span>🛡️</span>
+                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 <span>GDPR &amp; Shariah Data Protection</span>
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-heading tracking-tight">
@@ -33,8 +33,8 @@
         <!-- 4 Core Privacy Guarantees Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition">
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-xl mb-3">
-                    🔒
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mb-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <h3 class="font-bold text-sm text-slate-900 dark:text-white">Default Photo Blur</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
@@ -43,8 +43,8 @@
             </div>
 
             <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition">
-                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400 flex items-center justify-center text-xl mb-3">
-                    🛡️
+                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
                 <h3 class="font-bold text-sm text-slate-900 dark:text-white">Guardian Transparency</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
@@ -53,8 +53,8 @@
             </div>
 
             <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition">
-                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-400 flex items-center justify-center text-xl mb-3">
-                    🗑️
+                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-400 flex items-center justify-center mb-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                 </div>
                 <h3 class="font-bold text-sm text-slate-900 dark:text-white">Right to Erasure</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
@@ -63,8 +63,8 @@
             </div>
 
             <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition">
-                <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xl mb-3">
-                    💳
+                <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-400 flex items-center justify-center mb-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                 </div>
                 <h3 class="font-bold text-sm text-slate-900 dark:text-white">PCI-DSS Encrypted</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
@@ -196,7 +196,7 @@
         </div>
 
         <!-- Contact Support Footer Callout -->
-        <div class="p-8 rounded-3xl bg-emerald-950 text-white border border-emerald-800/80 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+        <div class="section--dark p-8 rounded-3xl bg-emerald-950 text-white border border-emerald-800/80 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
             <div class="space-y-1 text-center sm:text-left">
                 <h3 class="text-lg font-bold font-heading">Questions Regarding Your Privacy?</h3>
                 <p class="text-xs text-emerald-200/90">

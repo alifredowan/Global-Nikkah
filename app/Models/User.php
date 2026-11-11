@@ -103,6 +103,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(WaliLink::class, 'seeker_user_id');
     }
 
+    public function waliLinks(): HasMany
+    {
+        return $this->waliLinksAsSeeker();
+    }
+
     public function waliLinksAsWali(): HasMany
     {
         return $this->hasMany(WaliLink::class, 'wali_user_id');

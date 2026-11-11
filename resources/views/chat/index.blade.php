@@ -1,22 +1,37 @@
 @extends('layouts.app')
 
-@section('title', 'Halal Conversations - Global Nikkah')
+@section('title', 'Conversations — Global Nikkah')
 
 @section('content')
-<div class="py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
+<div class="py-8 bg-[var(--bg-canvas)] min-h-screen">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">Halal Conversations</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Private communication unlocked after mutual interest and guardian approval (FR-4.2).</p>
+        <!-- Header -->
+        <div class="card-ledger pattern-header p-6 sm:p-8 bg-[var(--bg-surface)]">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1.5">
+                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-[var(--radius-sm)] bg-[var(--accent-subtle)] text-[var(--accent-text)] text-xs font-semibold">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>Chaperoned Communication</span>
+                    </div>
+                    <h1 class="font-serif text-2xl sm:text-3xl font-semibold text-[var(--text-primary)] tracking-tight">
+                        Halal Conversations
+                    </h1>
+                    <p class="text-xs text-[var(--text-secondary)] max-w-xl leading-relaxed">
+                        Private messaging unlocked only after mutual interest and guardian approval, preserving modesty and serious intent.
+                    </p>
+                </div>
+                <div class="shrink-0 self-start sm:self-center">
+                    <span class="badge-status text-[var(--color-success)] bg-[var(--color-success-bg)] border border-[var(--color-success-border)] flex items-center gap-1.5">
+                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>Haya &amp; Safety Protected</span>
+                    </span>
+                </div>
             </div>
-            <span class="text-xs bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-semibold px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                🔒 Chaperoned & Protected
-            </span>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
+        <!-- Conversations List -->
+        <div class="card-ledger bg-[var(--bg-surface)] divide-y divide-[var(--border-subtle)] overflow-hidden">
             @forelse($conversations as $conversation)
                 @php
                     $isChaperoneUser = $conversation->participants->where('id', Auth::id())->first()?->pivot?->role === 'wali_chaperone';
@@ -24,52 +39,65 @@
                     $hasWali = $conversation->participants->contains(fn($p) => $p->pivot->role === 'wali_chaperone');
                     $seekers = $conversation->participants->where('pivot.role', 'seeker');
                 @endphp
-                <a href="{{ route('chat.show', $conversation->id) }}" class="p-5 flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition block">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                <a href="{{ route('chat.show', $conversation->id) }}" class="p-5 flex items-center justify-between gap-4 hover:bg-[var(--bg-canvas)] transition group block">
+                    <div class="flex items-center gap-4 min-w-0">
+                        <div class="w-13 h-16 mihrab-arch bg-[var(--bg-subtle)] overflow-hidden shrink-0 border border-[var(--border-default)] shadow-2xs">
                             @if($other?->profile?->primaryPhoto)
                                 <img src="{{ $other->profile->primaryPhoto->displayUrl() }}" alt="{{ $other->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-emerald-950 text-white font-bold text-lg">
+                                <div class="w-full h-full flex items-center justify-center bg-[var(--neutral-200)] dark:bg-[var(--neutral-800)] text-[var(--text-muted)] font-serif font-bold text-lg">
                                     {{ substr($other?->name ?? 'User', 0, 1) }}
                                 </div>
                             @endif
                         </div>
-                        <div>
-                            <div class="flex items-center gap-2">
+                        <div class="min-w-0 space-y-1">
+                            <div class="flex items-center gap-2 flex-wrap">
                                 @if($isChaperoneUser)
-                                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ $seekers->pluck('name')->join(' & ') }}</h3>
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
-                                        🛡️ Observing as Guardian
+                                    <h3 class="font-serif text-base font-semibold text-[var(--text-primary)] group-hover:text-[var(--brand-primary)] transition">
+                                        {{ $seekers->pluck('name')->join(' & ') }}
+                                    </h3>
+                                    <span class="badge-status text-[var(--accent-text)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[10px]">
+                                        Observing as Guardian
                                     </span>
                                 @else
-                                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ $other?->name ?? 'Candidate' }}</h3>
+                                    <h3 class="font-serif text-base font-semibold text-[var(--text-primary)] group-hover:text-[var(--brand-primary)] transition">
+                                        {{ $other?->name ?? 'Candidate' }}
+                                    </h3>
                                     @if($hasWali)
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 dark:bg-purple-950/70 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
-                                            🛡️ Wali Chaperoned
+                                        <span class="badge-status text-[var(--accent-text)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[10px] flex items-center gap-1">
+                                            <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                            <span>Wali Chaperoned</span>
                                         </span>
                                     @endif
                                 @endif
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                                {{ $conversation->latestMessage?->body ?? 'Conversation started...' }}
+                            <p class="text-xs text-[var(--text-secondary)] line-clamp-1">
+                                {{ $conversation->latestMessage?->body ?? 'Conversation opened. Send your greeting...' }}
                             </p>
                         </div>
                     </div>
-                    <div class="text-right shrink-0">
-                        <span class="text-[11px] text-slate-400 dark:text-slate-500">
+                    <div class="text-right shrink-0 space-y-1">
+                        <span class="text-[11px] text-[var(--text-muted)] block">
                             {{ $conversation->latestMessage?->created_at?->diffForHumans() ?? $conversation->created_at->diffForHumans() }}
                         </span>
-                        <span class="block text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">Open &rarr;</span>
+                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-[var(--accent-text)] group-hover:text-[var(--brand-primary)] transition">
+                            <span>Open</span>
+                            <span aria-hidden="true">&rarr;</span>
+                        </span>
                     </div>
                 </a>
             @empty
-                <div class="p-12 text-center text-slate-500 dark:text-slate-400 text-xs">
-                    <p class="font-semibold text-sm text-slate-700 dark:text-slate-200">No active conversations yet.</p>
-                    <p class="mt-1">Messaging unlocks once an Interest request is mutually accepted by both parties.</p>
-                    <a href="{{ route('discovery.index') }}" class="inline-block mt-4 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs">
-                        Find Matches
-                    </a>
+                <div class="p-12 text-center text-xs text-[var(--text-muted)]">
+                    <p class="font-serif text-base text-[var(--text-secondary)]">No active conversations yet</p>
+                    <p class="mt-1 max-w-sm mx-auto text-xs leading-relaxed">
+                        Direct messaging unlocks once an introduction request has been mutually accepted by both parties and approved by any designated guardian.
+                    </p>
+                    <div class="mt-6">
+                        <a href="{{ route('discovery.index') }}" class="btn-primary h-12 px-6 text-sm font-bold inline-flex items-center gap-2">
+                            <span>Discover Candidates</span>
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
                 </div>
             @endforelse
         </div>

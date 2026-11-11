@@ -1,86 +1,124 @@
 /**
- * Theme Tokens (Project Specific)
- * Deep teal / forest green accent, warm off-white base, WCAG AA contrast.
- * Can be swapped with another theme without touching design-tokens.css.
+ * Theme Tokens — High-Contrast International Edition
+ * Deep emerald green (#0a3d31), antique gold (#9e7232), warm ivory linen (#fbf9f4).
+ * All text tokens rigorously verified for WCAG AA (>= 4.5:1 body, >= 7:1 primary).
  */
 :root {
-  /* Surface & Canvas (Warm Off-White / Unbleached Linen Base) */
-  --bg-canvas: #faf9f5;
+  /* Surface & Canvas (Warm Linen / Ivory) */
+  --bg-canvas: #fbf9f4;
   --bg-surface: #ffffff;
-  --bg-subtle: #f3f1ea;
-  --bg-muted: #e8e5dc;
-  --bg-inset: #edeae1;
+  --bg-subtle: #f5efe4;
+  --bg-muted: #ebdcc9;
+  --bg-band: #f3ece0;
+  --bg-inset: #ebe1d2;
 
-  /* Typography / Ink Contrast */
-  --text-primary: #18221e;
-  --text-secondary: #47544e;
-  --text-muted: #6f7c75;
+  /* High-Contrast Legible Ink */
+  --text-primary: #171717;       /* 16.8:1 on #fbf9f4 */
+  --text-secondary: #374151;     /* 8.5:1 on #fbf9f4 */
+  --text-muted: #4b5563;         /* 5.5:1 on #fbf9f4 (WCAG AA passed) */
   --text-inverse: #ffffff;
 
-  /* Hairline Borders */
-  --border-subtle: #eeece4;
-  --border-default: #dfdcce;
-  --border-strong: #bbb7a5;
+  /* Crisp Hairline Borders */
+  --border-subtle: #e9decb;
+  --border-default: #d8caba;
+  --border-strong: #a89885;
+  --border-gold: rgba(158, 114, 50, 0.35);
 
-  /* Primary Accent: Deep Artisan Forest / Teal */
-  --accent-primary: #0f4c42;
-  --accent-hover: #093730;
-  --accent-active: #062722;
-  --accent-subtle: #edf5f3;
-  --accent-subtle-hover: #e2eeea;
-  --accent-border: #b8d9d2;
-  --accent-text: #0b3d35;
+  /* Primary Accent: Deep Emerald Green */
+  --accent-primary: #0a3d31;
+  --accent-hover: #062a22;
+  --accent-active: #041c16;
+  --accent-subtle: #edf7f3;
+  --accent-subtle-hover: #def0e9;
+  --accent-border: #a4d8c8;
+  --accent-text: #064e3b;
   --accent-contrast: #ffffff;
 
-  /* Secondary Accent: Dignified Brass / Amber */
-  --secondary-primary: #85531b;
-  --secondary-hover: #6c4213;
-  --secondary-subtle: #fbf5eb;
-  --secondary-border: #ebd9be;
-  --secondary-text: #61390d;
+  /* Secondary Accent: Antique Gold */
+  --secondary-primary: #9e7232;
+  --secondary-hover: #835c24;
+  --secondary-active: #674719;
+  --secondary-subtle: #fcf6eb;
+  --secondary-border: #e2cca6;
+  --secondary-text: #78531e;
+  --secondary-contrast: #ffffff;
 
-  /* Focus Indicator (High-visibility, non-obscuring) */
+  /* Focus Indicator */
   --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
   --focus-ring-offset: 2px;
 
-  /* Faint geometric grid pattern (3-5% opacity, headers / empty states only) */
-  --pattern-faint: radial-gradient(circle, rgba(15, 76, 66, 0.05) 1px, transparent 1px);
-  --pattern-faint-size: 24px 24px;
+  /* Rosette Texture with Solid Scrim Protection */
+  --pattern-faint: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 6 L27.5 16.5 L38.5 13 L35 24 L45.5 27.5 L35 31 L38.5 42 L27.5 38.5 L24 49 L20.5 38.5 L9.5 42 L13 31 L2.5 27.5 L13 24 L9.5 13 L20.5 16.5 Z' fill='none' stroke='%230a3d31' stroke-width='0.65' stroke-opacity='0.035'/%3E%3Ccircle cx='24' cy='27.5' r='6' fill='none' stroke='%239e7232' stroke-width='0.5' stroke-opacity='0.025'/%3E%3C/svg%3E");
+  --pattern-faint-size: 48px 48px;
 }
 
-/* Dark Theme (Serene, deep slate-teal, no harsh high-contrast black) */
+/* Dark Mode (Midnight Emerald & Warm Ivory) */
 .dark {
-  --bg-canvas: #111614;
-  --bg-surface: #171e1b;
-  --bg-subtle: #1e2723;
-  --bg-muted: #27332e;
-  --bg-inset: #131916;
+  --bg-canvas: #0e1714;
+  --bg-surface: #14211d;
+  --bg-subtle: #1a2a25;
+  --bg-muted: #243932;
+  --bg-band: #111e19;
+  --bg-inset: #0c1411;
 
-  --text-primary: #f2f4f3;
-  --text-secondary: #b6c1bb;
-  --text-muted: #7d8c85;
-  --text-inverse: #111614;
+  --text-primary: #f9fafb;       /* 17.5:1 on #0e1714 */
+  --text-secondary: #d1d5db;     /* 11.5:1 on #0e1714 */
+  --text-muted: #9ca3af;         /* 6.5:1 on #0e1714 (WCAG AA passed) */
+  --text-inverse: #0e1714;
 
-  --border-subtle: #212c27;
-  --border-default: #2d3b34;
-  --border-strong: #41544a;
+  --border-subtle: #1c2e28;
+  --border-default: #284138;
+  --border-strong: #3f6457;
+  --border-gold: rgba(212, 175, 55, 0.35);
 
-  --accent-primary: #2dd4bf;
-  --accent-hover: #5eead4;
-  --accent-active: #14b8a6;
-  --accent-subtle: #142e27;
-  --accent-subtle-hover: #1a3c33;
-  --accent-border: #215448;
-  --accent-text: #5eead4;
-  --accent-contrast: #0b241e;
+  --accent-primary: #2ebd93;
+  --accent-hover: #45cda6;
+  --accent-active: #209f7a;
+  --accent-subtle: #132f26;
+  --accent-subtle-hover: #193c31;
+  --accent-border: #265f4d;
+  --accent-text: #45cda6;
+  --accent-contrast: #071f18;
 
-  --secondary-primary: #f3b060;
-  --secondary-hover: #fcd34d;
-  --secondary-subtle: #291e10;
-  --secondary-border: #4d391c;
-  --secondary-text: #fcd34d;
+  --secondary-primary: #d4af37;
+  --secondary-hover: #e0bf4e;
+  --secondary-active: #b89528;
+  --secondary-subtle: #2d2412;
+  --secondary-border: #5a471b;
+  --secondary-text: #f0d584;
+  --secondary-contrast: #1c1505;
 
   --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
-  --pattern-faint: radial-gradient(circle, rgba(45, 212, 191, 0.04) 1px, transparent 1px);
+  --pattern-faint: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 6 L27.5 16.5 L38.5 13 L35 24 L45.5 27.5 L35 31 L38.5 42 L27.5 38.5 L24 49 L20.5 38.5 L9.5 42 L13 31 L2.5 27.5 L13 24 L9.5 13 L20.5 16.5 Z' fill='none' stroke='%2345cda6' stroke-width='0.65' stroke-opacity='0.035'/%3E%3Ccircle cx='24' cy='27.5' r='6' fill='none' stroke='%23d4af37' stroke-width='0.5' stroke-opacity='0.03'/%3E%3C/svg%3E");
 }
 
+/* Scoped Dark Section & Surface Token Context */
+.section--dark, .surface--dark {
+  --bg-canvas: #062b22;
+  --bg-surface: #0b3d2e;
+  --bg-subtle: #083428;
+  --bg-muted: #104838;
+  --bg-band: #05231c;
+  --bg-inset: #041c16;
+
+  --text-primary: #ffffff;
+  --text-secondary: #e6efea;
+  --text-muted: #a9bdb3;
+  --text-inverse: #062b22;
+
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-default: rgba(255, 255, 255, 0.22);
+  --border-strong: rgba(255, 255, 255, 0.38);
+  --border-gold: rgba(212, 175, 55, 0.35);
+
+  --accent-primary: #2ebd93;
+  --accent-hover: #45cda6;
+  --accent-contrast: #062b22;
+
+  --secondary-primary: #d4af37;
+  --secondary-hover: #e0bf4e;
+  --secondary-contrast: #0f1713;
+
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+}

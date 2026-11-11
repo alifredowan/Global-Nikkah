@@ -12,7 +12,7 @@
         <!-- Header Hero -->
         <div class="text-center space-y-4">
             <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
-                <span>☪</span>
+                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
                 <span>Our Sacred Mission</span>
             </div>
             <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white font-heading tracking-tight leading-[1.15]">
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Quranic Verse Callout Card -->
-        <div class="relative overflow-hidden p-8 sm:p-12 rounded-3xl bg-emerald-950 text-white border border-emerald-800/80 shadow-2xl text-center space-y-4">
+        <div class="section--dark relative overflow-hidden p-8 sm:p-12 rounded-3xl bg-emerald-950 text-white border border-emerald-800/80 shadow-2xl text-center space-y-4">
             <div class="text-amber-300 text-2xl font-serif">﷽</div>
             <blockquote class="text-base sm:text-xl font-light italic text-emerald-100/90 max-w-3xl mx-auto leading-relaxed">
                 &ldquo;And among His signs is that He created for you spouses from among yourselves that you may find tranquility in them; and He placed between you love and mercy.&rdquo;
@@ -37,7 +37,8 @@
             <!-- Modern Dating Problem -->
             <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-rose-200/60 dark:border-rose-950 shadow-sm space-y-4">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-400 text-xs font-bold">
-                    <span>❌</span> The Dating App Trap
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span>The Dating App Trap</span>
                 </div>
                 <h3 class="text-xl font-bold text-slate-900 dark:text-white font-heading">
                     Perpetual Subscriptions &amp; Secret Chats
@@ -46,16 +47,17 @@
                     Mainstream dating apps are incentivized to keep you single forever. They charge recurring monthly fees, encourage superficial swiping, exclude families, and normalize illicit private chatting without boundaries.
                 </p>
                 <ul class="space-y-2 text-xs text-rose-700 dark:text-rose-400/90 font-medium pt-2">
-                    <li class="flex items-center gap-2"><span>✕</span> Recurring monthly fees whether you find a partner or not</li>
-                    <li class="flex items-center gap-2"><span>✕</span> Unsolicited flirtation and ghosting culture</li>
-                    <li class="flex items-center gap-2"><span>✕</span> Zero family or Wali involvement</li>
+                    <li class="flex items-center gap-2"><span>&bull;</span> Recurring monthly fees whether you find a partner or not</li>
+                    <li class="flex items-center gap-2"><span>&bull;</span> Unsolicited flirtation and ghosting culture</li>
+                    <li class="flex items-center gap-2"><span>&bull;</span> Zero family or Wali involvement</li>
                 </ul>
             </div>
 
             <!-- Global Nikkah Solution -->
             <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-emerald-300/60 dark:border-emerald-800 shadow-sm space-y-4">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
-                    <span>✓</span> The Global Nikkah Difference
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>The Global Nikkah Difference</span>
                 </div>
                 <h3 class="text-xl font-bold text-slate-900 dark:text-white font-heading">
                     Single Marriage Pass &amp; Shariah Integrity
@@ -64,9 +66,9 @@
                     We designed every feature to help you succeed in completing half your deen. You pay once until your confirmed Nikah, photos remain modest by default, and guardians are honored as dignified chaperones.
                 </p>
                 <ul class="space-y-2 text-xs text-emerald-700 dark:text-emerald-400 font-medium pt-2">
-                    <li class="flex items-center gap-2"><span>✓</span> Pay 1-Time until confirmed Nikah; no monthly renewal traps</li>
-                    <li class="flex items-center gap-2"><span>✓</span> Default photo blurring &amp; reciprocal mutual unblurring</li>
-                    <li class="flex items-center gap-2"><span>✓</span> Transparent Wali chaperoning and moderator protection</li>
+                    <li class="flex items-center gap-2"><svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Pay 1-Time until confirmed Nikah; no monthly renewal traps</li>
+                    <li class="flex items-center gap-2"><svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Default photo blurring &amp; reciprocal mutual unblurring</li>
+                    <li class="flex items-center gap-2"><svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Transparent Wali chaperoning and moderator protection</li>
                 </ul>
             </div>
         </div>
@@ -82,8 +84,8 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition space-y-3">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-2xl">
-                        🛡️
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
                     <h4 class="font-bold text-base text-slate-900 dark:text-white">Wali Chaperoning</h4>
                     <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -92,8 +94,8 @@
                 </div>
 
                 <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition space-y-3">
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400 flex items-center justify-center text-2xl">
-                        🔒
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     </div>
                     <h4 class="font-bold text-base text-slate-900 dark:text-white">Haya by Default</h4>
                     <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -102,8 +104,8 @@
                 </div>
 
                 <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition space-y-3">
-                    <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-400 flex items-center justify-center text-2xl">
-                        ⚖️
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-400 flex items-center justify-center">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
                     </div>
                     <h4 class="font-bold text-base text-slate-900 dark:text-white">Deen Compatibility</h4>
                     <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -112,8 +114,8 @@
                 </div>
 
                 <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-500/50 transition space-y-3">
-                    <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-400 flex items-center justify-center text-2xl">
-                        🪪
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-400 flex items-center justify-center">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M15 9h2"/><path d="M15 13h2"/><path d="M5 19v-1a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1"/></svg>
                     </div>
                     <h4 class="font-bold text-base text-slate-900 dark:text-white">KYC Verified Profiles</h4>
                     <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -146,7 +148,7 @@
         </div>
 
         <!-- Bottom Action -->
-        <div class="p-8 sm:p-12 rounded-3xl bg-emerald-950 text-white border border-emerald-800/80 text-center space-y-6 shadow-2xl">
+        <div class="section--dark p-8 sm:p-12 rounded-3xl bg-emerald-950 text-white border border-emerald-800/80 text-center space-y-6 shadow-2xl">
             <div class="max-w-2xl mx-auto space-y-2">
                 <h3 class="text-2xl sm:text-3xl font-extrabold font-heading">
                     Begin Your Halal Search Today
@@ -156,10 +158,10 @@
                 </p>
             </div>
             <div class="flex flex-wrap items-center justify-center gap-4">
-                <a href="{{ route('register') }}" class="px-8 py-3.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-emerald-950 text-sm font-bold transition shadow-lg shadow-amber-950/20">
+                <a href="{{ route('register') }}" class="px-8 h-12 inline-flex items-center justify-center rounded-xl bg-amber-400 hover:bg-amber-300 text-emerald-950 text-sm font-bold transition shadow-lg shadow-amber-950/20">
                     Create Halal Profile
                 </a>
-                <a href="{{ route('discovery.index') }}" class="px-8 py-3.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-white text-sm font-semibold border border-emerald-700/60 transition">
+                <a href="{{ route('discovery.index') }}" class="px-8 h-12 inline-flex items-center justify-center rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-white text-sm font-semibold border border-emerald-700/60 transition">
                     Browse Candidates
                 </a>
             </div>

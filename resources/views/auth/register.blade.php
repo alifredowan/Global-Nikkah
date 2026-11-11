@@ -37,34 +37,34 @@
         <div class="card-ledger p-6 sm:p-8 bg-[var(--bg-surface)] shadow-md">
 
             <!-- Header -->
-            <div class="border-b border-[var(--border-subtle)] pb-4 mb-6 flex items-start justify-between">
+            <div class="border-b border-[var(--border-subtle)] pb-4 mb-6 flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
-                        <span x-show="role === 'seeker'">Create Candidate Profile</span>
+                    <h1 class="text-2xl sm:text-3xl font-serif font-bold text-[var(--text-primary)]">
+                        <span x-show="role === 'seeker'">Begin your matrimonial journey</span>
                         <span x-show="role === 'wali'" style="display: none;">Register as Guardian (Wali)</span>
                     </h1>
-                    <p class="text-xs text-[var(--text-secondary)] mt-0.5">
-                        <span x-show="role === 'seeker'">Begin your matrimonial journey with sincere intentions.</span>
-                        <span x-show="role === 'wali'" style="display: none;">Register to supervise and chaperone your family member.</span>
+                    <p class="text-xs text-[var(--text-secondary)] mt-1">
+                        <span x-show="role === 'seeker'">Registration is free and confidential. Take your time.</span>
+                        <span x-show="role === 'wali'" style="display: none;">Guardian accounts are always free. Support your ward with dignity.</span>
                     </p>
                 </div>
                 <!-- Save Progress Button -->
                 <button type="button" @click="saveDraft()"
-                        class="text-[11px] font-semibold text-[var(--accent-text)] hover:underline flex items-center gap-1 shrink-0"
+                        class="text-[11px] font-semibold text-[var(--secondary-text)] hover:underline flex items-center gap-1 shrink-0 pt-1"
                         title="Save progress locally">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                    <span>Save &amp; Continue Later</span>
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                    <span>Save draft</span>
                 </button>
             </div>
 
-            <!-- Multi-Step Progress Indicator -->
+            <!-- Multi-Step Progress Indicator (Editorial & Calm) -->
             <div class="mb-6">
-                <div class="flex items-center justify-between text-xs font-semibold text-[var(--text-secondary)] mb-2">
-                    <span :class="step >= 1 ? 'text-[var(--accent-text)] font-bold' : ''">1. Account Role</span>
-                    <span :class="step >= 2 ? 'text-[var(--accent-text)] font-bold' : ''">2. Personal Details</span>
+                <div class="flex items-center justify-between text-xs font-semibold text-[var(--text-muted)] mb-2">
+                    <span :class="step >= 1 ? 'text-[var(--accent-text)] font-bold' : ''">1. Account type</span>
+                    <span :class="step >= 2 ? 'text-[var(--accent-text)] font-bold' : ''">2. Personal details</span>
                     <span :class="step >= 3 ? 'text-[var(--accent-text)] font-bold' : ''">3. Security</span>
                 </div>
-                <div class="h-1.5 w-full bg-[var(--bg-muted)] rounded-full overflow-hidden">
+                <div class="h-1 w-full bg-[var(--border-subtle)] rounded-full overflow-hidden">
                     <div class="h-full bg-[var(--accent-primary)] transition-all duration-200"
                          :style="'width: ' + (step === 1 ? '33.33%' : (step === 2 ? '66.66%' : '100%'))"></div>
                 </div>
@@ -118,7 +118,7 @@
                     </div>
 
                     <div class="pt-3 flex justify-end">
-                        <button type="button" @click="step = 2" class="btn-primary text-xs font-bold px-6">
+                        <button type="button" @click="step = 2" class="btn-primary text-sm font-bold px-6 h-12 inline-flex items-center gap-2">
                             <span>Continue to Step 2</span>
                             <span>&rarr;</span>
                         </button>
@@ -251,10 +251,10 @@
                     </div>
 
                     <div class="pt-3 flex justify-between gap-3">
-                        <button type="button" @click="step = 1" class="btn-secondary text-xs">
+                        <button type="button" @click="step = 1" class="btn-secondary text-xs h-12 inline-flex items-center">
                             <span>&larr; Back</span>
                         </button>
-                        <button type="button" @click="step = 3" class="btn-primary text-xs font-bold px-6">
+                        <button type="button" @click="step = 3" class="btn-primary text-sm font-bold px-6 h-12 inline-flex items-center gap-2">
                             <span>Continue to Step 3</span>
                             <span>&rarr;</span>
                         </button>
@@ -307,11 +307,7 @@
                         </span>
                     </div>
 
-                    @if($turnstileEnabled)
-                        <div class="flex justify-center pt-2">
-                            <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
-                        </div>
-                    @endif
+                    <x-turnstile-captcha :enabled="$turnstileEnabled" :site-key="$turnstileSiteKey" action="register" />
 
                     <div class="pt-2">
                         <label class="flex items-start gap-2.5 text-xs text-[var(--text-secondary)] cursor-pointer">
@@ -323,10 +319,10 @@
                     </div>
 
                     <div class="pt-3 flex justify-between gap-3">
-                        <button type="button" @click="step = 2" class="btn-secondary text-xs">
+                        <button type="button" @click="step = 2" class="btn-secondary text-xs h-12 inline-flex items-center">
                             <span>&larr; Back</span>
                         </button>
-                        <button type="submit" class="btn-primary text-xs font-bold px-6">
+                        <button type="submit" class="btn-primary text-sm font-bold px-8 h-12 inline-flex items-center justify-center">
                             <span x-show="role === 'seeker'">Create Candidate Profile</span>
                             <span x-show="role === 'wali'" style="display: none;">Create Guardian Account</span>
                         </button>
